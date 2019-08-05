@@ -1,7 +1,6 @@
 import api from './MegaRequest'
 import pako from './MegaPako'
 import { Config } from './MegaBleConst';
-// import MegaBleClient from './MegaBleClient';
 
 const UPLOAD_INTERVAL = 10 // s
 

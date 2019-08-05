@@ -54,6 +54,13 @@ class Index extends Component {
       handleStop,
       handleGetData,
       user,
+      handleOpenGlobalLive,
+      handleLiveOn,
+      handleLiveOff,
+      handleMonitorOn,
+      handleMonitorOff,
+      handleEnableRaw,
+      handleDisableRaw,
     } = this.props
 
     return (
@@ -78,6 +85,15 @@ class Index extends Component {
               <Button onClick={handleStart}>开</Button>
               <Button onClick={handleStop}>关</Button>
               <Button onClick={handleGetData}>收</Button>
+
+              <Button size='mini' onClick={handleOpenGlobalLive}>开实时通道</Button>
+              <Button size='mini' onClick={handleLiveOn}>开实时</Button>
+              <Button size='mini' onClick={handleLiveOff}>关实时</Button>
+              <Button size='mini' onClick={handleMonitorOn}>开监测v2</Button>
+              <Button size='mini' onClick={handleMonitorOff}>关监测v2</Button>
+              <Button size='mini' onClick={handleEnableRaw}>开raw</Button>
+              <Button size='mini' onClick={handleDisableRaw}>关raw</Button>
+
             </View>
           ) : null
         }
@@ -157,6 +173,28 @@ const mapDispatch = (dispatch) => {
     },
     handleUserExists(user) {
       dispatch(bleActionCreators.loginSuccess(user))
+    },
+    // ring normal
+    handleOpenGlobalLive(){
+      bleActionCreators.openGlobalLive()
+    },
+    handleLiveOn(){
+      bleActionCreators.liveOn()
+    },
+    handleLiveOff(){
+      bleActionCreators.liveOff()
+    },
+    handleMonitorOn(){
+      bleActionCreators.monitorOn()
+    },
+    handleMonitorOff(){
+      bleActionCreators.monitorOff()
+    },
+    handleEnableRaw(){
+      bleActionCreators.enableRaw()
+    },
+    handleDisableRaw(){
+      bleActionCreators.disableRaw()
     },
   }
 }

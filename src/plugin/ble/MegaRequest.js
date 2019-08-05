@@ -1,4 +1,4 @@
-const baseUrl = 'https://shcparse.leanapp.cn/parse'
+const baseUrl = 'https://raw.megahealth.cn/parse'
 
 export default {
   baseRequest(params, method, success, fail, complete) {

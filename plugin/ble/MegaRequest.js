@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var baseUrl = 'https://shcparse.leanapp.cn/parse';
+var baseUrl = 'https://raw.megahealth.cn/parse';
 
 exports.default = {
   baseRequest: function baseRequest(params, method, success, fail, complete) {

@@ -8,8 +8,11 @@ const myPluginInterface = Taro.requirePlugin('myPlugin')
 const {
   MegaBleScanner,
   MegaBleClient
-} = myPluginInterface.ble
+} = myPluginInterface.ble;
 
+const APPID = 'ZURNaXgbXw'
+const APPKEY = '&e)CPKK?z;|p0V3'
+MegaBleClient.init(APPID, APPKEY);
 
 let scanner = null
 let client = null
@@ -129,6 +132,28 @@ export const getData = () => {
   client.syncData()
 }
 
+// ring func
+export const openGlobalLive = () => {
+  client.toggleLive(true);
+}
+export const liveOn = () => {
+  client.enableV2ModeLiveSpo(true);
+}
+export const liveOff = () => {
+  client.enableV2ModeDaily(true);
+}
+export const monitorOn = () => {
+  client.enableV2ModeSpoMonitor(true);
+}
+export const monitorOff = () => {
+  client.enableV2ModeDaily(true);
+}
+export const enableRaw = () => {
+  client.enableRawdata();
+}
+export const disableRaw = () => {
+  client.disableRawdata();
+}
 
 // user
 export const loginSuccess = data => {
