@@ -67,7 +67,8 @@ class Index extends Component {
       <View>
         <View className='btn-block'>
           {
-            user ? <Button onClick={handleGoScanPage}>去扫描页</Button> : null
+            // user ? <Button onClick={handleGoScanPage}>去扫描页</Button> : null
+            <Button onClick={handleGoScanPage}>去扫描页</Button>
           }
         </View>
 
@@ -82,15 +83,15 @@ class Index extends Component {
         {
           device.name ? (
             <View>
-              <Button onClick={handleStart}>开</Button>
-              <Button onClick={handleStop}>关</Button>
-              <Button onClick={handleGetData}>收</Button>
+              {/* <Button onClick={handleStart}>开</Button>
+              <Button onClick={handleStop}>关</Button> */}
 
               <Button size='mini' onClick={handleOpenGlobalLive}>开实时通道</Button>
               <Button size='mini' onClick={handleLiveOn}>开实时</Button>
               <Button size='mini' onClick={handleLiveOff}>关实时</Button>
               <Button size='mini' onClick={handleMonitorOn}>开监测v2</Button>
               <Button size='mini' onClick={handleMonitorOff}>关监测v2</Button>
+              <Button onClick={handleGetData}>收数据</Button>
               <Button size='mini' onClick={handleEnableRaw}>开raw</Button>
               <Button size='mini' onClick={handleDisableRaw}>关raw</Button>
 
@@ -108,9 +109,9 @@ class Index extends Component {
           }
         </View>
 
-        <View className='account' onClick={this.handleGoLoginPage}>
+        {/* <View className='account' onClick={this.handleGoLoginPage}>
           {user ? '已登录' : '未登录'}
-        </View>
+        </View> */}
       </View>
     )
   }

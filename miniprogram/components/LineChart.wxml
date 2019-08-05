@@ -1,1 +1,1 @@
-<block wx:if="{{$taroCompReady}}"><ec-canvas canvas-id="mychart-area" ec="{{ec}}" id="EsVfy"></ec-canvas></block>
+<block wx:if="{{$taroCompReady}}"><ec-canvas canvas-id="mychart-area" ec="{{ec}}" id="vrSwY"></ec-canvas></block>
