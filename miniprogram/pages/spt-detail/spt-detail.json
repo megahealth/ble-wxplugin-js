@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "line-chart": "../../components/LineChart"
+  },
+  "navigationBarTitleText": "详情"
+}

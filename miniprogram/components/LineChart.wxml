@@ -1,0 +1,1 @@
+<block wx:if="{{$taroCompReady}}"><ec-canvas canvas-id="mychart-area" ec="{{ec}}" id="tekhc"></ec-canvas></block>

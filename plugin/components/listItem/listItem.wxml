@@ -1,0 +1,6 @@
+<block wx:if="{{$taroCompReady}}">
+    <view>
+        <view>name: {{name}}</view>
+        <view>value: {{value}}</view>
+    </view>
+</block>

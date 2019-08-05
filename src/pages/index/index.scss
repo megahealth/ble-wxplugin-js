@@ -1,0 +1,46 @@
+.btn-normal {
+    width: 30%;
+    margin-top: 10px;
+    height: 80px;
+    line-height: 80px;
+    margin-right: 10px;
+    float: left;
+}
+
+.btn-block {
+    overflow: hidden;
+}
+
+.devices-list {
+    height: 600px;
+    border: 1px solid #EEE;
+    border-radius: 5px;
+    margin: 50px 5px;
+}
+
+.device-item {
+    font-size: 20px;
+    border-bottom: 1px solid #EEE;
+    padding: 10px;
+    color: #666;
+}
+.device-item:hover {
+    background-color: rgba(0, 0, 0, .1);
+}
+
+.info-title {
+    display: inline-block;
+    width: 140px;
+    border-right: 1px solid #eee;
+}
+
+.account {
+    padding: 10px 10px 10px 30px;
+    width: 120px;
+    background-color: #eee;
+    position: absolute;
+    right: 0;
+    bottom: 200px;
+    border-radius: 60px 0 0 60px;
+    color: #333;
+}

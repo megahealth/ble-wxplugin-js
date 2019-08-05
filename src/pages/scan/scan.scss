@@ -1,0 +1,16 @@
+
+.devices-list {
+    height: 82vh;
+    border: 1px solid #EEE;
+    border-radius: 5px;
+    margin: 50px 5px;
+}
+.device-item {
+    font-size: 20px;
+    border-bottom: 1px solid #EEE;
+    padding: 10px;
+    color: #666;
+}
+.device-item:hover {
+    background-color: rgba(0, 0, 0, .1);
+}

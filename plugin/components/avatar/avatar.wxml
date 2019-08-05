@@ -1,0 +1,5 @@
+<block wx:if="{{$taroCompReady}}">
+    <view>
+        <image src="http://storage.360buyimg.com/taro-static/static/images/logo.png"></image>
+    </view>
+</block>

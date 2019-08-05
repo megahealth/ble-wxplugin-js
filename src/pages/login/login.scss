@@ -1,0 +1,23 @@
+.container {
+    width: 600px;
+    height: 800px;
+    margin: 200px auto;
+}
+
+
+Input {
+    display: block;
+    width: 100%;
+    height: 160px;
+    border: 1px solid #eee;
+    padding-left: 20px;
+}
+
+
+Input:first-child {
+    border-bottom: none;
+}
+
+.btn-login {
+    margin-top: 100px;
+}
