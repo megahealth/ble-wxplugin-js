@@ -7,6 +7,15 @@ import api from '../../service/api'
 
 import './index.scss'
 
+const APPID = 'ZURNaXgbXw'
+const APPKEY = '&e)CPKK?z;|p0V3'
+// require plugin
+const myPluginInterface = Taro.requirePlugin('myPlugin')
+const {
+  initSdk,
+} = myPluginInterface.ble;
+console.log(myPluginInterface.ble);
+
 
 class Index extends Component {
 
@@ -32,6 +41,12 @@ class Index extends Component {
   }
 
   componentDidMount() {
+    initSdk(APPID, APPKEY)
+        .then(client => {
+          console.log(client);
+          this.props.handleInitClient(client);
+        })
+        .catch(err => console.error(err))
 
   }
 
@@ -197,6 +212,10 @@ const mapDispatch = (dispatch) => {
     handleDisableRaw(){
       bleActionCreators.disableRaw()
     },
+    handleInitClient(client) {
+      bleActionCreators.initClient(client)
+    }
+    
   }
 }
 

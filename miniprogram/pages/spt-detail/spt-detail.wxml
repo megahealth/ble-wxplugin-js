@@ -1,1 +1,1 @@
-<block wx:if="{{$taroCompReady}}"><view class="line-chart"><line-chart id="bhRrl"></line-chart><view class="hint">P:  俯卧L:  左侧卧S:  正卧R:  右侧卧X:  悬空态</view></view></block>
+<block wx:if="{{$taroCompReady}}"><view class="line-chart"><line-chart id="uhPOw"></line-chart><view class="hint">P:  俯卧L:  左侧卧S:  正卧R:  右侧卧X:  悬空态</view></view></block>

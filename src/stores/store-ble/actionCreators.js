@@ -5,14 +5,17 @@ import Taro from '@tarojs/taro'
 
 // require plugin
 const myPluginInterface = Taro.requirePlugin('myPlugin')
+
 const {
+  initSdk,
   MegaBleScanner,
-  MegaBleClient
+  MegaBleStatus,
 } = myPluginInterface.ble;
 
 const APPID = 'ZURNaXgbXw'
 const APPKEY = '&e)CPKK?z;|p0V3'
-MegaBleClient.init(APPID, APPKEY);
+
+// MegaBleClient.init(APPID, APPKEY);
 
 let scanner = null
 let client = null
@@ -69,31 +72,40 @@ export const scan = () => {
   }
 }
 
-// connect
+// init client
 
+export const initClient = (clnt) => {
+  if (!client) client = clnt;
+}
+
+// connect
 export const connect = (device) => {
   return (dispatch) => {
-    if (!client) {
+    // if (!client) {
       // MegaBleClient.init()
-      client = new MegaBleClient(genMegaCallback(dispatch))
-    }
+      // client = new MegaBleClient(genMegaCallback(dispatch))
+    // }
 
-    const token = Taro.getStorageSync('token')
+    if (!client) return;
+    if (!client.callback) client.setCallback(genMegaCallback(dispatch));
+
+    const token = Taro.getStorageSync('token');
 
     client.connect(device.name, device.deviceId, device.advertisData)
       .then(res => {
-        console.log(res)
+        console.log(res);
         // 1. 开始start
         // this.bleClient.startWithoutToken('5837288dc59e0d00577c5f9a', this.bleClient.realMac)
         // this.bleClient.startWithToken('5837288dc59e0d00577c5f9a', '206,212,54,3,114,248')
         if (token && token.indexOf(',') != -1) {
           client.startWithToken('5837288dc59e0d00577c5f9a', token)
             .then(res => console.log(res))
-            .catch(err => console.error(err))
+            .catch(err => console.error(err));
         } else {
-          client.startWithMasterToken()
+          // client.startWithMasterToken()
+          client.startWithToken('5837288dc59e0d00577c5f9a', '0,0,0,0,0,0')
             .then(res => console.log(res))
-            .catch(err => console.error(err))
+            .catch(err => console.error(err));
         }
       })
       .catch(err => console.error(err))

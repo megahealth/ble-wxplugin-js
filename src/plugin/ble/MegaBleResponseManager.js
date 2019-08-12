@@ -240,7 +240,7 @@ class MegaBleResponseManager {
         break;
 
       case 3: // low power
-        this.callback.onOperationStatus(cmd, STATUS.STATUS_LOWPOWER);
+        this.callback.onOperationStatus(a[0], STATUS.STATUS_LOWPOWER);
         break;
 
       case 4: // userInfo not match

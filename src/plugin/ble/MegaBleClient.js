@@ -1,8 +1,9 @@
-import MegaBleCmdApiManager from "./MegaBleCmdApiManager"
-import MegaBleResponseManager from "./MegaBleResponseManager"
-import MegaBleRawdataManager from "./MegaBleRawdataManager"
-import { BLE_CFG, Config } from "./MegaBleConst"
-import { getDfuMac, discoverServicesAndChs } from "./MegaUtils";
+import MegaBleCmdApiManager from "./MegaBleCmdApiManager";
+import MegaBleResponseManager from "./MegaBleResponseManager";
+import MegaBleRawdataManager from "./MegaBleRawdataManager";
+import { BLE_CFG, Config } from "./MegaBleConst";
+import { discoverServicesAndChs } from "./MegaUtils";
+import apiLean from "./MegaLean";
 
 class MegaBleClient {
 
@@ -10,12 +11,8 @@ class MegaBleClient {
   responseManager = null
   rawdataManager = null
 
-  constructor(callback) {
-    this.name = null
-    this.deviceId = null
-    this.isConnected = false
-
-    this.callback = callback
+  setCallback(cb) {
+    this.callback = cb;
   }
 
   _initCallbacks() {
@@ -293,12 +290,28 @@ class MegaBleClient {
   //   })
   // }
 
-  // init appid appkey
-  static init(appId, appKey) {
-    Config.AppId = appId,
-    Config.AppKey = appKey
-  }
 }
 
-export default MegaBleClient
+const initSdk = (appId, appKey) => {
+  return new Promise((resolve, reject) => {
+    apiLean.get('/classes/SDKClient', 
+      {where: {appKey, appId}, limit: 1, keys: 'valid'}, 
+      res => {
+        if (res.data.results 
+          && res.data.results.length > 0
+          && res.data.results[0]['valid']) {
+
+            Config.AppId = appId;
+            Config.AppKey = appKey;
+            resolve(new MegaBleClient());
+        } else {
+          reject('init sdk auth failed');
+        }
+      }, () => {
+        reject('init sdk error');
+      });
+  })
+}
+
+export default initSdk;
 
