@@ -69,7 +69,8 @@ class Index extends Component {
       handleStop,
       handleGetData,
       user,
-      handleOpenGlobalLive,
+      handleOpenRealTime,
+      handleCloseRealTime,
       handleLiveOn,
       handleLiveOff,
       handleMonitorOn,
@@ -101,12 +102,13 @@ class Index extends Component {
               {/* <Button onClick={handleStart}>开</Button>
               <Button onClick={handleStop}>关</Button> */}
 
-              <Button size='mini' onClick={handleOpenGlobalLive}>开实时通道</Button>
-              <Button size='mini' onClick={handleLiveOn}>开实时</Button>
-              <Button size='mini' onClick={handleLiveOff}>关实时</Button>
-              <Button size='mini' onClick={handleMonitorOn}>开监测v2</Button>
-              <Button size='mini' onClick={handleMonitorOff}>关监测v2</Button>
-              <Button onClick={handleGetData}>收数据</Button>
+              <Button size='mini' onClick={handleOpenRealTime}>开实时通道</Button>
+              <Button size='mini' onClick={handleCloseRealTime}>关实时通道</Button>
+              <Button size='mini' onClick={handleLiveOn}>实时on</Button>
+              <Button size='mini' onClick={handleLiveOff}>实时off</Button>
+              <Button size='mini' onClick={handleMonitorOn}>监测on</Button>
+              <Button size='mini' onClick={handleMonitorOff}>监测off</Button>
+              <Button size='mini' onClick={handleGetData}>收数据</Button>
               <Button size='mini' onClick={handleEnableRaw}>开raw</Button>
               <Button size='mini' onClick={handleDisableRaw}>关raw</Button>
 
@@ -191,8 +193,11 @@ const mapDispatch = (dispatch) => {
       dispatch(bleActionCreators.loginSuccess(user))
     },
     // ring normal
-    handleOpenGlobalLive(){
-      bleActionCreators.openGlobalLive()
+    handleOpenRealTime(){
+      bleActionCreators.enableRealTime(true)
+    },
+    handleCloseRealTime(){
+      bleActionCreators.enableRealTime(false)
     },
     handleLiveOn(){
       bleActionCreators.liveOn()

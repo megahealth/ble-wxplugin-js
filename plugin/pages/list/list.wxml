@@ -1,1 +1,0 @@
-<block wx:if="{{$taroCompReady}}"><view><list-item wx:key="$original.name" wx:for="{{loopArray2}}" wx:for-item="item" wx:for-index="_anonIdx2" compid="{{item.$compid__0}}"></list-item></view></block>

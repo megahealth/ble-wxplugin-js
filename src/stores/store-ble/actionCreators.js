@@ -145,20 +145,20 @@ export const getData = () => {
 }
 
 // ring func
-export const openGlobalLive = () => {
-  client.toggleLive(true);
+export const enableRealTime = (enable) => {
+  client.enableRealTimeNotify(enable);
 }
 export const liveOn = () => {
-  client.enableV2ModeLiveSpo(true);
+  client.enableLive(true);
 }
 export const liveOff = () => {
-  client.enableV2ModeDaily(true);
+  client.enableLive(false);
 }
 export const monitorOn = () => {
-  client.enableV2ModeSpoMonitor(true);
+  client.enableMonitor(true);
 }
 export const monitorOff = () => {
-  client.enableV2ModeDaily(true);
+  client.enableMonitor(false);
 }
 export const enableRaw = () => {
   client.enableRawdata();

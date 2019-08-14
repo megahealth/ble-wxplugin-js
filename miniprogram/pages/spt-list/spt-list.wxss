@@ -1,1 +1,0 @@
-.data-list{height:100vh;margin:20rpx 10rpx}.data-item{border-bottom:1rpx solid #eee;padding:10rpx;color:#666;height:80rpx;line-height:80rpx}.data-item:hover{background-color:rgba(0,0,0,.1)}

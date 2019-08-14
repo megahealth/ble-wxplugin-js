@@ -1,1 +1,0 @@
-.devices-list{height:82vh;border:1rpx solid #eee;border-radius:5rpx;margin:50rpx 5rpx}.device-item{font-size:20rpx;border-bottom:1rpx solid #eee;padding:10rpx;color:#666}.device-item:hover{background-color:rgba(0,0,0,.1)}

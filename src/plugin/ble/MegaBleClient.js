@@ -126,20 +126,16 @@ class MegaBleClient {
     this.api.enableMonitorV1(enable)
   }
 
-  toggleLive(enable) {
+  enableRealTimeNotify(enable) {
     this.api.toggleLiveData(enable)
   }
 
-  enableV2ModeLiveSpo(ensure) {
-    this.api.enableV2ModeLiveSpo(ensure, 0)
+  enableLive(enable) {
+    enable ? this.api.enableV2ModeLiveSpo(true, 0) : this.api.enableV2ModeDaily(true, 0) // means stop
   }
 
-  enableV2ModeDaily(ensure) {
-    this.api.enableV2ModeDaily(ensure, 0)
-  }
-
-  enableV2ModeSpoMonitor(ensure) {
-    this.api.enableV2ModeSpoMonitor(ensure, 0)
+  enableMonitor(enable) {
+    enable ? this.api.enableV2ModeSpoMonitor(true, 0) : this.api.enableV2ModeDaily(true, 0)
   }
 
   syncData() {
@@ -155,9 +151,9 @@ class MegaBleClient {
   disableRawdata() {
     if (this.rawdataManager) {
       console.log(`包数统计: app: ${this.rawdataManager.getCount()}, ble: ${this.rawdataManager.getBleCount()}`)
+      this.api.enableRawdata(false)
       this.rawdataManager.clear()
       this.rawdataManager = null
-      this.api.enableRawdata(false)
     }
   }
 

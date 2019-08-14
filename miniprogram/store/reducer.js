@@ -1,1 +1,0 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var _redux=require("../npm/redux/lib/redux.js"),_index=require("../pages/index/store/index.js"),_index2=require("../stores/store-ble/index.js");exports.default=(0,_redux.combineReducers)({index:_index.reducer,ble:_index2.reducer});
