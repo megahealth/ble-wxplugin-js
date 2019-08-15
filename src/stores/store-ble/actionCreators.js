@@ -216,7 +216,7 @@ const genMegaCallback = (dispatch) => {
     },
     onTokenReceived: (token) => {
       console.log('onTokenReceived: ', token)
-      Taro.setStorageSync('token', token)
+      Taro.setStorage({key: 'token', data: token})
       dispatch(updateToken(token))
     },
     onKnockDevice: () => {
@@ -287,8 +287,11 @@ const genMegaCallback = (dispatch) => {
     onDeviceInfoUpdated: deviceInfo => {
       dispatch(updateDeviceInfo(deviceInfo))
     },
-    onRawdataCount: (count, bleCount, rawdataDuration) => {
+    onRawdataReceiving: (count, bleCount, rawdataDuration) => {
 
+    },
+    onRawdataComplete: info => {
+      console.log(info);
     },
     onDfuProgress: progress => {
 

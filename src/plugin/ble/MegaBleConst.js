@@ -92,4 +92,5 @@ export const STATUS = {
 export const Config = {
   AppId: '',
   AppKey: '',
+  debugable: false,
 }

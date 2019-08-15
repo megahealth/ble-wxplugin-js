@@ -33,8 +33,6 @@ class MegaBleScanner {
   }
 
   scan() {
-    console.log('scan start...');
-
     return new Promise((resolve, reject) => {
       if (this.isScanning) {
         reject('isScanning')
@@ -52,7 +50,6 @@ class MegaBleScanner {
   stopScan() {
     if (this.isScanning) {
       wx.stopBluetoothDevicesDiscovery()
-      console.log('scan stop!')
     }
     this.isScanning = false
   }

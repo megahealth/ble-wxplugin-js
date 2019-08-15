@@ -147,7 +147,6 @@ export const discoverServicesAndChs = deviceId => {
         const arr = []
         for (let i = 0; i < res.services.length; i++) {
           const service = res.services[i]
-          console.log(service)
           if (service.isPrimary) {
             arr.push(discoverChs(deviceId, service.uuid))
           }
@@ -167,4 +166,14 @@ const discoverChs = (deviceId, serviceId) => {
       fail: err => reject(err),
     })
   })
+}
+
+export const yyyymmddhhmmss = d => {
+  const pad2 = n => (n < 10 ? '0' : '') + n;
+  return d.getFullYear() +
+  pad2(d.getMonth() + 1) + 
+  pad2(d.getDate()) +
+  pad2(d.getHours()) +
+  pad2(d.getMinutes()) +
+  pad2(d.getSeconds());
 }

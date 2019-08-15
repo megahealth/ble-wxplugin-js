@@ -1,4 +1,4 @@
-import { BLE_CFG } from "./MegaBleConst";
+import { BLE_CFG, Config } from "./MegaBleConst";
 import { u8s2hex } from "./MegaUtils";
 import {
   makeBindMasterCmd,
@@ -50,37 +50,37 @@ class MegaBleCmdApiManager {
   // 5837288dc59e0d00577c5f9a
   bindWithoutToken(userId, mac) {
     const a = makeBindMacCmd(userId, mac)
-    console.log('[cmd] bindWithoutToken -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] bindWithoutToken -> ' + u8s2hex(a))
     return this._write(a)
   }
 
   bindWithToken(userId, token) {
     const a = makeBindTokenCmd(userId, token)
-    console.log('[cmd] bindWithToken -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] bindWithToken -> ' + u8s2hex(a))
     return this._write(a)
   }
 
   bindWithMasterToken() {
     const a = makeBindMasterCmd()
-    console.log('[cmd] bindWithMasterToken -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] bindWithMasterToken -> ' + u8s2hex(a))
     return this._write(a)
   }
 
   setTime() {
     const a = makeSetTimeCmd()
-    console.log("[cmd] setTime -> " + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] setTime -> ' + u8s2hex(a))
     return this._write(a)
   }
 
   setUserInfo(age, gender, height, weight, stepLength) {
     const a = makeUserInfoCmd(age, gender, height, weight, stepLength)
-    console.log("[cmd] setUserInfo -> " + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] setUserInfo -> ' + u8s2hex(a))
     return this._write(a)
   }
 
   sendHeartBeat() {
     const a = makeHeartBeatCmd()
-    console.log('[cmd] sendHeartBeat -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] sendHeartBeat -> ' + u8s2hex(a))
     return this._write(a)
   }
 
@@ -90,7 +90,7 @@ class MegaBleCmdApiManager {
    */
   enableMonitorV1(enable) {
     const a = makeMonitorCmd(enable)
-    console.log('[cmd] enableMonitorV1 -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] enableMonitorV1 -> ' + u8s2hex(a))
     return this._write(a)
   }
 
@@ -100,7 +100,7 @@ class MegaBleCmdApiManager {
    */
   toggleLiveData(enable) {
     const a = makeLiveCmd(enable)
-    console.log('[cmd] toggleLiveData -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] toggleLiveData -> ' + u8s2hex(a))
     return this._write(a)
   }
 
@@ -111,7 +111,7 @@ class MegaBleCmdApiManager {
    */
   enableV2ModeLiveSpo(ensure, seconds) {
     const a = makeV2EnableModeLiveSpo(ensure, seconds)
-    console.log('[cmd] enableV2ModeLiveSpo -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] enableV2ModeLiveSpo -> ' + u8s2hex(a))
     return this._write(a);
   }
 
@@ -123,7 +123,7 @@ class MegaBleCmdApiManager {
    */
   enableV2ModeDaily(ensure, seconds) {
     const a = makeV2EnableModeDaily(ensure, seconds)
-    console.log('[cmd] enableV2ModeDaily -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] enableV2ModeDaily -> ' + u8s2hex(a))
     return this._write(a)
   }
 
@@ -134,7 +134,7 @@ class MegaBleCmdApiManager {
    */
   enableV2ModeSpoMonitor(ensure, seconds) {
     const a = makeV2EnableModeSpoMonitor(ensure, seconds);
-    console.log('[cmd] enableV2ModeSpoMonitor -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] enableV2ModeSpoMonitor -> ' + u8s2hex(a))
     return this._write(a)
   }
 
@@ -144,18 +144,18 @@ class MegaBleCmdApiManager {
    */
   syncMonitorData() {
     const a = makeSyncMonitorDataCmd()
-    console.log('[cmd] syncMonitorData -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] syncMonitorData -> ' + u8s2hex(a))
     return this._write(a)
   }
 
   syncDailyData() {
     const a = makeSyncDailyDataCmd()
-    console.log('[cmd] syncDailyData -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] syncDailyData -> ' + u8s2hex(a))
     return this._write(a)
   }
 
   writeReportPack(a) {
-    console.log('[cmd] writeReportPack -> ' + u8s2hex(a))
+    if (Config.debugable) console.log('[cmd] writeReportPack -> ' + u8s2hex(a))
     return this._write(a)
   }
 

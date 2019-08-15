@@ -33,7 +33,7 @@ class MegaBleResponseManager {
   }
 
   handleIndicateResponse(a) {
-    console.log('onIndicate <- ' + u8s2hex(a))
+    // console.log('onIndicate <- ' + u8s2hex(a))
     const cmd = a[0], status = a[2]
     this.callback.onOperationStatus(cmd, status)
 
@@ -45,10 +45,10 @@ class MegaBleResponseManager {
         break;
 
       case CMD.SETTIME:
-        if (status === 0) {
-          let t = (a[3] << 24) | (a[4] << 16) | (a[5] << 8) | a[6]
-          console.log('setTime respond time: ' + t)
-        }
+        // if (status === 0) {
+        //   let t = (a[3] << 24) | (a[4] << 16) | (a[5] << 8) | a[6]
+        //   console.log('setTime respond time: ' + t)
+        // }
         this._next()
         break;
 
@@ -92,7 +92,7 @@ class MegaBleResponseManager {
       case CMD.V2_GET_BOOTUP_TIME:
         if (status == 0) {
           const t = (a[3] << 24) | (a[4] << 16) | (a[5] << 8) | a[6];
-          console.log("device bootup time: " + t)
+          // console.log("device bootup time: " + t)
           this.callback.onV2BootupTimeReceived(t);
         }
         break;
@@ -141,7 +141,7 @@ class MegaBleResponseManager {
       case CMD.LIVECTRL:
         // 2018-10-10 15:00:40 加入实时的log采集
         // 原因：观察到的现象是实时值偶尔会不过来。需要查出究竟是sdk没记，还是值没过来
-        console.log("notify comes [live]: " + u8s2hex(a));
+        // console.log("notify comes [live]: " + u8s2hex(a));
         this._dispatchV2Live(this.callback, a);
         break;
       case CMD.NOTIBATT:
@@ -155,9 +155,9 @@ class MegaBleResponseManager {
   }
 
   handleReadResponse(a) {
-    console.log('onRead: ' + u8s2hex(a))
+    // console.log('onRead: ' + u8s2hex(a))
     const deviceInfo = parseRead(a)
-    console.log(deviceInfo)
+    // console.log(deviceInfo)
     this.callback.onDeviceInfoUpdated(deviceInfo)
     
     this._next()
@@ -201,7 +201,7 @@ class MegaBleResponseManager {
   _handleSyncData(cmd, status, a) {
     this.callback.onOperationStatus(cmd, status);
     if (status === 0) { // permit to transmit
-      console.log("Trans permission [yes]...")
+      // console.log("Trans permission [yes]...")
       this.bigDataManager = new MegaBleBigDataManager({
         writeReportPack: pack => { this.api.writeReportPack(pack) },
         onProgress: progress => { this.callback.onSyncingDataProgress(progress) },
@@ -214,7 +214,7 @@ class MegaBleResponseManager {
     } else {
       this.bigDataManager = null
       if (status === 2) {
-        console.log("Trans permission [no], no data.");
+        // console.log("Trans permission [no], no data.");
         if (a[5] === 0 || a[5] === CMD.CTRL_DAILY_DATA) {
           this.callback.onSyncNoDataOfDaily()
         } else if (a[5] == CMD.CTRL_MONITOR_DATA) {

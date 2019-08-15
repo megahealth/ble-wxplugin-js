@@ -41,7 +41,8 @@ class Index extends Component {
   }
 
   componentDidMount() {
-    initSdk(APPID, APPKEY)
+    // console.log(wx.env, wx.getFileSystemManager())
+    initSdk(APPID, APPKEY, wx)
         .then(client => {
           console.log(client);
           this.props.handleInitClient(client);

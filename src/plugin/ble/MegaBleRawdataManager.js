@@ -1,24 +1,30 @@
 import api from './MegaRequest'
 import pako from './MegaPako'
 import { Config } from './MegaBleConst';
+import { yyyymmddhhmmss } from './MegaUtils';
 
 const UPLOAD_INTERVAL = 10 // s
 
 class MegaBleRawdataManager {
-  cnt = 0
-  totalList = []
+  cnt = 0;
+  totalList = [];
 
-  isFirstPayload = true
-  firstPayload = null
-  currentPayload = null
-  startTime = Date.now()
+  isFirstPayload = true;
+  firstPayload = null;
+  currentPayload = null;
+  startTime = Date.now();
 
-  isProcessing = false
-  taskTimeout = null
-  requestTask = null
+  isProcessing = false;
+  taskTimeout = null;
+  requestTask = null;
 
-  constructor() {
+  filePath = null;
+  fs = null;
+  ctx = null;
 
+  constructor(ctx) {
+    this.ctx = ctx;
+    this.fs = this.ctx.getFileSystemManager();
   }
 
   queue(a) {
@@ -72,15 +78,20 @@ class MegaBleRawdataManager {
     if (this.isProcessing) return
     const size = this.totalList.length
     if (size <= 1) return
-    console.log('processTask...' + ~~(Date.now() / 1000))
+    // console.log('processTask...' + ~~(Date.now() / 1000))
     
     this.isProcessing = true
+
+    const payload = this.totalList.slice(0, size).reduce((a, b) => a.concat(b));
     this.requestTask = api.post('/rawdata', {
-      rawdata: size === 2 ? 'start' : pako.deflate(this.totalList.slice(0, size).reduce((a, b) => a.concat(b)), { to: 'string' }),
+      rawdata: size === 2 ? 'start' : pako.deflate(payload, { to: 'string' }),
       appId: Config.AppId,
       appKey: Config.AppKey,
       timestamp: ~~(Date.now() / 1000),
-    }, null, err => console.error(err), this._doAfterRequest(size === 2 ? 0 : size))
+    }, null, null, this._doAfterRequest(size === 2 ? 0 : size))
+
+    // save to file
+    this.saveRawdataFile(payload);
   }
 
   _completeTask() {
@@ -93,6 +104,28 @@ class MegaBleRawdataManager {
     this.taskTimeout = setTimeout(() => {
       this._completeTask()
     }, UPLOAD_INTERVAL * 1000)
+  }
+
+  saveRawdataFile(payload) {
+    if (!this.filePath) {
+      const fname = 'raw_' + yyyymmddhhmmss(new Date()) + '.dat';
+      this.filePath = `${this.ctx.env.USER_DATA_PATH}/${fname}`;
+      this.fs.writeFile({
+        filePath: this.filePath,
+        data: new Uint8Array(payload).buffer,
+        encoding: 'binary',
+        success: () => console.log('write ok'),
+        fial: err => console.error(err),
+      });
+    } else {
+      this.fs.appendFile({
+        filePath: this.filePath,
+        data: new Uint8Array(payload).buffer,
+        encoding: 'binary',
+        success: () => console.log('append ok'),
+        fial: err => console.error(err),
+      });
+    }
   }
 }
 

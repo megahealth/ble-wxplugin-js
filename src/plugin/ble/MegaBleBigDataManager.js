@@ -32,7 +32,7 @@ class MegaBleBigDataManager {
     if (a[2] == 0) { // 一大包开始了
       this.totalLen = (a[3] << 24) | (a[4] << 16) | (a[5] << 8) | (a[6])
       this.subLen = ((a[7] << 8) | a[8])
-      console.log(`Total length: ${this.totalLen}, sub length: ${this.subLen}`)
+      // console.log(`Total length: ${this.totalLen}, sub length: ${this.subLen}`)
       this.subSnMap = {}
       this.mReportPackMissPack = new Uint8Array(16)
     } else if (a[2] == 1) { // 一包传完了，开始检查，有无漏包
@@ -48,7 +48,7 @@ class MegaBleBigDataManager {
 
   handleNotify(a) {
     if (!this.mReportPackMissPack) {
-      console.log('Big data receive warning: Notify comes ahead of indicate, app_report_pack_misspart has not been initiated')
+      // console.log('Big data receive warning: Notify comes ahead of indicate, app_report_pack_misspart has not been initiated')
       return
     }
     const sn = a[0]
@@ -69,7 +69,7 @@ class MegaBleBigDataManager {
     const bleCrc = (crcBytes[1] | crcBytes[0] << 8)
     const myCrc = crc16XModem(rawSub)
 
-    console.log(`blecrc: ${bleCrc}, mycrc: ${myCrc}`)
+    // console.log(`blecrc: ${bleCrc}, mycrc: ${myCrc}`)
     if (myCrc === bleCrc) { // crc一致
       this.mReportPack[2] = 1 // 1 ：续传；0：丢包重传、crc错误重传
       this.iDataCallback.writeReportPack(this.mReportPack)
@@ -79,7 +79,7 @@ class MegaBleBigDataManager {
       if (this.totalLen <= 0) return
       const progress = Math.floor(this.totalBytes.length * 100 / this.totalLen)
       this.iDataCallback.onProgress(progress)
-      console.log("receiving data, progress " + progress)
+      // console.log("receiving data, progress " + progress)
 
       if (this.totalLen > 0 && this.totalLen == this.totalBytes.length) { // transmit complete
         const finalBytes = this.ver.concat(this.totalBytes)
@@ -94,7 +94,7 @@ class MegaBleBigDataManager {
         }
       }
     } else { // crc不一致
-      console.error('crc wrong!')
+      // console.error('crc wrong!')
       this.mReportPack[2] = 0
       this.mReportPack[3] = 0xff
       this.iDataCallback.writeReportPack(this.mReportPack)

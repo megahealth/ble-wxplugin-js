@@ -11,6 +11,13 @@ class MegaBleClient {
   responseManager = null
   rawdataManager = null
 
+  ctx = null
+
+  constructor(ctx) {
+    this.ctx = ctx;
+    console.log(this.ctx)
+  }
+
   setCallback(cb) {
     this.callback = cb;
   }
@@ -50,7 +57,7 @@ class MegaBleClient {
           case BLE_CFG.CH_LOG_NOTIFY:
             if (a[0] === 0x5b && this.rawdataManager) {
               this.rawdataManager.queue(Array.from(a))
-              this.callback.onRawdataCount(this.rawdataManager.getCount(), this.rawdataManager.getBleCount(), this.rawdataManager.getDuration())
+              this.callback.onRawdataReceiving(this.rawdataManager.getCount(), this.rawdataManager.getBleCount(), this.rawdataManager.getDuration())
             }
             break;
 
@@ -73,7 +80,7 @@ class MegaBleClient {
       this.realMac = this.deviceId
     }
 
-    console.log('will connect, realmac: ' + this.realMac)
+    // console.log('will connect, realmac: ' + this.realMac)
     this._initCallbacks()
 
     return new Promise((resolve, reject) => {
@@ -144,14 +151,15 @@ class MegaBleClient {
 
   enableRawdata() {
     if (this.rawdataManager) return
-    this.rawdataManager = new MegaBleRawdataManager()
+    this.rawdataManager = new MegaBleRawdataManager(this.ctx)
     this.api.enableRawdata(true)
   }
 
   disableRawdata() {
     if (this.rawdataManager) {
-      console.log(`包数统计: app: ${this.rawdataManager.getCount()}, ble: ${this.rawdataManager.getBleCount()}`)
+      // console.log(`包数统计: app: ${this.rawdataManager.getCount()}, ble: ${this.rawdataManager.getBleCount()}`)
       this.api.enableRawdata(false)
+      this.callback.onRawdataComplete({ filePath: this.rawdataManager.filePath })
       this.rawdataManager.clear()
       this.rawdataManager = null
     }
@@ -189,6 +197,10 @@ class MegaBleClient {
 
   closeBluetoothAdapter() {
     wx.closeBluetoothAdapter()
+  }
+
+  enableDebug(enable) {
+    Config.debugable = enable
   }
 
   // start dfu
@@ -288,7 +300,7 @@ class MegaBleClient {
 
 }
 
-const initSdk = (appId, appKey) => {
+const initSdk = (appId, appKey, ctx) => {
   return new Promise((resolve, reject) => {
     apiLean.get('/classes/SDKClient', 
       {where: {appKey, appId}, limit: 1, keys: 'valid'}, 
@@ -299,7 +311,7 @@ const initSdk = (appId, appKey) => {
 
             Config.AppId = appId;
             Config.AppKey = appKey;
-            resolve(new MegaBleClient());
+            resolve(new MegaBleClient(ctx));
         } else {
           reject('init sdk auth failed');
         }
@@ -310,4 +322,3 @@ const initSdk = (appId, appKey) => {
 }
 
 export default initSdk;
-
