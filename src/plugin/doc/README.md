@@ -169,11 +169,11 @@ initSdk(APPID, APPKEY)
     - onConnectionStateChange: (res) => {}
     - onBatteryChanged: (value, status) => {}
 
-        0, "normal"; 1, "charging"; 2, "full"; 3, "lowPower"
+        status参考STATUS_BATT列表
 
     - onTokenReceived: (token) => {}
-    - onKnockDevice: () => {}
-        
+    - onK/n0o'oockDevice: () => {}
+        m
         需要ui提示晃动戒指以绑定
     - onOperationStatus: (cmd, status) => {}
 
@@ -195,11 +195,11 @@ initSdk(APPID, APPKEY)
     - onLiveDataReceived: live => {}
     - onV2LiveSleep: v2LiveSleep => {}
 
-        收到血氧实时模式live数据
+        收到血氧实时模式live数据; status参考STATUS_LIVE列表
     - onV2LiveSport: v2LiveSport => {}
     - onV2LiveSpoMonitor: v2LiveSpoMonitor => {}
 
-        收到血氧监测模式live数据
+        收到血氧监测模式live数据; status参考STATUS_LIVE列表
     - onSetUserInfo: () => {}
     - onIdle: () => {}
 
@@ -232,6 +232,17 @@ initSdk(APPID, APPKEY)
   STATUS_RECORDS_TIME_SHORT       : 0xC0,
   STATUS_RECORDS_NO_STOP          : 0xC1,
   STATUS_DEVICE_UNKNOWN_ERR       : 0xFF,
+
+  // 实时值状态指示 （各模式通用）
+  STATUS_LIVE_VALID       : 0, // 实时值有效
+  STATUS_LIVE_PREPARING   : 1, // 值准备中
+  STATUS_LIVE_INVALID     : 2, // 无效/离手
+
+  // 电量状态指示
+  STATUS_BATT_NORMAL      : 0, // 电量正常
+  STATUS_BATT_CHARGING    : 1, // 充电中
+  STATUS_BATT_FULL        : 2, // 充满
+  STATUS_BATT_LOWPOWER    : 3, // 低电
 ```
 
 ## demo的运行方法

@@ -87,6 +87,17 @@ export const STATUS = {
   STATUS_RECORDS_TIME_SHORT       : 0xC0,
   STATUS_RECORDS_NO_STOP          : 0xC1,
   STATUS_DEVICE_UNKNOWN_ERR       : 0xFF,
+
+  // 实时值状态指示 （各模式通用）
+  STATUS_LIVE_VALID       : 0, // 实时值有效
+  STATUS_LIVE_PREPARING   : 1, // 值准备中
+  STATUS_LIVE_INVALID     : 2, // 无效/离手
+
+  // 电量状态指示
+  STATUS_BATT_NORMAL      : 0, // 电量正常
+  STATUS_BATT_CHARGING    : 1, // 充电中
+  STATUS_BATT_FULL        : 2, // 充满
+  STATUS_BATT_LOWPOWER    : 3, // 低电
 }
 
 export const Config = {

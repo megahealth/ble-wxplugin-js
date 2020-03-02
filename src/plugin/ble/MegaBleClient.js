@@ -3,7 +3,7 @@ import MegaBleResponseManager from "./MegaBleResponseManager";
 import MegaBleRawdataManager from "./MegaBleRawdataManager";
 import { BLE_CFG, Config } from "./MegaBleConst";
 import { discoverServicesAndChs } from "./MegaUtils";
-import apiLean from "./MegaLean";
+import apiLean from "./service-lean";
 
 class MegaBleClient {
 
@@ -15,7 +15,6 @@ class MegaBleClient {
 
   constructor(ctx) {
     this.ctx = ctx;
-    console.log(this.ctx)
   }
 
   setCallback(cb) {

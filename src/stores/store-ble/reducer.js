@@ -23,7 +23,8 @@ export default (state = defaultState, action) => {
         const idx = utils.inArray(foundDevices, 'deviceId', device.deviceId)
         if (idx === -1) {
           foundDevices.push(device)
-          MegaUtils.parseAdv('adv data: ', device.advertisData)
+          const adv = MegaUtils.parseAdv(device.advertisData)
+          console.log(adv);
         } else {
           foundDevices[idx] = device
         }
