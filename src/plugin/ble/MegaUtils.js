@@ -1,6 +1,21 @@
 import md5 from "./MegaMD5";
 import aes from './MegaAes'
 
+// const
+const RING_SN_TYPE = {
+  0: "P11A",
+  1: "P11B",
+  2: "P11C",
+  3: "P11D",
+  4: "E11D",
+  7: "P11T"
+};
+
+const RING_SN_TYPE_PROTOCOL_5 = 5;
+const RING_TYPE_MAP = { [RING_SN_TYPE_PROTOCOL_5]: ["C11E", "P11E", 'P11F'] };
+const RING_SIZE_MAP = { [RING_SN_TYPE_PROTOCOL_5]: [2, 3] };
+
+
 const byteToBits = (octet) => {
   let bits = [];
   for (let i = 7; i >= 0; i--) {
@@ -77,7 +92,6 @@ export const byte4ToInt = (a) => (a[3] << 24) | (a[2] << 16) | (a[1] << 8) | a[0
 
 
 export const parseRead = (a) => {
-  const RING_SN_TYPE = { 0: "P11A", 1: "P11B", 2: "P11C", 3: "P11D", 7: "P11T", 4: "E11D" }
   const hw1 = (a[0] & 0xf0) >> 4;
   const hw2 = (a[0] & 0x0f);
   const fw1 = (a[1] & 0xf0) >> 4;
@@ -88,9 +102,7 @@ export const parseRead = (a) => {
 
   let sn = '0000'
   if (a[5] !== 0) {
-    let tName = RING_SN_TYPE[a[10] & 0x07] || "0000"
-    if (tName != 'P11T') tName += ((a[10] >> 3) & 0x0f)
-    sn = tName + ((a[5] * 100 + a[6]) * 1000000 + ((a[7] << 16) | (a[8] << 8) | (a[9])))
+    sn = parseSnEnter([a[5], a[6], a[7], a[8], a[9], a[10]]);
   }
 
   let GSENSOR_4404_FLAG = byteToBits(a[11]).reverse(); // xyz
@@ -111,8 +123,59 @@ export const parseRead = (a) => {
   const otherInfo = `HW: v${hwVer} BL: v${blVer} hwCheck: ${deviceCheck} run: ${runFlag}`
 
   return { otherInfo, hwVer, fwVer, blVer, sn, isRunning }
-
 }
+
+const parseSnEnter = (a) => {
+  const verYYmm = (a[0] << 8) | a[1];
+  const snVersion = (verYYmm >> 13) & 0x07;
+
+  if (snVersion === 1) {
+      return parseSnV1(a);
+  } else if (snVersion === 0) {
+      return parseSnV0(a);
+  }
+  return "";
+}
+
+const parseSnV0 = (a) => {
+  let sn;
+  if (RING_SN_TYPE[a[5] & 0x07] === "P11T") {
+      // 没有size
+      sn = RING_SN_TYPE[a[5] & 0x07];
+  } else {
+      // 有size
+      sn = RING_SN_TYPE[a[5] & 0x07] + ((a[5] >> 3) & 0x0f);
+  }
+  return `${sn}${zeroPad(a[0], 10)}${zeroPad(a[1], 10)}${zeroPad((a[2] << 16) | (a[3] << 8) | a[4], 100000)}`;
+}
+
+// 29 d0 00 00 40 15
+// C11E31910000064
+const parseSnV1 = (a) => {
+  const verYYmm = (a[0] << 8) | a[1];
+
+  const yy = (verYYmm >> 7) & 0x03F;
+  const mm = (verYYmm >> 3) & 0x0F;
+  const num = (a[2] << 16) | (a[3] << 8) | a[4];
+  const typeIndex = (a[5] >> 5) & 0b111; // 0b111, 共3bits
+  const sizeIndex = (a[5] >> 4) & 0x01;
+  const type = (a[5] & 0x0F);
+
+  try {
+      const typeName = RING_TYPE_MAP[type][typeIndex];
+      const size = RING_SIZE_MAP[type][sizeIndex];
+      return `${typeName}${size}${zeroPad(yy, 10)}${zeroPad(mm, 10)}${zeroPad(num, 100000)}`;
+  } catch (error) {
+      console.error('parseSnV1', error);
+  }
+  return "";
+}
+
+const zeroPad = (nr,base) => {
+  var len = (String(base).length - String(nr).length)+1;
+  return len > 0? new Array(len).join('0')+nr : nr;
+}
+
 
 const macToBytes = mac => mac.split(':').map(i => +('0x' + i))
 const tokenToBytes = token => token.split(',').map(i => +i)

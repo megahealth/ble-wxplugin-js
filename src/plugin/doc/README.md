@@ -1,14 +1,51 @@
-# 小程序ble插件
+# 兆观ble sdk：微信小程序插件版
+- 插件名称：megable
+- 链接地址：https://mp.weixin.qq.com/wxopen/pluginbasicprofile?action=intro&appid=wxf4fa9b179dfd7bca&token=&lang=zh_CN
+
+## 功能简介
+提供与兆观公司智能指环蓝牙交互的功能
+
+- 主要功能
+  1. 血氧实时模式
+
+        说明：实时输出，戒指自身不存储
+
+        数据内容：血氧(SpO2)，心率(pr)，睡眠分期
+
+  2. 血氧监测模式
+
+        说明：实时输出，同时戒指自身存储。方便手机与戒指断开，待监测结束后，异步收取监测数据
+    
+- 推荐的App端工作流程
+  - [工作流程图](https://file-mhn.megahealth.cn/62630b5d10f14ecce727/App%E4%B8%8E%E6%88%92%E6%8C%87%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B%E5%9B%BE.pdf)
+    
+    这是完整功能的流程，请结合实际业务需求调整。例如：只用到血氧实时模式，就实时接收数据即可，不用考虑异步收取监测数据的问题。
+
+
+## 快速开始
+1. 微信小程序引入插件
+2. 初始化sdk，得到ble client实例；client设置callback，用于接收戒指事件通知
+3. 使用MegaBleScanner，进行扫描，得到目标device
+4. client连接device，等待连接成功
+5. 绑定
+    - 非绑定设备状态下: client.startWithToken('5837288dc59e0d00577c5f9a', '0,0,0,0,0,0')
+    - 已绑定设备状态下: client.startWithToken('5837288dc59e0d00577c5f9a', token)
+6. 在callback的onSetUserInfo回调中，设置用户身体信息client.setUserInfo。这一步在之前设置callback时预先写好即可
+7. 连接进入idle（空闲）状态，用户可以开始操作，如：收缓存在戒指中的记录、开关监测
+8. （可选）解析数据，可以输出类似《兆观健康Pro》中的报告统计信息，视业务需求实现。
+
+
+<!-- 用户id格式：12个byte组成的十六进制字符串，总长24。若不关心userid，可填12个"00" -->
 
 ## 初始化
-> import
+> 导入库
 
 ```
 // import from plugin
 var blePlugin = requirePlugin("megable")
 
-const APPID = ''
-const APPKEY = ''
+const APPID = 'Your own id'
+const APPKEY = 'Your own key'
 
 const {
   initSdk, // for the ble client; connect, send message to the device, 
@@ -17,7 +54,7 @@ const {
 } = blePlugin.ble;
 ```
 
-> scan
+> 扫描设备蓝牙
 
 ```
 // scan
@@ -50,7 +87,7 @@ if (!scanner) {
 
 ```
 
-> connect
+> 连接
 
 ```
 // connect; need to initSdk first
@@ -92,29 +129,56 @@ initSdk(APPID, APPKEY)
     - scan()
 - class MegaBleClient:
     - connect(name, deviceId, advertisData)
-    - startWithoutToken(userId, mac) 
+    - startWithoutToken(userId, mac) // deprecated
     - startWithToken(userId, token) 
+
+        用户id格式：12个byte组成的十六进制字符串，总长24。若不关心userid，可使用模板"5837288dc59e0d00577c5f9a"，或12个"00" 
     - setUserInfo(age, gender, height, weight, stepLength)
+        
+        女(0), 男(1); 身高(cm); 体重(kg); 步长(cm)
+
+        例：client.setUserInfo(25, 1, 170, 60, 0)
     - enableRealTimeNotify(enable)
+        
+        打开全局实时通道，接收实时数据（血氧、电量值，电量状态等），可重复调用
     - enableLive(enable)
+
+        开启血氧实时模式
     - enableMonitor(enable)
+
+        开启血氧监测模式
     - syncData() 
-    - enableRawdata() 
+
+        同步血氧监测记录，只有开启血氧监测才会产生；监测结束后，电量正常或充电时，才可收取
+    - enableRawdata()
+
+        调试接口，一般用不到
     - disableRawdata()
     - disconnect() 
+
+        断开连接
     - closeBluetoothAdapter()
 
+        释放蓝牙资源
+
 - scanner callback
-    - onDeviceFound(res) {}
+    - onDeviceFound(devices) {}
 
 - mega ble callback
     - onAdapterStateChange: (res) => {}
     - onConnectionStateChange: (res) => {}
     - onBatteryChanged: (value, status) => {}
+
+        0, "normal"; 1, "charging"; 2, "full"; 3, "lowPower"
+
     - onTokenReceived: (token) => {}
     - onKnockDevice: () => {}
+        
+        需要ui提示晃动戒指以绑定
     - onOperationStatus: (cmd, status) => {}
-    - onEnsureBindWhenTokenNotMatch: () => {} 
+
+        见下面STATUS文档
+    - onEnsureBindWhenTokenNotMatch: () => {} // deprecated
     - onError: (status) => {}
     - onCrashLogReceived: (a) => {}
     - onSyncingDataProgress: (progress) => {}
@@ -130,10 +194,16 @@ initSdk(APPID, APPKEY)
     - onV2PeriodReadyWarning: a => {}
     - onLiveDataReceived: live => {}
     - onV2LiveSleep: v2LiveSleep => {}
+
+        收到血氧实时模式live数据
     - onV2LiveSport: v2LiveSport => {}
     - onV2LiveSpoMonitor: v2LiveSpoMonitor => {}
+
+        收到血氧监测模式live数据
     - onSetUserInfo: () => {}
     - onIdle: () => {}
+
+        连接进入空闲
     - onRawdataCount: (count, bleCount, rawdataDuration) => {}
 
 - export const STATUS
@@ -153,7 +223,7 @@ initSdk(APPID, APPKEY)
   STATUS_LOWPOWER                 : 0xA1,
   STATUS_SPO2_HR_ERR              : 0xA2,
   STATUS_FLASH_ERR                : 0xA3,
-  STATUS_REFUSED                  : 0xA4, // 可能在充电，充电时不可有开启命令类操作。但可同步数据
+  STATUS_REFUSED                  : 0xA4, // 充电。充电时不可有开启命令类操作。但可同步数据
   STATUS_44XX_ERR                 : 0xA5,
   STATUS_GSENSOR_ERR              : 0xA6,
   STATUS_BQ25120_IS_FAULT         : 0xA7,
@@ -164,3 +234,17 @@ initSdk(APPID, APPKEY)
   STATUS_DEVICE_UNKNOWN_ERR       : 0xFF,
 ```
 
+## demo的运行方法
+demo使用了taro框架，具体可参考taro官方文档
+
+1. 安装taro
+    
+    yarn global add @tarojs/cli@1.3.12
+2. 运行
+
+    npm run build:weapp -- --watch
+3. build
+
+    taro build --type weapp
+
+4. 微信开发工具导入dist文件夹，预览

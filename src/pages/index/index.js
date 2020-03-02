@@ -48,7 +48,6 @@ class Index extends Component {
           this.props.handleInitClient(client);
         })
         .catch(err => console.error(err))
-
   }
 
   componentWillReceiveProps(nextProps) {
