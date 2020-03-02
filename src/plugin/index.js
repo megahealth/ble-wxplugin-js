@@ -1,6 +1,7 @@
 import initSdk from "./ble/MegaBleClient";
 import MegaBleScanner from "./ble/MegaBleScanner";
 import { STATUS } from "./ble/MegaBleConst";
+import { parseAdv } from './ble/MegaUtils';
 
 
 // export function sayHello () {
@@ -13,5 +14,8 @@ import { STATUS } from "./ble/MegaBleConst";
 export const ble = {
   initSdk,
   MegaBleScanner,
-  MegaBleStatus: STATUS
+  MegaBleStatus: STATUS,
+  MegaUtils: {
+    parseAdv
+  }
 }

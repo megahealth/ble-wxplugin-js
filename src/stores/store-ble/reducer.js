@@ -4,6 +4,11 @@ import { constants } from "../store-ble"
 import { utils } from '../../mega-utils'
 import api from "../../service/api";
 
+const myPluginInterface = Taro.requirePlugin('myPlugin')
+const {
+  MegaUtils,
+} = myPluginInterface.ble;
+
 const defaultState = {
   devices: [],
   device: {},
@@ -18,6 +23,7 @@ export default (state = defaultState, action) => {
         const idx = utils.inArray(foundDevices, 'deviceId', device.deviceId)
         if (idx === -1) {
           foundDevices.push(device)
+          MegaUtils.parseAdv('adv data: ', device.advertisData)
         } else {
           foundDevices[idx] = device
         }

@@ -125,6 +125,16 @@ export const parseRead = (a) => {
   return { otherInfo, hwVer, fwVer, blVer, sn, isRunning }
 }
 
+// 入口
+export const parseAdv = (a) => {
+  if (!a) return null;
+  if (a instanceof ArrayBuffer) a = Array.from(a);
+  if (a.length < 37) return null;
+  var sn = parseSnEnter(a.slice(18, 24));
+  var mac = a.slice(2, 8).reverse().map(i => ('00' + i.toString(16)).slice(-2)).join(':').toUpperCase();
+  return { sn: sn, mac: mac };
+}
+
 const parseSnEnter = (a) => {
   const verYYmm = (a[0] << 8) | a[1];
   const snVersion = (verYYmm >> 13) & 0x07;

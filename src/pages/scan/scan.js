@@ -4,7 +4,6 @@ import { connect } from '@tarojs/redux'
 import { actionCreators as bleActionCreators } from '../../stores/store-ble'
 import './scan.scss'
 
-
 class Scan extends Component {
 
   config = {
