@@ -27,7 +27,7 @@
 2. 初始化sdk，得到ble client实例；client设置callback，用于接收戒指事件通知
 3. 使用MegaBleScanner，进行扫描，得到目标device
 4. client连接device，等待连接成功
-5. 绑定
+5. 绑定戒指(首次连或token不匹配，需要晃动戒指才能连上。收到token后，用token连即可跳过晃动)
     - 非绑定设备状态下: client.startWithToken('5837288dc59e0d00577c5f9a', '0,0,0,0,0,0')
     - 已绑定设备状态下: client.startWithToken('5837288dc59e0d00577c5f9a', token)
 6. 在callback的onSetUserInfo回调中，设置用户身体信息client.setUserInfo。这一步在之前设置callback时预先写好即可
@@ -92,7 +92,7 @@ if (!scanner) {
 ```
 // connect; need to initSdk first
 // can do this in app's initing
-initSdk(APPID, APPKEY)
+initSdk(APPID, APPKEY, wx)
     .then(client => {
         // get the ble client to handle ble business
         // need to set the big callback
