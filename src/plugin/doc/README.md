@@ -51,6 +51,7 @@ const {
   initSdk, // for the ble client; connect, send message to the device, 
   MegaBleScanner, // for scanning
   MegaBleStatus, // for onOperationStatus const
+  MegaUtils, // 1.1.4 增加
 } = blePlugin.ble;
 ```
 
@@ -85,6 +86,9 @@ if (!scanner) {
     }
 }
 
+
+// 扫描时，请解析广播以获取真实的mac和sn
+MegaUtils.parseAdv(device.advertisData) // {mac, sn}
 ```
 
 > 连接
@@ -172,8 +176,13 @@ initSdk(APPID, APPKEY, wx)
         status参考STATUS_BATT列表
 
     - onTokenReceived: (token) => {}
-    - onK/n0o'oockDevice: () => {}
-        m
+
+        token是每次绑定唯一
+        被别的设备绑了，之前的token就失效了
+        只要不被别的手机绑定，token就有效。
+
+    - onKnockDevice: () => {}
+
         需要ui提示晃动戒指以绑定
     - onOperationStatus: (cmd, status) => {}
 
@@ -195,16 +204,22 @@ initSdk(APPID, APPKEY, wx)
     - onLiveDataReceived: live => {}
     - onV2LiveSleep: v2LiveSleep => {}
 
-        收到血氧实时模式live数据; status参考STATUS_LIVE列表
+        收到血氧监测模式live数据; status参考STATUS_LIVE列表
     - onV2LiveSport: v2LiveSport => {}
     - onV2LiveSpoMonitor: v2LiveSpoMonitor => {}
 
-        收到血氧监测模式live数据; status参考STATUS_LIVE列表
+        收到血氧实时模式live数据; status参考STATUS_LIVE列表
     - onSetUserInfo: () => {}
     - onIdle: () => {}
 
         连接进入空闲
-    - onRawdataCount: (count, bleCount, rawdataDuration) => {}
+    - onDeviceInfoUpdated: deviceInfo => {},
+
+        onidle 触发前的 onDeviceInfoUpdated，有isRunning，代表处于监测模式
+    - onRawdataReceiving: (count, bleCount, rawdataDuration) => {}
+    - onRawdataComplete: info => {},
+    onDfuProgress: progress => {}
+
 
 - export const STATUS
 
@@ -243,6 +258,13 @@ initSdk(APPID, APPKEY, wx)
   STATUS_BATT_CHARGING    : 1, // 充电中
   STATUS_BATT_FULL        : 2, // 充满
   STATUS_BATT_LOWPOWER    : 3, // 低电
+
+  // mode 戒指工作模式
+  MODE_MONITOR            : 1, // 监测模式(血氧)
+  MODE_SPORT              : 2, // 运动模式
+  MODE_DAILY              : 3, // 空闲模式
+  MODE_LIVE               : 4, // 实时模式(血氧)
+  MODE_BP                 : 5, // bp模式
 ```
 
 ## demo的运行方法

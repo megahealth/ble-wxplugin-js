@@ -129,6 +129,7 @@ export const parseRead = (a) => {
 export const parseAdv = (a) => {
   if (!a) return null;
   if (a instanceof ArrayBuffer) a = Array.from(new Uint8Array(a));
+  // console.log(a.map(i => i.toString(16)))
   if (a.length < 37) return null;
   var sn = parseSnEnter(a.slice(18, 24));
   var mac = a.slice(2, 8).reverse().map(i => ('00' + i.toString(16)).slice(-2)).join(':').toUpperCase();
