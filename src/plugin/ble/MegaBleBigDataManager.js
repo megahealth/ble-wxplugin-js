@@ -1,5 +1,6 @@
 import { crc16XModem, intToByte4 } from "./MegaUtils"
-import { CMD } from "./MegaBleConst"
+import { CMD, Config } from "./MegaBleConst"
+import apiLean from './service-lean'
 
 const CRC_LEN = 2
 const PAYLOAD_LEN = 19
@@ -85,6 +86,12 @@ class MegaBleBigDataManager {
         const finalBytes = this.ver.concat(this.totalBytes)
         if (a[0] == CMD.CTRL_MONITOR_DATA) {
           this.iDataCallback.onMonitorDataComplete(finalBytes, this.stopType, this.dataType) // 继续请求看ble有没有 运动/日常 数据了。
+          // upload to server
+          apiLean.post('/classes/SdkData', {
+            appId: Config.AppId,
+            pakoData: pako.deflate(finalBytes, { to: 'string' }),
+            platform: 'wx-mini',
+          })
           setTimeout(() => this.iDataCallback.syncMonitorData(), 1200)
         } else if (a[0] == CMD.CTRL_DAILY_DATA) {
           const timestampBytes = intToByte4(Math.floor(Date.now() / 1000))
