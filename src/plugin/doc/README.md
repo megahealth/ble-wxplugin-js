@@ -258,6 +258,8 @@ initSdk(APPID, APPKEY, wx)
   STATUS_BATT_CHARGING    : 1, // 充电中
   STATUS_BATT_FULL        : 2, // 充满
   STATUS_BATT_LOWPOWER    : 3, // 低电
+  STATUS_BATT_ERROR       : 4, // 异常
+  STATUS_BATT_SHUTDOWN    : 5, // 休眠
 
   // mode 戒指工作模式
   MODE_MONITOR            : 1, // 监测模式(血氧)

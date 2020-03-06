@@ -98,6 +98,15 @@ export const STATUS = {
   STATUS_BATT_CHARGING    : 1, // 充电中
   STATUS_BATT_FULL        : 2, // 充满
   STATUS_BATT_LOWPOWER    : 3, // 低电
+  STATUS_BATT_ERROR       : 4, // 异常
+  STATUS_BATT_SHUTDOWN    : 5, // 休眠
+
+  // mode 戒指工作模式
+  MODE_MONITOR            : 1, // 监测模式(血氧)
+  MODE_SPORT              : 2, // 运动模式
+  MODE_DAILY              : 3, // 空闲模式
+  MODE_LIVE               : 4, // 实时模式(血氧)
+  MODE_BP                 : 5, // bp模式
 }
 
 export const Config = {
