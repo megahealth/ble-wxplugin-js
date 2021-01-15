@@ -21,7 +21,7 @@ class Login extends Component {
     componentDidMount() {
         const { user } = this.props
 
-        api.get(`/classes/SptData?where=%7B%22userId%22%3A%22${user.objectId}%22%7D?keys=-data&order=-updatedAt`)
+        api.get(`/classes/RingSport?where={"userId":"5d285a32d5de2b006cea5fe5"}`)
         .then(res => {
             console.log(res.data)
             this.setState({list: res.data.results})
@@ -55,7 +55,7 @@ class Login extends Component {
     }
 
     goDetil(item) {
-        Taro.navigateTo({ url: `/pages/spt-detail/spt-detail?objectId=${item.objectId}` })
+        Taro.navigateTo({ url: `/pages/reportDetail/reportDetail?objectId=${item.objectId}` })
     }
 
     getx(date) {

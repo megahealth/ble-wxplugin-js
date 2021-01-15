@@ -52,7 +52,7 @@ class Login extends Component {
         this.setState({password: e.target.value})
     }
 
-    async login() {
+    login() {
         if (!this.state.phone || !this.state.password) {
             Taro.showToast({title: '不能为空', icon: 'none', duration: 1000})
             return
@@ -61,17 +61,19 @@ class Login extends Component {
 
         this.setState({ enableBtn: false })
         try {
-            const res = await api.post('/login', {
+            api.post('/login', {
                 'mobilePhoneNumber': this.state.phone,
                 'password': this.state.password,
-            })
-            console.log(res);
+            }).then(res=>{
+                console.log(res);
 
-            if (res.statusCode === 200) {
-                handleLoginSuccess(res.data)
-            } else {
-                Taro.showToast({ title: res.data.error, duration: 2000, icon: 'none', })
-            }
+                if (res.statusCode === 200) {
+                    handleLoginSuccess(res.data)
+                } else {
+                    Taro.showToast({ title: res.data.error, duration: 2000, icon: 'none', })
+                }
+            })
+            
         } catch (error) {
             Taro.showToast({ title: error.message, duration: 2000 })
         }

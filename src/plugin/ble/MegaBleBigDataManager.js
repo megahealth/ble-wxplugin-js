@@ -1,7 +1,8 @@
-import { crc16XModem, intToByte4 } from "./MegaUtils"
-import { CMD, Config } from "./MegaBleConst"
+import { crc16XModem, intToByte4, u8s2hex } from "./MegaUtils"
+import { CMD, Config, DeviceInfo } from "./MegaBleConst"
 import apiLean from './service-lean'
-
+import Taro from '@tarojs/taro'
+import pako from 'pako'
 const CRC_LEN = 2
 const PAYLOAD_LEN = 19
 
@@ -60,11 +61,12 @@ class MegaBleBigDataManager {
   }
 
   handleNoMiss(a) {
-    const length = Object.keys(this.subSnMap).length
+    const length = Object.keys(this.subSnMap).length;
     let rawSub = []
     for (let i = 0; i < length; i++) {
       rawSub = rawSub.concat(Array.from(this.subSnMap[i]))
     }
+    const arrayBuffer = new Uint8Array(this.subSnMap).buffer
     rawSub.splice(this.subLen + 2)
     const crcBytes = rawSub.splice(-2) // rawSub now has no crc bytes
     const bleCrc = (crcBytes[1] | crcBytes[0] << 8)
@@ -85,12 +87,39 @@ class MegaBleBigDataManager {
       if (this.totalLen > 0 && this.totalLen == this.totalBytes.length) { // transmit complete
         const finalBytes = this.ver.concat(this.totalBytes)
         if (a[0] == CMD.CTRL_MONITOR_DATA) {
-          this.iDataCallback.onMonitorDataComplete(finalBytes, this.stopType, this.dataType) // 继续请求看ble有没有 运动/日常 数据了。
-          // upload to server
-          apiLean.post('/classes/SdkData', {
-            appId: Config.AppId,
-            pakoData: pako.deflate(finalBytes, { to: 'string' }),
-            platform: 'wx-mini',
+          this.iDataCallback.onMonitorDataComplete(this.subSnMap, this.stopType, this.dataType) // 继续请求看ble有没有 运动/日常 数据了。
+          // console.log('ssssssss',Config.AppId);
+          const b64 = Taro.arrayBufferToBase64(finalBytes);
+          // apiLean.post('/classes/SdkData', {
+          //   appId: Config.AppId,
+          //   data: b64,
+          //   token:'a token',
+          //   platform: 'wx-mini',
+          // })
+          console.log('xfff',b64);
+          
+          var options = {
+            method: 'POST',
+            url: 'https://server-mhn.megahealth.cn/upload//uploadBinData',
+            header: { 'content-type': 'application/x-www-form-urlencoded' },
+            data: { binData: b64} 
+          };
+          console.log('request',options);
+          Taro.request(options).then(res=>{
+            const url = res.data.file.url;
+            const objectId = res.data.file.objectId;
+            console.log('device',DeviceInfo)
+            apiLean.post('/classes/RingSport', {
+              platform:'wx-mini',
+              dataType:1,
+              userId:'5d285a32d5de2b006cea5fe5',
+              remoteDevice:DeviceInfo,
+              data:{ id: objectId, __type: 'File' }},
+              res=>{console.log(res)},
+              err=>{console.log(err)}
+            )
+          }).catch(err=>{
+            console.log(err);
           })
           setTimeout(() => this.iDataCallback.syncMonitorData(), 1200)
         } else if (a[0] == CMD.CTRL_DAILY_DATA) {

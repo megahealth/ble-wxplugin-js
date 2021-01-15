@@ -268,6 +268,8 @@ initSdk(APPID, APPKEY, wx)
   MODE_LIVE               : 4, // 实时模式(血氧)
   MODE_BP                 : 5, // bp模式
 ```
+## 插件的编译方法
+    taro build --plugin weapp
 
 ## demo的运行方法
 demo使用了taro框架，具体可参考taro官方文档

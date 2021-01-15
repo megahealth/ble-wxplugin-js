@@ -1,4 +1,4 @@
-import { CMD, STATUS } from "./MegaBleConst";
+import { CMD, STATUS, DeviceInfo } from "./MegaBleConst";
 import MegaBleBigDataManager from "./MegaBleBigDataManager";
 import { byte4ToInt, u8s2hex, parseRead } from "./MegaUtils";
 
@@ -33,7 +33,6 @@ class MegaBleResponseManager {
   }
 
   handleIndicateResponse(a) {
-    // console.log('onIndicate <- ' + u8s2hex(a))
     const cmd = a[0], status = a[2]
     this.callback.onOperationStatus(cmd, status)
 
@@ -157,7 +156,9 @@ class MegaBleResponseManager {
   handleReadResponse(a) {
     // console.log('onRead: ' + u8s2hex(a))
     const deviceInfo = parseRead(a)
-    // console.log(deviceInfo)
+    console.log('xff-device',deviceInfo)
+    DeviceInfo.sn = deviceInfo.sn;
+    DeviceInfo.swVer = deviceInfo.fwVer;
     this.callback.onDeviceInfoUpdated(deviceInfo)
     
     this._next()

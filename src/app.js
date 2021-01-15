@@ -25,6 +25,7 @@ class App extends Component {
       'pages/login/login',
       'pages/spt-list/spt-list',
       'pages/spt-detail/spt-detail',
+      'pages/reportDetail/reportDetail'
     ],
     window: {
       backgroundTextStyle: 'light',

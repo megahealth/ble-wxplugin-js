@@ -114,3 +114,9 @@ export const Config = {
   AppKey: '',
   debugable: false,
 }
+
+export const DeviceInfo = {
+  sn:'',
+  mac:'',
+  swVer:'',
+}

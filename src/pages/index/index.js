@@ -37,6 +37,8 @@ class Index extends Component {
         }
       })
       .catch(err => console.log(err))
+    }else{
+      // Taro.navigateTo({ url: '/pages/login/login' })
     }
   }
 
@@ -121,9 +123,9 @@ class Index extends Component {
           <Button size='mini' onClick={this.updateToken}>更新token</Button>
           <Button size='mini' onClick={this.fetchUserInfo}>获取token</Button>
           <Button size='mini' onClick={this.goDetail}>详情</Button> */}
-          {
-            user ? <Button onClick={this.goSptList}>列表</Button> : null
-          }
+          
+          <Button onClick={this.goSptList}>列表</Button>
+          
         </View>
 
         {/* <View className='account' onClick={this.handleGoLoginPage}>
