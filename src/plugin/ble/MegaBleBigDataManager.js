@@ -1,4 +1,4 @@
-import { crc16XModem, intToByte4, u8s2hex } from "./MegaUtils"
+import { crc16XModem, intToByte4, u8s2hex, createFormData } from "./MegaUtils"
 import { CMD, Config, DeviceInfo } from "./MegaBleConst"
 import apiLean from './service-lean'
 import Taro from '@tarojs/taro'
@@ -88,24 +88,20 @@ class MegaBleBigDataManager {
         const finalBytes = this.ver.concat(this.totalBytes)
         if (a[0] == CMD.CTRL_MONITOR_DATA) {
           this.iDataCallback.onMonitorDataComplete(this.subSnMap, this.stopType, this.dataType) // 继续请求看ble有没有 运动/日常 数据了。
-          // console.log('ssssssss',Config.AppId);
           const b64 = Taro.arrayBufferToBase64(finalBytes);
-          // apiLean.post('/classes/SdkData', {
-          //   appId: Config.AppId,
-          //   data: b64,
-          //   token:'a token',
-          //   platform: 'wx-mini',
-          // })
-          console.log('xfff',b64);
-          
+          const boundary = `----FooBar${new Date().getTime()}`;
+          const formData = createFormData({ binData: b64}, boundary)
           var options = {
             method: 'POST',
             url: 'https://server-mhn.megahealth.cn/upload//uploadBinData',
-            header: { 'content-type': 'application/x-www-form-urlencoded' },
-            data: { binData: b64} 
+            header: {
+              'Accept': 'application/json',
+              'Content-Type': `multipart/form-data; boundary=${boundary}`,
+            },
+            data:formData
           };
-          console.log('request',options);
           Taro.request(options).then(res=>{
+            console.log('binData',res);
             const url = res.data.file.url;
             const objectId = res.data.file.objectId;
             console.log('device',DeviceInfo)
@@ -115,7 +111,7 @@ class MegaBleBigDataManager {
               userId:'5d285a32d5de2b006cea5fe5',
               remoteDevice:DeviceInfo,
               data:{ id: objectId, __type: 'File' }},
-              res=>{console.log(res)},
+              res=>{console.log('report',res)},
               err=>{console.log(err)}
             )
           }).catch(err=>{

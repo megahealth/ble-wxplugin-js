@@ -18,12 +18,12 @@ class reportDetail extends Component {
         console.log(this.$router.params.objectId);
         url = 'https://frontend-test.megahealth.cn/ringadmin2/#/sleep-report/' + this.$router.params.objectId;
     }
-    handleMessage () {}
+    handleMessage() { }
     render() {
         return (
-          url?
-          <WebView src={url} onMessage={this.handleMessage} />
-          :<view></view>
+            url ?
+                <WebView src={url} onMessage={this.handleMessage} />
+                : <view></view>
         );
     }
 }

@@ -72,15 +72,12 @@ class MegaBleClient {
     this.deviceId = deviceId
 
     const adv = Array.from(new Uint8Array(advertisData))
-    console.log('hhh',name, deviceId, adv);
     if (this.deviceId.length > 17) {
       this.realMac = adv.slice(2, 8).reverse().map(i => ('00' + i.toString(16)).slice(-2)).join(':').toUpperCase()
     } else {
       this.realMac = this.deviceId
     }
-    console.log('hhh',name, deviceId, this.realMac);
     DeviceInfo.mac = deviceId;
-    // console.log('will connect, realmac: ' + this.realMac)
     this._initCallbacks()
 
     return new Promise((resolve, reject) => {
