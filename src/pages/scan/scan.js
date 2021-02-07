@@ -23,7 +23,7 @@ class Scan extends Component {
 
   render() {
     const { devices, handleConnect } = this.props
-
+    const institutionId = '5d5ce86aba39c800671c5a89';
     return (
       <View>
         <Button className='btn' onClick={this.scan} disabled={!this.state.enableBtn}>scan</Button>

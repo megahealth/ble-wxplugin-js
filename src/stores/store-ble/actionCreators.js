@@ -93,18 +93,17 @@ export const connect = (device) => {
 
     client.connect(device.name, device.deviceId, device.advertisData)
       .then(res => {
-        console.log(res);
         // 1. 开始start
         // this.bleClient.startWithoutToken('5837288dc59e0d00577c5f9a', this.bleClient.realMac)
         // this.bleClient.startWithToken('5837288dc59e0d00577c5f9a', '206,212,54,3,114,248')
         if (token && token.indexOf(',') != -1) {
-          client.startWithToken('5837288dc59e0d00577c5f9a', token)
-            .then(res => console.log(res))
+          client.startWithToken('5f5df94193b89920287c90b4', token)
+            .then(res => console.log('token',res))
             .catch(err => console.error(err));
         } else {
           // client.startWithMasterToken()
-          client.startWithToken('5837288dc59e0d00577c5f9a', '0,0,0,0,0,0')
-            .then(res => console.log(res))
+          client.startWithToken('5f5df94193b89920287c90b4', '0,0,0,0,0,0')
+            .then(res => console.log('token',res))
             .catch(err => console.error(err));
         }
       })
@@ -140,20 +139,24 @@ export const start = () => {
 export const stop = () => {
   client.enableMonitorV1(false)
 }
+// 收取数据
 export const getData = () => {
   client.syncData()
 }
 
 // ring func
+// 开启或关闭实时模式通道
 export const enableRealTime = (enable) => {
   client.enableRealTimeNotify(enable);
 }
+// 开启实时模式
 export const liveOn = () => {
   client.enableLive(true);
 }
 export const liveOff = () => {
   client.enableLive(false);
 }
+// 开启监测模式
 export const monitorOn = () => {
   client.enableMonitor(true);
 }
@@ -240,7 +243,29 @@ const genMegaCallback = (dispatch) => {
       Taro.showLoading({title: progress + '%'})
     },
     onSyncMonitorDataComplete: (bytes, dataStopType, dataType) => {
-      console.log('onSyncMonitorDataComplete: ', bytes, dataStopType, dataType)
+      console.log('onSyncMonitorDataComplete: ', bytes, dataStopType, dataType);
+      const boundary = `----MegaRing${new Date().getTime()}`;
+      const DeviceInfo ={
+        "mac": "BC:E5:9F:48:89:20",
+        "sn": "C11E22005002537",
+        "swVer": "3.0.10657"
+      }
+      const formData = createFormData({ binData: bytes, institutionId:'5d5ce86aba39c800671c5a89', remoteDevice:JSON.stringify(DeviceInfo)}, boundary)
+      var options = {
+        method: 'POST',
+        url: 'https://server-mhn.megahealth.cn/upload//uploadBinData',
+        header: {
+          'Accept': 'application/json',
+          'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        },
+        data:formData
+      };
+      Taro.request(options).then(res=>{
+        console.log('report',res);
+      }).catch(err=>{
+        console.log(err);
+      })
+
       dispatch(uploadSptData(bytes))
     },
     onSyncDailyDataComplete: (bytes) => {
@@ -288,14 +313,28 @@ const genMegaCallback = (dispatch) => {
       dispatch(updateDeviceInfo(deviceInfo))
     },
     onRawdataReceiving: (count, bleCount, rawdataDuration) => {
-
+      console.log('onRawdataReceiving',count, bleCount, rawdataDuration);
     },
     onRawdataComplete: info => {
       console.log(info);
     },
     onDfuProgress: progress => {
-
+      console.log('onDfuProgress',progress);
     }
   }
 }
 
+const createFormData = (params = {}, boundary = '') => {
+  let result = '';
+  for (let i in params) {
+    result += `\r\n--${boundary}`;
+    result += `\r\nContent-Disposition: form-data; name="${i}"`;
+    result += '\r\n';
+    result += `\r\n${params[i]}`
+  }
+  // 如果obj不为空，则最后一行加上boundary
+  if (result) {
+    result += `\r\n--${boundary}`
+  }
+  return result
+}

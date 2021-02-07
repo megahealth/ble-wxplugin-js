@@ -24,7 +24,6 @@ export default (state = defaultState, action) => {
         if (idx === -1) {
           foundDevices.push(device)
           const adv = MegaUtils.parseAdv(device.advertisData)
-          console.log(adv);
         } else {
           foundDevices[idx] = device
         }
@@ -41,6 +40,7 @@ export default (state = defaultState, action) => {
       }
 
     case constants.ACTION_DEVICE_INFO:
+      console.log('ACTION_DEVICE_INFO',action.data);
       return {
         ...state,
         device: action.data ? {
@@ -51,15 +51,12 @@ export default (state = defaultState, action) => {
 
       case constants.ACTION_UPLOAD_SPT_DATA:
         const b64 = Taro.arrayBufferToBase64(new Uint8Array(action.data))
-        console.log('data received', b64.length);
-        // api.post('/classes/SptData', {data: b64, userId: state.user.objectId})
-        // .then(res => {
-        //   console.log('spt data upload ok')
-        // })
-        // .catch(err => console.error(err))
+        console.log('data received', b64);
+        
         return state;
 
       case constants.ACTION_UPDATE_TOKEN:
+        console.log('ACTION_UPDATE_TOKEN',action.data);
         Taro.setStorage('token', action.data);
           // api.put('/users/' + state.user.objectId, {sptToken: action.data}, {'X-LC-Session': state.user.sessionToken})
           // .then(res => console.log(res))
@@ -67,11 +64,13 @@ export default (state = defaultState, action) => {
         return state;
 
       case constants.ACTION_LOGIN_SUCCESS:
+        console.log('ACTION_LOGIN_SUCCESS',action.data);
         return {
           user: action.data
         }
 
       case constants.ACTION_LOGOUT:
+        console.log('ACTION_LOGOUT',action.data);
         return {
           user: null
         }

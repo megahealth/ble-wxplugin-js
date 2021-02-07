@@ -20,8 +20,11 @@ class Login extends Component {
 
     componentDidMount() {
         const { user } = this.props
-
-        api.get(`/classes/RingSport?where={"userId":"5d285a32d5de2b006cea5fe5"}`)
+        console.log('xff-user',user);
+        let userId = Taro.getStorageSync('user');
+        userId = userId.objectId
+        console.log('xff-userId',userId);
+        api.get(`/classes/RingSport?where={"userId":"${userId}"}`)
         .then(res => {
             console.log(res.data)
             this.setState({list: res.data.results})

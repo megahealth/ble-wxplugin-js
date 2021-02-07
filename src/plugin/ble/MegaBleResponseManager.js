@@ -156,7 +156,6 @@ class MegaBleResponseManager {
   handleReadResponse(a) {
     // console.log('onRead: ' + u8s2hex(a))
     const deviceInfo = parseRead(a)
-    console.log('xff-device',deviceInfo)
     DeviceInfo.sn = deviceInfo.sn;
     DeviceInfo.swVer = deviceInfo.fwVer;
     this.callback.onDeviceInfoUpdated(deviceInfo)

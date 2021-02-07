@@ -15,7 +15,7 @@
   2. 血氧监测模式
 
         说明：实时输出，同时戒指自身存储。方便手机与戒指断开，待监测结束后，异步收取监测数据
-    
+  
 - 推荐的App端工作流程
   - [工作流程图](https://file-mhn.megahealth.cn/62630b5d10f14ecce727/App%E4%B8%8E%E6%88%92%E6%8C%87%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B%E5%9B%BE.pdf)
     
@@ -126,7 +126,68 @@ initSdk(APPID, APPKEY, wx)
 
 ```
 
+> 上传数据
+
+```
+const onSyncMonitorDataComplete = (bytes, dataStopType, dataType) => {
+      console.log('onSyncMonitorDataComplete: ', bytes, dataStopType, dataType);
+      // 由于数据只能收取一次，而调用接口上传可能会出现错误，导致直接丢失，所以拿到bytes之后，请存到localStorage里，上传成功后删除，上传失败后，在进行其他操作。
+      // bytes 为base64格式的数据
+      // deviceInfo为戒指信息
+      const DeviceInfo ={
+        "mac": "BC:E5:9F:48:89:20",
+        "sn": "C11E22005002537",
+        "swVer": "3.0.10657"
+      }
+      // 机构id
+      const institutionId = '5d5ce86aba39c800671c5a89'
+      
+      // 组织formdata需要
+      const boundary = `----MegaRing${new Date().getTime()}`;
+      //构建formdata
+      const formData = 
+      	createFormData({ binData: bytes, institutionId:institutionId, remoteDevice:JSON.stringify(DeviceInfo)}, boundary)
+      
+      // request的options
+      var options = {
+        method: 'POST',
+        url: 'https://server-mhn.megahealth.cn/upload//uploadBinData',
+        header: {
+          'Accept': 'application/json',
+          'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        },
+        data:formData
+      };
+      // 请求接口返回报告id
+      wx.request(options).then(res=>{
+        console.log('report',res);
+        //拿到res中的报告id调用后处理接口得到json数据： url = 'https://raw.megahealth.cn/parse/parsemhn?objId=' + reportId;
+      }).catch(err=>{
+        console.log(err);
+      })
+      dispatch(uploadSptData(bytes))
+    }
+ 
+ // 构建formdata方法
+ const createFormData = (params = {}, boundary = '') => {
+  let result = '';
+  for (let i in params) {
+    result += `\r\n--${boundary}`;
+    result += `\r\nContent-Disposition: form-data; name="${i}"`;
+    result += '\r\n';
+    result += `\r\n${params[i]}`
+  }
+  // 如果obj不为空，则最后一行加上boundary
+  if (result) {
+    result += `\r\n--${boundary}`
+  }
+  return result
+}
+
+```
+
 ## API
+
 - class MegaBleScanner:
     - initBleAdapter()
     - stopScan()
@@ -138,12 +199,12 @@ initSdk(APPID, APPKEY, wx)
 
         用户id格式：12个byte组成的十六进制字符串，总长24。若不关心userid，可使用模板"5837288dc59e0d00577c5f9a"，或12个"00" 
     - setUserInfo(age, gender, height, weight, stepLength)
-        
+      
         女(0), 男(1); 身高(cm); 体重(kg); 步长(cm)
 
         例：client.setUserInfo(25, 1, 170, 60, 0)
     - enableRealTimeNotify(enable)
-        
+      
         打开全局实时通道，接收实时数据（血氧、电量值，电量状态等），可重复调用
     - enableLive(enable)
 
@@ -166,8 +227,9 @@ initSdk(APPID, APPKEY, wx)
         释放蓝牙资源
 
 - scanner callback
-    - onDeviceFound(devices) {}
-
+  
+- onDeviceFound(devices) {}
+  
 - mega ble callback
     - onAdapterStateChange: (res) => {}
     - onConnectionStateChange: (res) => {}
@@ -275,7 +337,7 @@ initSdk(APPID, APPKEY, wx)
 demo使用了taro框架，具体可参考taro官方文档
 
 1. 安装taro
-    
+   
     yarn global add @tarojs/cli@1.3.12
 2. 运行
 

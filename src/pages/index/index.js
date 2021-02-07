@@ -128,9 +128,9 @@ class Index extends Component {
           
         </View>
 
-        {/* <View className='account' onClick={this.handleGoLoginPage}>
+        <View className='account' onClick={this.handleGoLoginPage}>
           {user ? '已登录' : '未登录'}
-        </View> */}
+        </View>
       </View>
     )
   }

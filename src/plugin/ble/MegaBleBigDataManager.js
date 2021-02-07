@@ -87,36 +87,39 @@ class MegaBleBigDataManager {
       if (this.totalLen > 0 && this.totalLen == this.totalBytes.length) { // transmit complete
         const finalBytes = this.ver.concat(this.totalBytes)
         if (a[0] == CMD.CTRL_MONITOR_DATA) {
-          this.iDataCallback.onMonitorDataComplete(this.subSnMap, this.stopType, this.dataType) // 继续请求看ble有没有 运动/日常 数据了。
           const b64 = Taro.arrayBufferToBase64(finalBytes);
-          const boundary = `----FooBar${new Date().getTime()}`;
-          const formData = createFormData({ binData: b64}, boundary)
-          var options = {
-            method: 'POST',
-            url: 'https://server-mhn.megahealth.cn/upload//uploadBinData',
-            header: {
-              'Accept': 'application/json',
-              'Content-Type': `multipart/form-data; boundary=${boundary}`,
-            },
-            data:formData
-          };
-          Taro.request(options).then(res=>{
-            console.log('binData',res);
-            const url = res.data.file.url;
-            const objectId = res.data.file.objectId;
-            console.log('device',DeviceInfo)
-            apiLean.post('/classes/RingSport', {
-              platform:'wx-mini',
-              dataType:1,
-              userId:'5d285a32d5de2b006cea5fe5',
-              remoteDevice:DeviceInfo,
-              data:{ id: objectId, __type: 'File' }},
-              res=>{console.log('report',res)},
-              err=>{console.log(err)}
-            )
-          }).catch(err=>{
-            console.log(err);
-          })
+          // this.iDataCallback.onMonitorDataComplete(this.subSnMap, this.stopType, this.dataType, b64) // 继续请求看ble有没有 运动/日常 数据了。
+          this.iDataCallback.onMonitorDataComplete(b64, this.stopType, this.dataType) // 继续请求看ble有没有 运动/日常 数据了。
+          // const b64 = Taro.arrayBufferToBase64(finalBytes);
+          // const boundary = `----MegaRing${new Date().getTime()}`;
+          // const formData = createFormData({ binData: b64, institutionId:this.iDataCallback.institutionId, remoteDevice:JSON.stringify(DeviceInfo)}, boundary)
+          // var options = {
+          //   method: 'POST',
+          //   url: 'https://server-mhn.megahealth.cn/upload//uploadBinData',
+          //   header: {
+          //     'Accept': 'application/json',
+          //     'Content-Type': `multipart/form-data; boundary=${boundary}`,
+          //   },
+          //   data:formData
+          // };
+          // Taro.request(options).then(res=>{
+          //   console.log('binData',res);
+          //   // const url = res.data.file.url;
+          //   // const objectId = res.data.file.objectId;
+          //   // console.log('device',DeviceInfo)
+          //   // apiLean.post('/classes/RingSport', {
+          //   //   platform:'wx-mini',
+          //   //   dataType:1,
+          //   //   userId:'5f5df94193b89920287c90b4',
+          //   //   remoteDevice:DeviceInfo,
+          //   //   userInfoPointer:{objectId:'5f5df941e56b1f7bd870b0ff', __type:'Pointer', className:'Patients'},
+          //   //   data:{ id: objectId, __type: 'File' }},
+          //   //   res=>{console.log('report',res)},
+          //   //   err=>{console.log(err)}
+          //   // )
+          // }).catch(err=>{
+          //   console.log(err);
+          // })
           setTimeout(() => this.iDataCallback.syncMonitorData(), 1200)
         } else if (a[0] == CMD.CTRL_DAILY_DATA) {
           const timestampBytes = intToByte4(Math.floor(Date.now() / 1000))
