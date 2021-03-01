@@ -133,7 +133,7 @@ const onSyncMonitorDataComplete = (bytes, dataStopType, dataType) => {
       console.log('onSyncMonitorDataComplete: ', bytes, dataStopType, dataType);
       // 由于数据只能收取一次，而调用接口上传可能会出现错误，导致直接丢失，所以拿到bytes之后，请存到localStorage里，上传成功后删除，上传失败后，在进行其他操作。
       // bytes 为base64格式的数据
-      // deviceInfo为戒指信息
+      // deviceInfo为戒指信息，可以在蓝牙搜索和连接戒指的时候获取到这些信息。
       const DeviceInfo ={
         "mac": "BC:E5:9F:48:89:20",
         "sn": "C11E22005002537",
