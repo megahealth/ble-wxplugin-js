@@ -95,14 +95,16 @@ export const connect = (device) => {
       .then(res => {
         // 1. 开始start
         // this.bleClient.startWithoutToken('5837288dc59e0d00577c5f9a', this.bleClient.realMac)
-        // this.bleClient.startWithToken('5837288dc59e0d00577c5f9a', '206,212,54,3,114,248')
+        // this.bleClient.startWithToken('5837288dc59e0d00577c5f9a', '206,212,54,3,114,248')5f5df941e56b1f7bd870b0ff
         if (token && token.indexOf(',') != -1) {
-          client.startWithToken('5f5df94193b89920287c90b4', token)
+          // client.startWithToken('5f5df94193b89920287c90b4', token)
+          client.startWithToken('5f5df941e56b1f7bd870b0ff', token)
             .then(res => console.log('token',res))
             .catch(err => console.error(err));
         } else {
           // client.startWithMasterToken()
-          client.startWithToken('5f5df94193b89920287c90b4', '0,0,0,0,0,0')
+          // client.startWithToken('5f5df94193b89920287c90b4', '0,0,0,0,0,0')
+          client.startWithToken('5f5df941e56b1f7bd870b0ff', '0,0,0,0,0,0')
             .then(res => console.log('token',res))
             .catch(err => console.error(err));
         }
@@ -242,15 +244,19 @@ const genMegaCallback = (dispatch) => {
       console.log('onSyncingDataProgress... ' + progress);
       Taro.showLoading({title: progress + '%'})
     },
-    onSyncMonitorDataComplete: (bytes, dataStopType, dataType) => {
-      console.log('onSyncMonitorDataComplete: ', bytes, dataStopType, dataType);
+    onSyncMonitorDataComplete: (bytes, dataStopType, dataType, deviceInfo) => {
+      console.log('onSyncMonitorDataComplete: ',deviceInfo, bytes, dataStopType, dataType);
       const boundary = `----MegaRing${new Date().getTime()}`;
       const DeviceInfo ={
-        "mac": "BC:E5:9F:48:89:20",
-        "sn": "C11E22005002537",
-        "swVer": "3.0.10657"
+        "mac": deviceInfo.mac,
+        "sn": deviceInfo.sn,
+        "swVer": deviceInfo.swVer
       }
-      const formData = createFormData({ binData: bytes, institutionId:'5d5ce86aba39c800671c5a89', remoteDevice:JSON.stringify(DeviceInfo)}, boundary)
+      const reportType = {
+        "dataType":dataType.toString(),
+        "dataStopType":dataStopType.toString()
+      }
+      const formData = createFormData({ binData: bytes, institutionId:'5d5ce86aba39c800671c5a89', remoteDevice:JSON.stringify(DeviceInfo), reportType:JSON.stringify(reportType)}, boundary)
       var options = {
         method: 'POST',
         url: 'https://server-mhn.megahealth.cn/upload//uploadBinData',

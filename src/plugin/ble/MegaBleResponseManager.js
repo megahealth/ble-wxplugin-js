@@ -205,7 +205,7 @@ class MegaBleResponseManager {
       this.bigDataManager = new MegaBleBigDataManager({
         writeReportPack: pack => { this.api.writeReportPack(pack) },
         onProgress: progress => { this.callback.onSyncingDataProgress(progress) },
-        onMonitorDataComplete: (bytes, dataStopType, dataType) => { this.callback.onSyncMonitorDataComplete(bytes, dataStopType, dataType) },
+        onMonitorDataComplete: (bytes, dataStopType, dataType) => { this.callback.onSyncMonitorDataComplete(bytes, dataStopType, dataType,DeviceInfo) },
         onDailyDataComplete: bytes => { this.callback.onSyncDailyDataComplete(bytes) },
         syncMonitorData: () => this.api.syncMonitorData(),
         syncDailyData: () => this.api.syncDailyData(),

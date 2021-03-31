@@ -13,7 +13,8 @@ const RING_SN_TYPE = {
 
 const RING_SN_TYPE_PROTOCOL_5 = 5;
 const RING_TYPE_MAP = { [RING_SN_TYPE_PROTOCOL_5]: ["C11E", "P11E", 'P11F'] };
-const RING_SIZE_MAP = { [RING_SN_TYPE_PROTOCOL_5]: [2, 3] };
+const RING_SIZE_MAP = { [RING_SN_TYPE_PROTOCOL_5]: [1, 2] };
+const RING_SIZE_MAP_C11E = { [RING_SN_TYPE_PROTOCOL_5]: [2, 3] };
 
 
 const byteToBits = (octet) => {
@@ -174,7 +175,10 @@ const parseSnV1 = (a) => {
 
   try {
       const typeName = RING_TYPE_MAP[type][typeIndex];
-      const size = RING_SIZE_MAP[type][sizeIndex];
+      var size = RING_SIZE_MAP[type][sizeIndex];
+      if(typeIndex == 0){
+        size = RING_SIZE_MAP_C11E[type][sizeIndex];
+      }
       return `${typeName}${size}${zeroPad(yy, 10)}${zeroPad(mm, 10)}${zeroPad(num, 100000)}`;
   } catch (error) {
       console.error('parseSnV1', error);
