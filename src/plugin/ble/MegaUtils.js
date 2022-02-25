@@ -174,10 +174,19 @@ const parseSnV1 = (a) => {
   const type = (a[5] & 0x0F);
 
   try {
-      const typeName = RING_TYPE_MAP[type][typeIndex];
-      var size = RING_SIZE_MAP[type][sizeIndex];
-      if(typeIndex == 0){
-        size = RING_SIZE_MAP_C11E[type][sizeIndex];
+      var typeName,size;
+      if(type == 5){
+        typeName = RING_TYPE_MAP[type][typeIndex];
+        size = RING_SIZE_MAP[type][sizeIndex];
+        if(typeIndex == 0){
+          size = RING_SIZE_MAP_C11E[type][sizeIndex];
+        }
+      } else if(a[5] == 0x1d){
+        typeName = 'C11E';
+        size = 4;
+      } else if(type == 1){
+        typeName = 'C11E';
+        size = (a[5]>>4) + 7;
       }
       return `${typeName}${size}${zeroPad(yy, 10)}${zeroPad(mm, 10)}${zeroPad(num, 100000)}`;
   } catch (error) {
@@ -240,7 +249,10 @@ const discoverChs = (deviceId, serviceId) => {
   return new Promise((resolve, reject) => {
     wx.getBLEDeviceCharacteristics({
       deviceId, serviceId,
-      success: res => resolve(res),
+      success: res => {
+        res.serviceId = serviceId
+        resolve(res)
+      },
       fail: err => reject(err),
     })
   })

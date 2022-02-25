@@ -24,8 +24,11 @@ class MegaBleScanner {
       res.devices = res.devices.filter(i => {
         if (i.name && (
           i.name.toLowerCase().indexOf('ring') != -1 ||
+          i.name.toLowerCase().indexOf('mr') != -1 ||
           i.name.toLowerCase().indexOf('sle') != -1
-        )) return true
+        )) {
+          return true
+        }
         return false
       })
       if (res.devices.length > 0) this.onDeviceFound(res)

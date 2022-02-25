@@ -86,7 +86,29 @@ class MegaBleClient {
         success: () => {
           // connected ok; init services and characters
           discoverServicesAndChs(this.deviceId)
-            .then(() => {
+            .then((res) => {
+              if(res.length>0){
+                for (let i = 0; i < res.length; i++) {
+                  const item = res[i];
+                  let indicate,notify,read,write
+                  for (let j = 0; j < item.characteristics.length; j++) {
+                    const element = item.characteristics[j];
+                    if(element.properties.indicate) indicate = element.uuid;
+                    if(element.properties.notify) notify = element.uuid;
+                    if(element.properties.read) read = element.uuid;
+                    if(element.properties.write&&element.properties.writeDefault) write = element.uuid;
+                  }
+                  if(indicate&&notify&&read&&write) {
+                    BLE_CFG.SVC_ROOT = item.serviceId
+                    BLE_CFG.CH_INDICATE = indicate
+                    BLE_CFG.CH_READ = read
+                    BLE_CFG.CH_WRITE = write
+                    BLE_CFG.CH_NOTIFY = notify
+                    BLE_CFG.SCV_LOG = item.serviceId
+                    BLE_CFG.CH_LOG_NOTIFY = notify
+                  }
+                }
+              }
               // 各服务初始化完成
               // init sdk
               this.api = new MegaBleCmdApiManager(this.deviceId)
