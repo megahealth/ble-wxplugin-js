@@ -100,7 +100,6 @@ export const parseRead = (a) => {
   const fw3 = (a[2] << 8) | a[3];
   const bl1 = (a[4] & 0xf0) >> 4;
   const bl2 = (a[4] & 0x0f);
-
   let sn = '0000'
   if (a[5] !== 0) {
     sn = parseSnEnter([a[5], a[6], a[7], a[8], a[9], a[10]]);
@@ -140,7 +139,6 @@ export const parseAdv = (a) => {
 const parseSnEnter = (a) => {
   const verYYmm = (a[0] << 8) | a[1];
   const snVersion = (verYYmm >> 13) & 0x07;
-
   if (snVersion === 1) {
       return parseSnV1(a);
   } else if (snVersion === 0) {
@@ -165,7 +163,6 @@ const parseSnV0 = (a) => {
 // C11E31910000064
 const parseSnV1 = (a) => {
   const verYYmm = (a[0] << 8) | a[1];
-
   const yy = (verYYmm >> 7) & 0x03F;
   const mm = (verYYmm >> 3) & 0x0F;
   const num = (a[2] << 16) | (a[3] << 8) | a[4];
@@ -178,6 +175,7 @@ const parseSnV1 = (a) => {
       if(type == 5){
         typeName = RING_TYPE_MAP[type][typeIndex];
         size = RING_SIZE_MAP[type][sizeIndex];
+        if (typeIndex == 5) typeName = 'P11H'
         if(typeIndex == 0){
           size = RING_SIZE_MAP_C11E[type][sizeIndex];
         }
@@ -261,7 +259,7 @@ const discoverChs = (deviceId, serviceId) => {
 export const yyyymmddhhmmss = d => {
   const pad2 = n => (n < 10 ? '0' : '') + n;
   return d.getFullYear() +
-  pad2(d.getMonth() + 1) + 
+  pad2(d.getMonth() + 1) +
   pad2(d.getDate()) +
   pad2(d.getHours()) +
   pad2(d.getMinutes()) +

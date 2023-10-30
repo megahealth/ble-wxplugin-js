@@ -18,7 +18,6 @@ console.log(myPluginInterface.ble);
 
 
 class Index extends Component {
-
   config = {
     navigationBarTitleText: '首页'
   }
@@ -26,10 +25,12 @@ class Index extends Component {
   componentWillMount() {
     const user = Taro.getStorageSync('user')
     console.log(user);
+    initSdk(APPID, APPKEY, wx).then(client => {
+      this.props.handleInitClient(client);
+    }).catch(err => console.error(err))
 
     if (user) {
       this.props.handleUserExists(user)
-      
       api.get('/users/' + user.objectId)
       .then(res => {
         if (res.data.sptToken && res.data.sptToken.indexOf(',') != -1) {
@@ -44,12 +45,6 @@ class Index extends Component {
 
   componentDidMount() {
     // console.log(wx.env, wx.getFileSystemManager())
-    initSdk(APPID, APPKEY, wx)
-        .then(client => {
-          console.log(client);
-          this.props.handleInitClient(client);
-        })
-        .catch(err => console.error(err))
   }
 
   componentWillReceiveProps(nextProps) {
@@ -123,9 +118,9 @@ class Index extends Component {
           <Button size='mini' onClick={this.updateToken}>更新token</Button>
           <Button size='mini' onClick={this.fetchUserInfo}>获取token</Button>
           <Button size='mini' onClick={this.goDetail}>详情</Button> */}
-          
+
           <Button onClick={this.goSptList}>列表</Button>
-          
+
         </View>
 
         <View className='account' onClick={this.handleGoLoginPage}>
@@ -222,7 +217,7 @@ const mapDispatch = (dispatch) => {
     handleInitClient(client) {
       bleActionCreators.initClient(client)
     }
-    
+
   }
 }
 

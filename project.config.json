@@ -3,7 +3,6 @@
   "pluginRoot": "plugin/",
   "compileType": "plugin",
   "appid": "wxf4fa9b179dfd7bca",
-  "projectname": "ble-plugin-js",
   "description": "",
   "setting": {
     "urlCheck": false,
@@ -21,8 +20,6 @@
     "checkSiteMap": true,
     "uploadWithSourceMap": true,
     "useMultiFrameRuntime": true,
-    "useApiHook": true,
-    "useApiHostProcess": false,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
@@ -35,9 +32,22 @@
     "userConfirmedBundleSwitch": false,
     "packNpmManually": false,
     "packNpmRelationList": [],
-    "minifyWXSS": true
+    "minifyWXSS": true,
+    "ignoreUploadUnusedFiles": true,
+    "useApiHostProcess": false
   },
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
-  "condition": {}
+  "condition": {},
+  "srcMiniprogramRoot": "miniprogram/",
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
+  "libVersion": "3.1.5",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "pluginAppid": "wxf4fa9b179dfd7bca"
 }
