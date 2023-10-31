@@ -84,7 +84,7 @@ class MegaBleBigDataManager {
       this.iDataCallback.onProgress(progress)
       // console.log("receiving data, progress " + progress)
 
-      if (this.totalLen > 0 && this.totalLen == this.totalBytes.length) { // transmit complete
+      if (this.totalLen > 0 && this.totalLen <= this.totalBytes.length) { // transmit complete
         const finalBytes = this.ver.concat(this.totalBytes)
         if (a[0] == CMD.CTRL_MONITOR_DATA) {
           const b64 = Taro.arrayBufferToBase64(finalBytes);
