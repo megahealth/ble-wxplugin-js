@@ -39,6 +39,7 @@ class Index extends Component {
       })
       .catch(err => console.log(err))
     }else{
+      console.log('first login')
       // Taro.navigateTo({ url: '/pages/login/login' })
     }
   }
@@ -66,6 +67,7 @@ class Index extends Component {
       handleStop,
       handleGetData,
       user,
+      handerdisconnect,
       handleOpenRealTime,
       handleCloseRealTime,
       handleLiveOn,
@@ -120,6 +122,7 @@ class Index extends Component {
           <Button size='mini' onClick={this.goDetail}>详情</Button> */}
 
           <Button onClick={this.goSptList}>列表</Button>
+          <Button onClick={handerdisconnect}>解绑</Button>
 
         </View>
 
@@ -157,6 +160,8 @@ class Index extends Component {
   }
   goSptList() {
     Taro.navigateTo({ url: '/pages/spt-list/spt-list' })
+  }
+  discover(){
 
   }
 }
@@ -173,6 +178,10 @@ const mapDispatch = (dispatch) => {
   return {
     handleGoScanPage() {
       Taro.navigateTo({ url: '/pages/scan/scan?name=dfs' })
+    },
+    handerdisconnect(){
+      // console.log(bleActionCreators)
+      bleActionCreators.clearAll()
     },
     handleExit() {
       bleActionCreators.clearAll()

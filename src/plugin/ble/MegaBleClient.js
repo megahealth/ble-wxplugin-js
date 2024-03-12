@@ -199,16 +199,18 @@ class MegaBleClient {
   }
 
   disconnect() {
-    this.clear()
-
+    const that=this
     return new Promise((resolve, reject) => {
       if (!this.isConnected) {
         resolve()
         return
       }
       wx.closeBLEConnection({
-        deviceId: this.deviceId,
-        success: res => resolve(res),
+        deviceId: that.deviceId,
+        success: res => {
+          that.clear()
+          resolve(res)
+        },
         fail: err => reject(err),
       })
     })

@@ -132,6 +132,7 @@ export const destroyScanner = () => {
 export const clearAll = () => {
   if (client) {
     client.disconnect()
+    Taro.navigateTo({ url: '/pages/scan/scan?name=dfs' })
   }
 }
 
