@@ -280,3 +280,45 @@ export const createFormData = (params = {}, boundary = '') => {
   }
   return result
 }
+
+function base64Encode(input) {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  let result = "";
+  let padding = 0;
+  let buffer = 0;
+  let bufferLength = 0;
+
+  for (let i = 0; i < input.length; i++) {
+    buffer = (buffer << 8) | input.charCodeAt(i);
+    bufferLength += 8;
+
+    while (bufferLength >= 6) {
+      result += chars[(buffer >> (bufferLength - 6)) & 63];
+      bufferLength -= 6;
+    }
+  }
+
+  if (bufferLength > 0) {
+    padding = 6 - bufferLength;
+    buffer <<= padding;
+    result += chars[buffer & 63];
+  }
+
+  while (padding > 0) {
+    result += "=";
+    padding -= 2;
+  }
+
+  return result;
+}
+
+export function arrayBufferToBase64(arrayBuffer) {
+  const uint8Array = new Uint8Array(arrayBuffer);
+  let base64String = "";
+  for (let i = 0; i < uint8Array.length; i++) {
+    base64String += String.fromCharCode(uint8Array[i]);
+  }
+
+  return base64Encode(base64String);
+}

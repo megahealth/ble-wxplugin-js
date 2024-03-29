@@ -1,7 +1,7 @@
 import { CMD, STATUS, DeviceInfo } from "./MegaBleConst";
 import MegaBleBigDataManager from "./MegaBleBigDataManager";
 import { byte4ToInt, u8s2hex, parseRead } from "./MegaUtils";
-
+import MegaBleRawdataManager from "./MegaBleRawdataManager";
 
 const STEP_BIND_OK = 1;
 const STEP_READ_DEVICE_INFO = 2;
@@ -28,13 +28,15 @@ class MegaBleResponseManager {
 
     this.loopManager = null
     this.bigDataManager = null
-
+    this.rawDataBmanager = null
+    this.rawDataManager =new MegaBleRawdataManager(this.api,this.callback)
     this.stepList = genStepList()
   }
   rawDataBytes = '';
   setInterval=null;
   setTime=null;
   pulseTime=1000  //ms
+  type=''
 
   handleIndicateResponse(a) {
     const cmd = a[0], status = a[2]
@@ -147,22 +149,37 @@ class MegaBleResponseManager {
   }
 
   handleRawDataResponse(a) {
-    // if (this.rawDataBytes.length == 0)this.rawDataBytes = new Uint8Array();
-    // this.rawDataBytes = this.mergeUint8Arrays(this.rawDataBytes, a);
-    // console.log(a)
+   
     this.rawDataBytes=a
-    // this.callback.getPulseData(this.rawDataBytes)
-    if(!this.setInterval){
-      this.callback.ontPulse(this.rawDataBytes)
-      this.setInterval =setInterval(()=>{
+    if(this.type=='pulse'){
+      if(!this.setInterval){
         this.callback.ontPulse(this.rawDataBytes)
-        this.rawDataBytes=''
-      },this.pulseTime)
+        this.setInterval =setInterval(()=>{
+          this.callback.ontPulse(this.rawDataBytes)
+          this.rawDataBytes=''
+        },this.pulseTime)
+      }
     }
+
+    if(this.type=='sleep'){
+      console.log(a[0],this.rawDataBytes[0])
+      // console.log('sleep',a)
+      if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1) {
+        const recordLen =
+          (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
+          this.rawDataManager.setSleepLength(recordLen)
+      }else{
+        this.rawDataManager.setSleepByte(this.rawDataBytes)
+      }
+    }
+    if(this.type!=='sleep'||!this.type=='pulse'){
+      console.log('this.type',this.type,this.rawDataBytes)
+    }
+    // console.log('other',a)
   }
 
   handleClearInterval(){
-    clearInterval(this.setInterval)
+    if(this.setInterval)clearInterval(this.setInterval)
     this.setInterval=null
   }
   handleNotifyResponse(a) {
@@ -190,7 +207,7 @@ class MegaBleResponseManager {
     DeviceInfo.sn = deviceInfo.sn;
     DeviceInfo.swVer = deviceInfo.fwVer;
     this.callback.onDeviceInfoUpdated(deviceInfo)
-    
+    this.rawDataManager.setReadByte(a,DeviceInfo)
     this._next()
   }
 
@@ -243,6 +260,11 @@ class MegaBleResponseManager {
         syncDailyData: () => this.api.syncDailyData(),
       })
       this.bigDataManager.handleTransmitPermited(a)
+      // if(this.rawDataManager)this.rawDataManager.handleTransmitPermited(a)
+      if (a[1] === 1 && a[0] === 235) {
+        this.rawDataManager.handleTransmitPermited(a)
+        this.handleRawDataResponse(a);
+      }
     } else {
       this.bigDataManager = null
       if (status === 2) {

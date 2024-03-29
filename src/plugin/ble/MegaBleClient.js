@@ -71,7 +71,6 @@ class MegaBleClient {
   connect(name, deviceId, advertisData) {
     this.name = name
     this.deviceId = deviceId
-
     const adv = Array.from(new Uint8Array(advertisData))
     if (this.deviceId.length > 17) {
       this.realMac = adv.slice(2, 8).reverse().map(i => ('00' + i.toString(16)).slice(-2)).join(':').toUpperCase()
@@ -182,47 +181,54 @@ class MegaBleClient {
   syncData() {
     this.api.syncMonitorData()
   }
+  /***
+   * 快速收取报告
+   */
+  quickReport() {
+    // this.api.syncMonitorData()
+    this.responseManager.type='sleep'
+
+    this.enableRawdata(true)
+
+    setTimeout(()=>{
+      //开启快收
+      this.api.quickGetReportData()
+    },10)
+  }
   //开启脉诊模式
-  setPulseMode(enable,t){
+  setPulseMode(enable,time){
     if(enable){
       //开启脉诊
-      if(t){
-        this.responseManager.pulseTime=t
+      if(time){
+        this.responseManager.pulseTime=time
+        this.responseManager.type='pulse'
       }
       this.api.sendPulseMode()
       setTimeout(()=>{
         //开启rawData
-        this.api.enableRawdata(true)
-      })
+        this.enableRawdata(true)
+      },10)
     }else{
       // 关闭脉诊
       this.enableLive(false)
       setTimeout(()=>{
-        this.startRawdata(false)
+        this.enableRawdata(false)
+        //清除间隔
         this.responseManager.handleClearInterval()
-      },10)
+        this.responseManager.type=''
+      })
     }
   }
 
 
   //打开Rawdata
-  startRawdata(enable){
-    if(Config.debugable)console.log(enable?"开启RAWDATA":"关闭RAWDATA")
-    this.api.enableRawdata(enable)
-    if(!enable)this.responseManager.handleClearInterval()
-  }
-  enableRawdata() {
-    if (this.rawdataManager) return
-    this.rawdataManager = new MegaBleRawdataManager(this.ctx)
-    this.api.enableRawdata(true)
-  }
-
-  disableRawdata() {
-    if (this.rawdataManager) {
+  enableRawdata(enable){
+    if(enable){
+      if(Config.debugable)console.log(enable?"开启RAWDATA":"关闭RAWDATA")
+      this.api.enableRawdata(true)
+    }else {
+      if(!enable)this.responseManager.handleClearInterval()
       this.api.enableRawdata(false)
-      this.callback.onRawdataComplete({ filePath: this.rawdataManager.filePath })
-      this.rawdataManager.clear()
-      this.rawdataManager = null
     }
   }
 

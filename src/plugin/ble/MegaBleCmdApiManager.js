@@ -15,6 +15,7 @@ import {
   makeBindTokenCmd,
   makeMonitorCmd,
   makePulseMode,
+  makeQucikGetData,
 } from "./MegaBleCmdMaker";
 
 class MegaBleCmdApiManager {
@@ -171,7 +172,7 @@ class MegaBleCmdApiManager {
       })
     })
   }
-
+  //开启关闭rawData
   enableRawdata(enable) {
     return new Promise((resolve, reject) => {
       wx.notifyBLECharacteristicValueChange({
@@ -180,10 +181,10 @@ class MegaBleCmdApiManager {
         characteristicId:BLE_CFG.RAW_UUID,
         state:enable,
         success: res => {
-          // console.log(res)
+          console.log(res)
         },
         fail: err => {
-          // console.log(err)
+          console.error(err)
         },
       })
     })
@@ -196,7 +197,15 @@ class MegaBleCmdApiManager {
     // if (Config.debugable)console.log('[cmd]  -> sendPulseMode' + u8s2hex(a))
     return this._write(a)
   }
-
+  /***
+   * 快速收取报告
+   */
+  quickGetReportData() {
+    const a = makeQucikGetData();
+    if (Config.debugable)
+      console.log("[cmd] quickGetReportData -> " + u8s2hex(a));
+    return this._write(a);
+  }
   startDfu() {
     wx.notifyBLECharacteristicValueChange({
       deviceId: this.deviceId,

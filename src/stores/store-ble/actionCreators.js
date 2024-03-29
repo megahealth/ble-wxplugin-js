@@ -148,14 +148,16 @@ export const getData = () => {
 }
 //开启rawdata
 export const startRawdata=(enable)=>{
-  client.startRawdata(enable)
+  client.enableRawdata(enable)
 }
 
 //设置脉诊模式
 export const setPulseMode=(enable)=>{
-  client.setPulseMode(enable,10000)
+  client.setPulseMode(enable,1000)
 }
-
+export const quickReport=()=>{
+  client.quickReport()
+}
 // ring func
 // 开启或关闭实时模式通道
 export const enableRealTime = (enable) => {
@@ -277,7 +279,8 @@ const genMegaCallback = (dispatch) => {
         data:formData
       };
       Taro.request(options).then(res=>{
-        console.log('report',res);
+        console.log('report',res.data);
+        Taro.hideLoading()
       }).catch(err=>{
         console.log(err);
       })

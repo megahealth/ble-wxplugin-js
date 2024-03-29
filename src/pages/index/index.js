@@ -79,6 +79,7 @@ class Index extends Component {
       handleMonitorOff,
       handleEnableRaw,
       handleDisableRaw,
+      handleQuickReport,
     } = this.props
 
     return (
@@ -111,6 +112,7 @@ class Index extends Component {
               <Button size='mini' onClick={handleMonitorOn}>监测on</Button>
               <Button size='mini' onClick={handleMonitorOff}>监测off</Button>
               <Button size='mini' onClick={handleGetData}>收数据</Button>
+              <Button size='mini' onClick={handleQuickReport}>快速收取报告</Button>
               {/* <Button size='mini' onClick={handleEnableRaw}>开raw</Button>
               <Button size='mini' onClick={handleDisableRaw}>关raw</Button> */}
                <Button size='mini' onClick={handleStartRaw}>开启Raw</Button>
@@ -201,6 +203,9 @@ const mapDispatch = (dispatch) => {
     },
     handleGetData() {
       bleActionCreators.getData()
+    },
+    handleQuickReport(){
+      bleActionCreators.quickReport()
     },
     handleStartRaw(enable){
       bleActionCreators.startRawdata(true)

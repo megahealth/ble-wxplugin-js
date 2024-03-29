@@ -126,6 +126,16 @@ export const makePulseMode=(t)=>{
 }
 
 
+export const makeQucikGetData = () => {
+  const a = _initPack(CMD.SYNCDATA);
+  a[1] = 0x01;
+  a[2] = 0x00; //CMD.V2_QUICK_DATA
+  a[3] = 0xef;
+  console.log('cmd quick' , a)
+  return a;
+};
+
+
 
 const _initPack = (cmd) => {
   const a = new Uint8Array(20)
