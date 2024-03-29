@@ -14,6 +14,7 @@ import {
   makeBindMacCmd,
   makeBindTokenCmd,
   makeMonitorCmd,
+  makePulseMode,
 } from "./MegaBleCmdMaker";
 
 class MegaBleCmdApiManager {
@@ -171,17 +172,29 @@ class MegaBleCmdApiManager {
     })
   }
 
-  enableRawdata(state) {
+  enableRawdata(enable) {
     return new Promise((resolve, reject) => {
       wx.notifyBLECharacteristicValueChange({
         deviceId: this.deviceId,
-        serviceId: BLE_CFG.SCV_LOG,
-        characteristicId: BLE_CFG.CH_LOG_NOTIFY,
-        state,
-        success: res => resolve(res),
-        fail: err => reject(err),
+        serviceId: BLE_CFG.RAW_SID,
+        characteristicId:BLE_CFG.RAW_UUID,
+        state:enable,
+        success: res => {
+          // console.log(res)
+        },
+        fail: err => {
+          // console.log(err)
+        },
       })
     })
+  }
+  /**
+   * 脉诊模式
+   */
+  sendPulseMode(t) {
+    const a = makePulseMode(1)
+    // if (Config.debugable)console.log('[cmd]  -> sendPulseMode' + u8s2hex(a))
+    return this._write(a)
   }
 
   startDfu() {

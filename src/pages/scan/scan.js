@@ -35,9 +35,9 @@ class Scan extends Component {
             devices && devices.map(item => {
               return (
                 <View key={item.deviceId} className='device-item' onClick={handleConnect.bind(this, item)}>
-                  <View>{item.name}</View>
-                  <View>{item.sn}</View>
-                  <View>{item.mac}</View>
+                  <View>name: {item.name}</View>
+                  <View>SN: {item.sn}</View>
+                  <View>MAC: {item.mac}</View>
                   <View>信号强度: {item.RSSI}dBm ({Math.max(0, item.RSSI + 100)}%)</View>
                   <View>UUID: {item.deviceId}</View>
                   <View>Service数量: {item.advertisServiceUUIDs.length}</View>

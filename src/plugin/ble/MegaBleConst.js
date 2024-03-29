@@ -13,6 +13,9 @@ export var BLE_CFG = {
   CH_DFU_CTRL: '00001531-1212-EFDE-1523-785FEABCD123',
   CH_DFU_PACK: '00001532-1212-EFDE-1523-785FEABCD123',
   CH_DFU_READ: '00001534-1212-EFDE-1523-785FEABCD123',
+
+  RAW_SID:"4999FEF0-8CFD-11E9-AF28-80A589E0081A",
+  RAW_UUID:"4999FEF2-8CFD-11E9-AF28-80A589E0081A"
 }
 
 export const CMD = {
@@ -36,6 +39,7 @@ export const CMD = {
   V2_MODE_SPORT               : 0xd5, // 模式: 运动
   V2_MODE_DAILY               : 0xd6, // 模式: 日常
   V2_MODE_LIVE_SPO            : 0xd7, // 模式: 实时血氧仪
+  V2_MODE_PULSE               : 0xdb, // 模式: 脉诊
   V2_GET_MODE                 : 0xf6, // get current v2 mode
   V2_GET_BOOTUP_TIME          : 0xf7, // v2 get 设备启动时间
   V2_APP_NOTIFY_DFU_CMD		    : 0xD8,

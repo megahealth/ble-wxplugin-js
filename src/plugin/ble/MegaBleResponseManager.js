@@ -31,6 +31,10 @@ class MegaBleResponseManager {
 
     this.stepList = genStepList()
   }
+  rawDataBytes = '';
+  setInterval=null;
+  setTime=null;
+  pulseTime=1000  //ms
 
   handleIndicateResponse(a) {
     const cmd = a[0], status = a[2]
@@ -134,8 +138,35 @@ class MegaBleResponseManager {
         break;
     }
   }
+        // 合并两个 Uint8Array
+  mergeUint8Arrays(array1, array2) {
+    const mergedArray = new Uint8Array(array1.length + array2.length);
+    mergedArray.set(array1, 0);
+    mergedArray.set(array2, array1.length);
+    return mergedArray;
+  }
 
+  handleRawDataResponse(a) {
+    // if (this.rawDataBytes.length == 0)this.rawDataBytes = new Uint8Array();
+    // this.rawDataBytes = this.mergeUint8Arrays(this.rawDataBytes, a);
+    // console.log(a)
+    this.rawDataBytes=a
+    // this.callback.getPulseData(this.rawDataBytes)
+    if(!this.setInterval){
+      this.callback.ontPulse(this.rawDataBytes)
+      this.setInterval =setInterval(()=>{
+        this.callback.ontPulse(this.rawDataBytes)
+        this.rawDataBytes=''
+      },this.pulseTime)
+    }
+  }
+
+  handleClearInterval(){
+    clearInterval(this.setInterval)
+    this.setInterval=null
+  }
   handleNotifyResponse(a) {
+    // console.log(a[0]);
     switch (a[0]) {
       case CMD.LIVECTRL:
         // 2018-10-10 15:00:40 加入实时的log采集
@@ -146,7 +177,7 @@ class MegaBleResponseManager {
       case CMD.NOTIBATT:
         this.callback.onBatteryChanged(a[3], a[4])
         break;
-
+      //处理rawData
       default:
         if (this.bigDataManager) this.bigDataManager.handleNotify(a)
         break;
@@ -165,6 +196,7 @@ class MegaBleResponseManager {
 
   handleDisconnect() {
     if (this.loopManager) {
+      this.handleClearInterval()
       this.loopManager.clearLoop()
       this.loopManager = null
     }
@@ -302,6 +334,7 @@ class LoopManager {
   }
 
   clearLoop() {
+    clearInterval(this.setInterval)
     this.loopArr.forEach(i => clearInterval(i))
     this.loopArr.length = 0
   }

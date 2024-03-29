@@ -41,6 +41,8 @@ class MegaBleClient {
       if (characteristic.deviceId === this.deviceId) {
         const a = new Uint8Array(characteristic.value)
         switch (characteristic.characteristicId) {
+          case BLE_CFG.RAW_UUID:
+            this.responseManager.handleRawDataResponse(a)
           case BLE_CFG.CH_INDICATE:
             this.responseManager.handleIndicateResponse(a)
             break;
@@ -52,7 +54,6 @@ class MegaBleClient {
           case BLE_CFG.CH_READ:
             this.responseManager.handleReadResponse(a)
             break;
-
           case BLE_CFG.CH_LOG_NOTIFY:
             if (a[0] === 0x5b && this.rawdataManager) {
               this.rawdataManager.queue(Array.from(a))
@@ -90,13 +91,21 @@ class MegaBleClient {
               if(res.length>0){
                 for (let i = 0; i < res.length; i++) {
                   const item = res[i];
-                  let indicate,notify,read,write
+                  let indicate,notify,read,write,raw_uuid,raw_sid
                   for (let j = 0; j < item.characteristics.length; j++) {
                     const element = item.characteristics[j];
                     if(element.properties.indicate) indicate = element.uuid;
                     if(element.properties.notify) notify = element.uuid;
                     if(element.properties.read) read = element.uuid;
                     if(element.properties.write&&element.properties.writeDefault) write = element.uuid;
+                    if (
+                      !element.properties.indicate&&
+                      element.properties.notify
+                    ) {
+                      raw_uuid = element.uuid;
+                      raw_sid = item.serviceId;
+                    }
+                    // if(notify)console.log( item.serviceId,element)
                   }
                   if(indicate&&notify&&read&&write) {
                     BLE_CFG.SVC_ROOT = item.serviceId
@@ -107,8 +116,14 @@ class MegaBleClient {
                     BLE_CFG.SCV_LOG = item.serviceId
                     BLE_CFG.CH_LOG_NOTIFY = notify
                   }
+                  if (raw_uuid && raw_sid) {
+                    BLE_CFG.RAW_SID = raw_sid;
+                    BLE_CFG.RAW_UUID = raw_uuid;
+                  }
                 }
               }
+              // console.log( 'serviceId',BLE_CFG.RAW_SID)
+              // console.log( 'uuid',BLE_CFG.RAW_UUID)
               // 各服务初始化完成
               // init sdk
               this.api = new MegaBleCmdApiManager(this.deviceId)
@@ -167,7 +182,35 @@ class MegaBleClient {
   syncData() {
     this.api.syncMonitorData()
   }
+  //开启脉诊模式
+  setPulseMode(enable,t){
+    if(enable){
+      //开启脉诊
+      if(t){
+        this.responseManager.pulseTime=t
+      }
+      this.api.sendPulseMode()
+      setTimeout(()=>{
+        //开启rawData
+        this.api.enableRawdata(true)
+      })
+    }else{
+      // 关闭脉诊
+      this.enableLive(false)
+      setTimeout(()=>{
+        this.startRawdata(false)
+        this.responseManager.handleClearInterval()
+      },10)
+    }
+  }
 
+
+  //打开Rawdata
+  startRawdata(enable){
+    if(Config.debugable)console.log(enable?"开启RAWDATA":"关闭RAWDATA")
+    this.api.enableRawdata(enable)
+    if(!enable)this.responseManager.handleClearInterval()
+  }
   enableRawdata() {
     if (this.rawdataManager) return
     this.rawdataManager = new MegaBleRawdataManager(this.ctx)
@@ -176,7 +219,6 @@ class MegaBleClient {
 
   disableRawdata() {
     if (this.rawdataManager) {
-      // console.log(`包数统计: app: ${this.rawdataManager.getCount()}, ble: ${this.rawdataManager.getBleCount()}`)
       this.api.enableRawdata(false)
       this.callback.onRawdataComplete({ filePath: this.rawdataManager.filePath })
       this.rawdataManager.clear()
@@ -189,7 +231,6 @@ class MegaBleClient {
       this.responseManager.handleDisconnect()
       this.responseManager = null
     }
-
     if (this.rawdataManager) {
       this.rawdataManager.clear()
       this.rawdataManager = null
@@ -199,6 +240,8 @@ class MegaBleClient {
   }
 
   disconnect() {
+    //关闭循环
+    this.responseManager.handleClearInterval()
     const that=this
     return new Promise((resolve, reject) => {
       if (!this.isConnected) {

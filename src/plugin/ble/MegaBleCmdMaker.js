@@ -1,5 +1,5 @@
 import { getRandomString, getMD5Bytes, userIdToBytes, encryptMac, encryptToken } from "./MegaUtils";
-import { CMD } from "./MegaBleConst";
+import { CMD,Config } from "./MegaBleConst";
 
 
 const STATUS_CLIENT = 0 // android
@@ -66,10 +66,10 @@ export const makeLiveCmd = (enable) => {
 export const makeV2EnableModeLiveSpo = (ensure, t) => {
   const a = _initPack(CMD.V2_MODE_LIVE_SPO)
   a[3] = (ensure ? 'S'.charCodeAt() : 0)
-  a[4] = (t & 0xff000000) >> 24
+  a[4] = (t & 0xff000000) >> 24 //start-time
   a[5] = (t & 0x00ff0000) >> 16
   a[6] = (t & 0x0000ff00) >> 8
-  a[7] = t & 0x000000ff
+  a[7] = t & 0x000000ff //end-time
   return a;
 }
 
@@ -80,6 +80,7 @@ export const makeV2EnableModeDaily = (ensure, t) => {
   a[5] = (t & 0x00ff0000) >> 16
   a[6] = (t & 0x0000ff00) >> 8
   a[7] = t & 0x000000ff
+  if(Config.debugable)console.log('====>日常模式',a)
   return a
 }
 
@@ -112,6 +113,18 @@ export const makeHeartBeatCmd = () => {
   a[3] = 1
   return a
 }
+
+export const makePulseMode=(t)=>{
+  const a = _initPack(CMD.V2_MODE_PULSE)
+  a[3] = 'S'.charCodeAt()
+  a[4] = (t & 0xff000000) >> 24
+  a[5] = (t & 0x00ff0000) >> 16
+  a[6] = (t & 0x0000ff00) >> 8
+  a[7] = t & 0x000000ff
+  // if(Config.debugable)console.log('====>脉诊模式',a)
+  return a
+}
+
 
 
 const _initPack = (cmd) => {

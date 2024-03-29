@@ -146,6 +146,15 @@ export const stop = () => {
 export const getData = () => {
   client.syncData()
 }
+//开启rawdata
+export const startRawdata=(enable)=>{
+  client.startRawdata(enable)
+}
+
+//设置脉诊模式
+export const setPulseMode=(enable)=>{
+  client.setPulseMode(enable,10000)
+}
 
 // ring func
 // 开启或关闭实时模式通道
@@ -327,7 +336,38 @@ const genMegaCallback = (dispatch) => {
     },
     onDfuProgress: progress => {
       console.log('onDfuProgress',progress);
-    }
+    },
+    ontPulse: (bytes) => {
+      // 写入文件
+      // const fs= wx.getFileSystemManager()
+      // const newDate=new Date().getTime()
+      // const name=`${newDate}.dat`
+      // const path =  `${wx.env.USER_DATA_PATH}/${name}`
+      // fs.writeFile({
+      //   filePath: path,
+      //   data: bytes.buffer,
+      //   encoding: 'binary',
+      //   success(res) {
+      //     console.log(res)
+      //     console.log('path',path)
+      //     wx.uploadFile({
+      //       url: 'http://192.168.0.136:3000/upload', //仅为示例，非真实的接口地址
+      //       filePath:path,
+      //       name: name,
+      //       success (res){
+      //         console.log('res',res)
+      //       }
+      //     })
+      //   },
+      //   fail(res) {
+      //     console.error(res)
+      //   }
+      // })
+
+      console.log('rawData回调byte',bytes);
+
+      // console.log( (bytes[6] << 24) | (bytes[7] << 16) | (bytes[8] << 8) | bytes[9])
+    },
   }
 }
 

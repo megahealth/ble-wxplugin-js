@@ -66,6 +66,9 @@ class Index extends Component {
       handleStart,
       handleStop,
       handleGetData,
+      handleStartRaw,
+      handlePulseMode,
+      handleStopRaw,
       user,
       handerdisconnect,
       handleOpenRealTime,
@@ -108,8 +111,12 @@ class Index extends Component {
               <Button size='mini' onClick={handleMonitorOn}>监测on</Button>
               <Button size='mini' onClick={handleMonitorOff}>监测off</Button>
               <Button size='mini' onClick={handleGetData}>收数据</Button>
-              <Button size='mini' onClick={handleEnableRaw}>开raw</Button>
-              <Button size='mini' onClick={handleDisableRaw}>关raw</Button>
+              {/* <Button size='mini' onClick={handleEnableRaw}>开raw</Button>
+              <Button size='mini' onClick={handleDisableRaw}>关raw</Button> */}
+               <Button size='mini' onClick={handleStartRaw}>开启Raw</Button>
+               <Button size='mini' onClick={handleStopRaw}>关闭Raw</Button>
+               <Button size='mini' onClick={()=>handlePulseMode(true)}>开启脉诊</Button>
+               <Button size='mini' onClick={()=>handlePulseMode(false)}>关闭脉诊</Button>
 
             </View>
           ) : null
@@ -194,6 +201,15 @@ const mapDispatch = (dispatch) => {
     },
     handleGetData() {
       bleActionCreators.getData()
+    },
+    handleStartRaw(enable){
+      bleActionCreators.startRawdata(true)
+    },
+    handleStopRaw(enable){
+      bleActionCreators.startRawdata(false)
+    },
+    handlePulseMode(enable){
+      bleActionCreators.setPulseMode(enable)
     },
     handleUserExists(user) {
       dispatch(bleActionCreators.loginSuccess(user))

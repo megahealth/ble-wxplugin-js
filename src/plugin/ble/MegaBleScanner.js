@@ -1,3 +1,5 @@
+import {parseAdv} from "./MegaUtils";
+
 class MegaBleScanner {
 
   constructor(onDeviceFound) {
@@ -31,7 +33,12 @@ class MegaBleScanner {
         }
         return false
       })
-      if (res.devices.length > 0) this.onDeviceFound(res)
+      if (res.devices[0]){
+          const parse = parseAdv(res.devices[0].advertisData);
+          res.devices[0].sn=parse.sn
+          res.devices[0].mac=parse.mac
+          this.onDeviceFound(res)
+        }
     })
   }
 
