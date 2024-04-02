@@ -16,6 +16,7 @@ import {
   makeMonitorCmd,
   makePulseMode,
   makeQucikGetData,
+  makeDelRawDataReport,
 } from "./MegaBleCmdMaker";
 
 class MegaBleCmdApiManager {
@@ -206,6 +207,16 @@ class MegaBleCmdApiManager {
       console.log("[cmd] quickGetReportData -> " + u8s2hex(a));
     return this._write(a);
   }
+  /***
+   * 快收 需要主动删除报告
+   */
+  clearReport() {
+    const a = makeDelRawDataReport();
+    a[0] = 0xb8;
+    if (Config.debugable) console.log("[cmd] clear -> " + u8s2hex(a));
+    return this._write(a);
+  }
+
   startDfu() {
     wx.notifyBLECharacteristicValueChange({
       deviceId: this.deviceId,

@@ -33,7 +33,7 @@ export const CMD = {
   NOTIBATT                    : 0xd2,
   NOTISTEP                    : 0xe9,
   HEARTBEAT                   : 0xd3, // APP_KEEPALIVE_CMD
-
+  DELRAWDATA                  : 0xb8,
   V2_MODE_SPO_MONITOR         : 0xd0, // 模式: 血氧监护
   V2_MODE_ECG_BP              : 0xd4, // 模式: 血压
   V2_MODE_SPORT               : 0xd5, // 模式: 运动

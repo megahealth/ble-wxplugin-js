@@ -131,8 +131,12 @@ export const makeQucikGetData = () => {
   a[1] = 0x01;
   a[2] = 0x00; //CMD.V2_QUICK_DATA
   a[3] = 0xef;
-  console.log('cmd quick' , a)
   return a;
+};
+
+
+export const makeDelRawDataReport = () => {
+  return _initPack(CMD.DELRAWDATA);
 };
 
 

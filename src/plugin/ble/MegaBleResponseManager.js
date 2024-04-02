@@ -35,7 +35,7 @@ class MegaBleResponseManager {
   rawDataBytes = '';
   setInterval=null;
   setTime=null;
-  pulseTime=1000  //ms
+  pulseTime=null  //ms
   type=''
 
   handleIndicateResponse(a) {
@@ -148,22 +148,29 @@ class MegaBleResponseManager {
     return mergedArray;
   }
 
+  setRawDataPulseTime(time){
+    this.type='pulse'
+    this.rawDataManager.setPulseTime(time)
+  }
+
+  startRawData(){
+    this.rawDataManager.open()
+  }
+
+  clearRawData() {
+    this.type=''
+    this.rawDataManager.clear()
+  }
+
   handleRawDataResponse(a) {
    
     this.rawDataBytes=a
+
     if(this.type=='pulse'){
-      if(!this.setInterval){
-        this.callback.ontPulse(this.rawDataBytes)
-        this.setInterval =setInterval(()=>{
-          this.callback.ontPulse(this.rawDataBytes)
-          this.rawDataBytes=''
-        },this.pulseTime)
-      }
+      this.rawDataManager.setPulseByte(this.rawDataBytes)
     }
 
     if(this.type=='sleep'){
-      console.log(a[0],this.rawDataBytes[0])
-      // console.log('sleep',a)
       if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1) {
         const recordLen =
           (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
@@ -172,16 +179,13 @@ class MegaBleResponseManager {
         this.rawDataManager.setSleepByte(this.rawDataBytes)
       }
     }
-    if(this.type!=='sleep'||!this.type=='pulse'){
-      console.log('this.type',this.type,this.rawDataBytes)
+
+    if(!this.type){
+      console.log('this.rawDataBytes',this.rawDataBytes)
     }
-    // console.log('other',a)
   }
 
-  handleClearInterval(){
-    if(this.setInterval)clearInterval(this.setInterval)
-    this.setInterval=null
-  }
+
   handleNotifyResponse(a) {
     // console.log(a[0]);
     switch (a[0]) {
@@ -273,6 +277,8 @@ class MegaBleResponseManager {
           this.callback.onSyncNoDataOfDaily()
         } else if (a[5] == CMD.CTRL_MONITOR_DATA) {
           this.callback.onSyncNoDataOfMonitor()
+          this.rawDataManager.clear()
+          this.type=''
         }
       }
     }

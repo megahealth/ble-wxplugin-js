@@ -120,6 +120,7 @@ class MegaBleClient {
                     BLE_CFG.RAW_UUID = raw_uuid;
                   }
                 }
+                console.log(1111)
               }
               // console.log( 'serviceId',BLE_CFG.RAW_SID)
               // console.log( 'uuid',BLE_CFG.RAW_UUID)
@@ -171,10 +172,12 @@ class MegaBleClient {
   }
 
   enableLive(enable) {
+    // console.log('实时')
     enable ? this.api.enableV2ModeLiveSpo(true, 0) : this.api.enableV2ModeDaily(true, 0) // means stop
   }
 
   enableMonitor(enable) {
+    // console.log('日常')
     enable ? this.api.enableV2ModeSpoMonitor(true, 0) : this.api.enableV2ModeDaily(true, 0)
   }
 
@@ -186,22 +189,20 @@ class MegaBleClient {
    */
   quickReport() {
     // this.api.syncMonitorData()
-    this.responseManager.type='sleep'
-
     this.enableRawdata(true)
-
+    this.responseManager.type='sleep'
     setTimeout(()=>{
       //开启快收
       this.api.quickGetReportData()
     },10)
   }
+
   //开启脉诊模式
   setPulseMode(enable,time){
     if(enable){
       //开启脉诊
       if(time){
-        this.responseManager.pulseTime=time
-        this.responseManager.type='pulse'
+        this.responseManager.setRawDataPulseTime(time)
       }
       this.api.sendPulseMode()
       setTimeout(()=>{
@@ -212,10 +213,8 @@ class MegaBleClient {
       // 关闭脉诊
       this.enableLive(false)
       setTimeout(()=>{
-        this.enableRawdata(false)
         //清除间隔
-        this.responseManager.handleClearInterval()
-        this.responseManager.type=''
+        this.enableRawdata(false)
       })
     }
   }
@@ -225,10 +224,9 @@ class MegaBleClient {
   enableRawdata(enable){
     if(enable){
       if(Config.debugable)console.log(enable?"开启RAWDATA":"关闭RAWDATA")
-      this.api.enableRawdata(true)
+      this.responseManager.startRawData()
     }else {
-      if(!enable)this.responseManager.handleClearInterval()
-      this.api.enableRawdata(false)
+      this.responseManager.clearRawData()
     }
   }
 

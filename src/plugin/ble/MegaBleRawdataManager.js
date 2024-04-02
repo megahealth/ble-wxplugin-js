@@ -6,31 +6,16 @@ import { yyyymmddhhmmss,arrayBufferToBase64 } from './MegaUtils';
 const UPLOAD_INTERVAL = 10 // s
 
 class MegaBleRawdataManager {
-  // cnt = 0;
-  // totalList = [];
-
-  // isFirstPayload = true;
-  // firstPayload = null;
-  // currentPayload = null;
-  // startTime = Date.now();
-
-  // isProcessing = false;
-  // taskTimeout = null;
-  // requestTask = null;
-
-  // filePath = null;
-  // fs = null;
-  // ctx = null;
-
   constructor(api,callback) {
     this.api = api;
     this.callback=callback
-    // this.fs = this.ctx.getFileSystemManager();
   }
   rawDataLen=0;
   rawDataBytes=null
-
+  interval=1000; //ms
+  intervaler=null
   open() {
+    console.log('open')
     //开启rawdata
     this.api.enableRawdata(true)
   }
@@ -110,7 +95,6 @@ class MegaBleRawdataManager {
   }
 
   setSleepByte(a){
-    // console.log('sleep',a)
     this.rawDataBytes = this.mergeUint8Arrays(this.rawDataBytes, a);
     const progress = ((this.rawDataBytes.length * 100) / this.rawDataLen).toFixed(3);
     console.log('progress',progress)
@@ -121,10 +105,8 @@ class MegaBleRawdataManager {
       if (progress !== 100) this.callback.onSyncingDataProgress(progress);
     } else if (this.rawDataBytes.length >= this.rawDataLen || progress == 100) {
       //关掉rawData
-      this.api.enableRawdata(false)
       const file = this.mergeUint8Arrays(this.ver, this.rawDataBytes);
       const b64 = arrayBufferToBase64(file);
-      // console.log(b64)
       this.callback.onSyncingDataProgress(100);
       this.callback.onSyncMonitorDataComplete(
         b64,
@@ -132,11 +114,23 @@ class MegaBleRawdataManager {
         this.dataType,
         this.deviceInfo
       );
+      this.clear()
+      this.api.clearReport()
     }
   }
 
+  setPulseTime(time){
+    this.interval = time
+    console.log('time',time)
+  }
+
   setPulseByte(a){
-    console.log(a)
+    if(!this.intervaler){
+      this.intervaler=setInterval(()=>{
+        // console.log('---->',a)
+        this.callback.ontPulse(a)
+      },this.interval)
+    }
   }
 
 
@@ -154,10 +148,15 @@ class MegaBleRawdataManager {
   //   }
   // }
 
-  // clear() {
-  //   if (this.taskTimeout) clearTimeout(this.taskTimeout)
-  //   if (this.requestTask) this.requestTask.abort()
-  // }
+  clear() {
+    console.log('clear')
+    this.api.enableRawdata(false)
+    if (this.intervaler) clearInterval(this.intervaler)
+    this.interval=1000
+    this.rawDataLen=0;
+    this.rawDataBytes=null
+    this.intervaler=null
+  }
 
   // getCount() {
   //   return this.cnt
