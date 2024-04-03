@@ -324,7 +324,7 @@ export function arrayBufferToBase64(arrayBuffer) {
 }
 
 export function bytesToUint8Array (b,swVer) {
-  return new Promise((resolve, reject) => {
+  
     if (b[0] == 94 || b[0] == 91) { 
       let array=[]
       if (swVer.toLowerCase().startsWith("3.0")) {
@@ -334,7 +334,7 @@ export function bytesToUint8Array (b,swVer) {
         } else if (b[1] == 6) {
             array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4])), ((b[5] << 16) | (b[6] << 8) | (b[7]))
         }
-        resolve(array)
+        return array
       } else if (swVer.toLowerCase().startsWith("5.0") && b.length == 182) {
         let  groupLen = b[6];
         if(groupLen > 19){
@@ -343,7 +343,7 @@ export function bytesToUint8Array (b,swVer) {
         for (let i = 7; i < groupLen * 9; i += 9) {
             array[(i - 7) / 9] = ((b[i] << 16) | b[i + 1] << 8 | b[i + 2]), ((b[i + 3] << 16) | b[i + 4] << 8 | b[i + 5]), ((b[i + 6] << 16) | b[i + 7] << 8 | b[i + 8])
         }
-        resolve(array)
+        return array
       } else if(swVer.toLowerCase().startsWith("5.0") && b.length == 100){
         let j = 0;//array index
         for (let i = 0; i < 5; i++){
@@ -353,10 +353,9 @@ export function bytesToUint8Array (b,swVer) {
                 array[j++] =((b[index+8] << 16) | (b[index+9] << 8) | (b[index+10])), ((b[index+11] << 16) | (b[index+12] << 8) | (b[index+13]))
             }
         }
-        resolve(array)
+        return array
       }else{
-        resolve([])
+        return []
       }
     }
-  })
 }

@@ -154,7 +154,7 @@ export const startRawdata=(enable)=>{
 
 //设置脉诊模式
 export const setPulseMode=(enable)=>{
-  client.setPulseMode(enable,1000*1)
+  client.setPulseMode(enable,1000*10)
 }
 export const quickReport=()=>{
   client.quickReport()
@@ -342,7 +342,7 @@ const genMegaCallback = (dispatch) => {
       console.log('onDfuProgress',progress);
     },
     ontPulse: (bytes) => {
-      console.log(bytes)
+      console.log('ontPulse',bytes)
       // 写入文件
       // const fs= wx.getFileSystemManager()
       // const newDate=new Date().getTime()

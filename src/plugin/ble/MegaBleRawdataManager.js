@@ -125,11 +125,11 @@ class MegaBleRawdataManager {
     if(Config.debugable)console.log('time',time)
   }
 
-  async setPulseByte(a){
+  setPulseByte(a){
     if(!this.rawDataBytes){
-      this.rawDataBytes=await bytesToUint8Array(a,this.deviceInfo.swVer)
+      this.rawDataBytes= bytesToUint8Array(a,this.deviceInfo.swVer)
     }else{
-      this.rawDataBytes =this.rawDataBytes.concat(await bytesToUint8Array(a,this.deviceInfo.swVer)) 
+      this.rawDataBytes =this.rawDataBytes.concat(bytesToUint8Array(a,this.deviceInfo.swVer)) 
     }
     if(!this.intervaler){
       this.intervaler=setInterval(()=>{
