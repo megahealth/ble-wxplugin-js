@@ -181,12 +181,8 @@ class MegaBleCmdApiManager {
         serviceId: BLE_CFG.RAW_SID,
         characteristicId:BLE_CFG.RAW_UUID,
         state:enable,
-        success: res => {
-          console.log(res)
-        },
-        fail: err => {
-          console.error(err)
-        },
+        success: res => {},
+        fail: err => {},
       })
     })
   }

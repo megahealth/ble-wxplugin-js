@@ -62,7 +62,8 @@ class Index extends Component {
 
   render() {
     const {
-      device, handleGoScanPage,
+      device, 
+      handleGoScanPage,
       handleStart,
       handleStop,
       handleGetData,
@@ -70,6 +71,7 @@ class Index extends Component {
       handlePulseMode,
       handleStopRaw,
       user,
+      byte,
       handerdisconnect,
       handleOpenRealTime,
       handleCloseRealTime,
@@ -180,6 +182,7 @@ const mapState = (state) => {
     num: state.index.num,
     device: state.ble.device,
     user: state.ble.user,
+    byte:state.ble.byte,
   }
 }
 

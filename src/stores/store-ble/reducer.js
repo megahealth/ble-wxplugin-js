@@ -48,14 +48,13 @@ export default (state = defaultState, action) => {
           ...action.data,
         } : {}
       }
-
-      case constants.ACTION_UPLOAD_SPT_DATA:
+    case constants.ACTION_UPLOAD_SPT_DATA:
         const b64 = Taro.arrayBufferToBase64(new Uint8Array(action.data))
         console.log('data received', b64);
         
         return state;
 
-      case constants.ACTION_UPDATE_TOKEN:
+    case constants.ACTION_UPDATE_TOKEN:
         console.log('ACTION_UPDATE_TOKEN',action.data);
         Taro.setStorage('token', action.data);
           // api.put('/users/' + state.user.objectId, {sptToken: action.data}, {'X-LC-Session': state.user.sessionToken})
@@ -63,13 +62,13 @@ export default (state = defaultState, action) => {
           // .catch(err => console.log(err))
         return state;
 
-      case constants.ACTION_LOGIN_SUCCESS:
+    case constants.ACTION_LOGIN_SUCCESS:
         console.log('ACTION_LOGIN_SUCCESS',action.data);
         return {
           user: action.data
         }
 
-      case constants.ACTION_LOGOUT:
+    case constants.ACTION_LOGOUT:
         console.log('ACTION_LOGOUT',action.data);
         return {
           user: null

@@ -120,7 +120,7 @@ class MegaBleClient {
                     BLE_CFG.RAW_UUID = raw_uuid;
                   }
                 }
-                console.log(1111)
+                // console.log(1111)
               }
               // console.log( 'serviceId',BLE_CFG.RAW_SID)
               // console.log( 'uuid',BLE_CFG.RAW_UUID)

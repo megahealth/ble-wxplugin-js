@@ -1,4 +1,4 @@
-import { CMD, STATUS, DeviceInfo } from "./MegaBleConst";
+import { CMD, STATUS, DeviceInfo, Config } from "./MegaBleConst";
 import MegaBleBigDataManager from "./MegaBleBigDataManager";
 import { byte4ToInt, u8s2hex, parseRead } from "./MegaUtils";
 import MegaBleRawdataManager from "./MegaBleRawdataManager";
@@ -25,7 +25,6 @@ class MegaBleResponseManager {
   constructor(api, callback) {
     this.api = api
     this.callback = callback
-
     this.loopManager = null
     this.bigDataManager = null
     this.rawDataBmanager = null
@@ -140,7 +139,7 @@ class MegaBleResponseManager {
         break;
     }
   }
-        // 合并两个 Uint8Array
+
   mergeUint8Arrays(array1, array2) {
     const mergedArray = new Uint8Array(array1.length + array2.length);
     mergedArray.set(array1, 0);
@@ -165,11 +164,9 @@ class MegaBleResponseManager {
   handleRawDataResponse(a) {
    
     this.rawDataBytes=a
-
     if(this.type=='pulse'){
       this.rawDataManager.setPulseByte(this.rawDataBytes)
     }
-
     if(this.type=='sleep'){
       if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1) {
         const recordLen =
@@ -181,7 +178,7 @@ class MegaBleResponseManager {
     }
 
     if(!this.type){
-      console.log('this.rawDataBytes',this.rawDataBytes)
+      if(Config.debugable)console.log('this.rawDataBytes111',this.rawDataBytes)
     }
   }
 

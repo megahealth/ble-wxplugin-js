@@ -2,7 +2,7 @@ import api from './MegaRequest'
 import pako from './MegaPako'
 import { Config } from './MegaBleConst';
 import { yyyymmddhhmmss,arrayBufferToBase64 } from './MegaUtils';
-
+import  {bytesToUint8Array} from './MegaUtils';
 const UPLOAD_INTERVAL = 10 // s
 
 class MegaBleRawdataManager {
@@ -12,10 +12,11 @@ class MegaBleRawdataManager {
   }
   rawDataLen=0;
   rawDataBytes=null
+  rdb=null
   interval=1000; //ms
   intervaler=null
   open() {
-    console.log('open')
+    if(Config.debugable)console.log('open')
     //开启rawdata
     this.api.enableRawdata(true)
   }
@@ -28,7 +29,7 @@ class MegaBleRawdataManager {
     this.deviceInfo=deviceInfo
   }
   handleTransmitPermited(a) {
-    console.log('a',a)
+    if(Config.debugable)console.log('a',a)
     this.stopType = a[4];
     this.dataType = a[6];
     // 版本(0) 结束类型(1) 协议(2) 保留(3) 头部1c(4) 结束原因(5) 固件版本(6-10) sn(11-16) ID(17-28) step(29-32)
@@ -90,14 +91,13 @@ class MegaBleRawdataManager {
 
   setSleepLength(length){
     this.rawDataLen=length
-    console.log('sleep-length',length)
+    if(Config.debugable)console.log('sleep-length',length)
     this.rawDataBytes = new Uint8Array();
   }
 
   setSleepByte(a){
     this.rawDataBytes = this.mergeUint8Arrays(this.rawDataBytes, a);
     const progress = ((this.rawDataBytes.length * 100) / this.rawDataLen).toFixed(3);
-    console.log('progress',progress)
     if (this.rawDataLen <= 0) {
       return this.api.enableRawdata(false)
     }
@@ -121,14 +121,20 @@ class MegaBleRawdataManager {
 
   setPulseTime(time){
     this.interval = time
-    console.log('time',time)
+    this.rawDataBytes=null
+    if(Config.debugable)console.log('time',time)
   }
 
-  setPulseByte(a){
+  async setPulseByte(a){
+    if(!this.rawDataBytes){
+      this.rawDataBytes=await bytesToUint8Array(a,this.deviceInfo.swVer)
+    }else{
+      this.rawDataBytes =this.rawDataBytes.concat(await bytesToUint8Array(a,this.deviceInfo.swVer)) 
+    }
     if(!this.intervaler){
       this.intervaler=setInterval(()=>{
-        // console.log('---->',a)
-        this.callback.ontPulse(a)
+        this.callback.ontPulse(this.rawDataBytes)
+        this.rawDataBytes=null
       },this.interval)
     }
   }
@@ -149,7 +155,7 @@ class MegaBleRawdataManager {
   // }
 
   clear() {
-    console.log('clear')
+    if(Config.debugable)console.log('clear')
     this.api.enableRawdata(false)
     if (this.intervaler) clearInterval(this.intervaler)
     this.interval=1000

@@ -35,6 +35,7 @@ export const updateDeviceInfo = data => ({
   data,
 })
 
+
 export const uploadSptData = data => ({
   type: constants.ACTION_UPLOAD_SPT_DATA,
   data,
@@ -153,7 +154,7 @@ export const startRawdata=(enable)=>{
 
 //设置脉诊模式
 export const setPulseMode=(enable)=>{
-  client.setPulseMode(enable,1000)
+  client.setPulseMode(enable,1000*1)
 }
 export const quickReport=()=>{
   client.quickReport()
@@ -241,7 +242,7 @@ const genMegaCallback = (dispatch) => {
       Taro.showLoading({title: 'shake target device', mask: true})
     },
     onOperationStatus: (cmd, status) => {
-      if (status !== 0) {
+      if (status !== 0&&cmd!==94) {
         console.error('onOperationStatus: ' + cmd.toString(16) + ' - ' + status.toString(16));
       }
     },
@@ -341,6 +342,7 @@ const genMegaCallback = (dispatch) => {
       console.log('onDfuProgress',progress);
     },
     ontPulse: (bytes) => {
+      console.log(bytes)
       // 写入文件
       // const fs= wx.getFileSystemManager()
       // const newDate=new Date().getTime()
@@ -354,7 +356,7 @@ const genMegaCallback = (dispatch) => {
       //     console.log(res)
       //     console.log('path',path)
       //     wx.uploadFile({
-      //       url: 'http://192.168.0.136:3000/upload', //仅为示例，非真实的接口地址
+      //       url: 'http://192.168.0.109:3000/upload', //仅为示例，非真实的接口地址
       //       filePath:path,
       //       name: name,
       //       success (res){
@@ -367,9 +369,8 @@ const genMegaCallback = (dispatch) => {
       //   }
       // })
 
-      console.log('rawData回调byte',bytes);
+      // console.log('rawData回调byte',bytesToUint8Array(bytes,'5.0.12368'));
 
-      // console.log( (bytes[6] << 24) | (bytes[7] << 16) | (bytes[8] << 8) | bytes[9])
     },
   }
 }
@@ -388,3 +389,5 @@ const createFormData = (params = {}, boundary = '') => {
   }
   return result
 }
+
+
