@@ -1,53 +1,56 @@
-# 兆观ble sdk：微信小程序插件版
+# ble sdk：微信小程序插件版
+
 - 插件名称：megable
 - 链接地址：https://mp.weixin.qq.com/wxopen/pluginbasicprofile?action=intro&appid=wxf4fa9b179dfd7bca&token=&lang=zh_CN
 
 ## 功能简介
-提供与兆观公司智能指环蓝牙交互的功能
+
+提供与智能指环蓝牙交互的功能
 
 - 主要功能
+
   1. 血氧实时模式
 
-        说明：实时输出，戒指自身不存储
+     说明：实时输出，戒指自身不存储
 
-        数据内容：血氧(SpO2)，心率(pr)，睡眠分期
+     数据内容：血氧(SpO2)，心率(pr)，睡眠分期
 
   2. 血氧监测模式
 
-        说明：实时输出，同时戒指自身存储。方便手机与戒指断开，待监测结束后，异步收取监测数据
-  
-- 推荐的App端工作流程
+     说明：实时输出，同时戒指自身存储。方便手机与戒指断开，待监测结束后，异步收取监测数据
+
+- 推荐的 App 端工作流程
+
   - [工作流程图](https://file-mhn.megahealth.cn/62630b5d10f14ecce727/App%E4%B8%8E%E6%88%92%E6%8C%87%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B%E5%9B%BE.pdf)
-    
+
     这是完整功能的流程，请结合实际业务需求调整。例如：只用到血氧实时模式，就实时接收数据即可，不用考虑异步收取监测数据的问题。
 
-
 ## 快速开始
+
 1. 微信小程序引入插件
 
-2. 初始化sdk，得到ble client实例；client设置callback，用于接收戒指事件通知
+2. 初始化 sdk，得到 ble client 实例；client 设置 callback，用于接收戒指事件通知
 
-3. 使用MegaBleScanner，进行扫描，得到目标device
+3. 使用 MegaBleScanner，进行扫描，得到目标 device
 
-4. client连接device，等待连接成功
+4. client 连接 device，等待连接成功
 
-5. 绑定戒指(首次连或token不匹配，需要晃动戒指才能连上。收到token后，用token连即可跳过晃动)
-    - 非绑定设备状态下: client.startWithToken('5837288dc59e0d00577c5f9a', '0,0,0,0,0,0')
-    - 已绑定设备状态下: client.startWithToken('5837288dc59e0d00577c5f9a', token)
-    - 注意：如果token不匹配，戒指之前的监测就会停止（数据还在，收取报告会上传）。
-    
-6. 【必须】在callback的onSetUserInfo回调中，设置用户身体信息client.setUserInfo。这一步在之前设置callback时预先写好即可
+5. 绑定戒指(首次连或 token 不匹配，需要晃动戒指才能连上。收到 token 后，用 token 连即可跳过晃动)
+   - 非绑定设备状态下: client.startWithToken('5837288dc59e0d00577c5f9a', '0,0,0,0,0,0')
+   - 已绑定设备状态下: client.startWithToken('5837288dc59e0d00577c5f9a', token)
+   - 注意：如果 token 不匹配，戒指之前的监测就会停止（数据还在，收取报告会上传）。
+6. 【必须】在 callback 的 onSetUserInfo 回调中，设置用户身体信息 client.setUserInfo。这一步在之前设置 callback 时预先写好即可
 
-    ​	注意：如果没有设置用户信息，会当成新用户对待，每次连接戒指都会提示晃动，并且结束之前设置的监测。
+   ​ 注意：如果没有设置用户信息，会当成新用户对待，每次连接戒指都会提示晃动，并且结束之前设置的监测。
 
-7. 连接进入idle（空闲）状态，用户可以开始操作，如：收缓存在戒指中的记录、开关监测
+7. 连接进入 idle（空闲）状态，用户可以开始操作，如：收缓存在戒指中的记录、开关监测
 
-8. （可选）解析数据，可以输出类似《兆观健康Pro》中的报告统计信息，视业务需求实现。
-
+8. （可选）解析数据，可以输出报告统计信息，视业务需求实现。
 
 <!-- 用户id格式：12个byte组成的十六进制字符串，总长24。若不关心userid，可填12个"00" -->
 
 ## 初始化
+
 > 导入库
 
 ```
@@ -58,7 +61,7 @@ const APPID = 'Your own id'
 const APPKEY = 'Your own key'
 
 const {
-  initSdk, // for the ble client; connect, send message to the device, 
+  initSdk, // for the ble client; connect, send message to the device,
   MegaBleScanner, // for scanning
   MegaBleStatus, // for onOperationStatus const
   MegaUtils, // 1.1.4 增加
@@ -106,7 +109,7 @@ MegaUtils.parseAdv(device.advertisData) // {mac, sn}
 ```
 var blePlugin = requirePlugin("megable")
 const {
-  initSdk, // for the ble client; connect, send message to the device, 
+  initSdk, // for the ble client; connect, send message to the device,
   MegaBleScanner, // for scanning
   MegaBleStatus, // for onOperationStatus const
   MegaUtils, // 1.1.4 增加
@@ -119,7 +122,7 @@ initSdk(APPID, APPKEY, wx).then(clnt => {
         // 将初始化获取到的clnt保存到上面定义的client变量里，下面要用到。
         client = clnt;
     }).catch(err => console.error(err))
-})    
+})
 
 // 设置回调函数集合给蓝牙插件，蓝牙插件对戒指进行操作产生结果后，会调用相应的客户端回调函数，将结果传给客户端。
 client.setCallback(genMegaCallback());
@@ -143,7 +146,7 @@ client.connect(device.name, device.deviceId, device.advertisData).then(res => {
             res => console.log(res)
         ).catch(err => console.error(err));
     } else {
-    // no cached token, just use '0,0,0,0,0,0'; 
+    // no cached token, just use '0,0,0,0,0,0';
     // 没有token或不匹配时，蓝牙插件会自动调用设置好的genMegaCallback中的onKnockDevice回调方法，
     // 客户端可以在onKnockDevice中写用以提示用户晃动戒指的部分。
     client.startWithToken('5837288dc59e0d00577c5f9a', '0,0,0,0,0,0').then(
@@ -177,7 +180,7 @@ const onSyncMonitorDataComplete = (bytes, dataStopType, dataType, deviceInfo) =>
       // 组织formdata需要
       const boundary = `----MegaRing${new Date().getTime()}`;
       //构建formdata
-      const formData = 
+      const formData =
           createFormData({ binData: bytes, institutionId:institutionId, remoteDevice:JSON.stringify(DeviceInfo), reportType:JSON.stringify(reportType)}, boundary)
 
       // request的options
@@ -221,147 +224,150 @@ const onSyncMonitorDataComplete = (bytes, dataStopType, dataType, deviceInfo) =>
 ## API
 
 - class MegaBleScanner:
-    - initBleAdapter()
-    - stopScan()
-    - scan()
+  - initBleAdapter()
+  - stopScan()
+  - scan()
 - class MegaBleClient:
-    - connect(name, deviceId, advertisData)
-    
-        - 连接设备
+
+  - connect(name, deviceId, advertisData)
+
+    - 连接设备
+
 - startWithoutToken(userId, mac) // deprecated
-    - startWithToken(userId, token) 
-        - 用户id格式：12个byte组成的十六进制字符串，总长24。若不关心userid，可使用模板"5837288dc59e0d00577c5f9a"，或12个"00" 
-    
-    - setUserInfo(age, gender, height, weight, stepLength)
-      - 女(0), 男(1); 身高(cm); 体重(kg); 步长(cm)
-      - 例：client.setUserInfo(25, 1, 170, 60, 0)
-    
-    - enableRealTimeNotify(enable)
-      - 打开全局实时通道，接收实时数据（血氧、电量值，电量状态等），可重复调用
-    - enableLive(enable)
-        - 开启血氧实时模式
-    
-    - enableMonitor(enable）
-      - 开启血氧监测模式
-  - syncData() 
-      - 同步血氧监测记录，只有开启血氧监测才会产生；监测结束后，电量正常或充电时，才可收取
+
+  - startWithToken(userId, token)
+
+    - 用户 id 格式：12 个 byte 组成的十六进制字符串，总长 24。若不关心 userid，可使用模板"5837288dc59e0d00577c5f9a"，或 12 个"00"
+
+  - setUserInfo(age, gender, height, weight, stepLength)
+
+    - 女(0), 男(1); 身高(cm); 体重(kg); 步长(cm)
+    - 例：client.setUserInfo(25, 1, 170, 60, 0)
+
+  - enableRealTimeNotify(enable)
+    - 打开全局实时通道，接收实时数据（血氧、电量值，电量状态等），可重复调用
+  - enableLive(enable)
+
+    - 开启血氧实时模式
+
+  - enableMonitor(enable）
+    - 开启血氧监测模式
+  - syncData()
+    - 同步血氧监测记录，只有开启血氧监测才会产生；监测结束后，电量正常或充电时，才可收取
   - enableRawdata()
-      - 调试接口，一般用不到
+    - 调试接口，一般用不到
   - disableRawdata()
-  - disconnect() 
-      - 断开连接
+  - disconnect()
+    - 断开连接
   - closeBluetoothAdapter()
-      - 释放蓝牙资源
-  
+    - 释放蓝牙资源
+
 - scanner callback
-  
 - onDeviceFound(devices) {}
-  
 - mega ble callback
-    - onAdapterStateChange: (res) => {}
 
-        - 蓝牙适配器状态变化，available蓝牙是否可用，discovering蓝牙是否正在搜索
-        - res={ available: true, discovering: false }
+  - onAdapterStateChange: (res) => {}
 
-    - onConnectionStateChange: (res) => {}
+    - 蓝牙适配器状态变化，available 蓝牙是否可用，discovering 蓝牙是否正在搜索
+    - res={ available: true, discovering: false }
 
-        - 连接状态变化。
-        - connected：false=>true（设备连接成功） true=>(设备断开连接)
-        - res={ connected：true，deviceId：'BC:E5:9F:48:89:20' }
+  - onConnectionStateChange: (res) => {}
 
-    - onBatteryChanged: (value, status) => {}
+    - 连接状态变化。
+    - connected：false=>true（设备连接成功） true=>(设备断开连接)
+    - res={ connected：true，deviceId：'BC:E5:9F:48:89:20' }
 
-        - 电量变化 value：电量。 status：电池状态
-        - status参考STATUS_BATT列表
+  - onBatteryChanged: (value, status) => {}
 
-    - 
+    - 电量变化 value：电量。 status：电池状态
+    - status 参考 STATUS_BATT 列表
 
-        status参考STATUS_BATT列表
+  - status 参考 STATUS_BATT 列表
 
-    - onTokenReceived: (token) => {}
+  - onTokenReceived: (token) => {}
 
-        token是每次绑定唯一
-        被别的设备绑了，之前的token就失效了
-        只要不被别的手机绑定，token就有效。
+    token 是每次绑定唯一
+    被别的设备绑了，之前的 token 就失效了
+    只要不被别的手机绑定，token 就有效。
 
-    - onKnockDevice: () => {}
+  - onKnockDevice: () => {}
 
-        需要ui提示晃动戒指以绑定
-        
-    - onOperationStatus: (cmd, status) => {}
+    需要 ui 提示晃动戒指以绑定
 
-        - 操作错误提示码
-        
-        见下面STATUS文档
-        
-    - onEnsureBindWhenTokenNotMatch: () => {} // deprecated
+  - onOperationStatus: (cmd, status) => {}
 
-    - onError: (status) => {}
+    - 操作错误提示码
 
-    - onCrashLogReceived: (a) => {}
+    见下面 STATUS 文档
 
-    - onSyncingDataProgress: (progress) => {}
+  - onEnsureBindWhenTokenNotMatch: () => {} // deprecated
 
-        - 数据同步进度
+  - onError: (status) => {}
 
-    - onSyncMonitorDataComplete: (bytes, dataStopType, dataType,deviceInfo) => {}
+  - onCrashLogReceived: (a) => {}
 
-        - 1.1.9版本添加deviceInfo,监测数据同步成功
+  - onSyncingDataProgress: (progress) => {}
 
-    - onSyncDailyDataComplete: (bytes) => {}
+    - 数据同步进度
 
-        - 日常数据同步成功
+  - onSyncMonitorDataComplete: (bytes, dataStopType, dataType,deviceInfo) => {}
 
-    - onSyncNoDataOfMonitor: () => {}
+    - 1.1.9 版本添加 deviceInfo,监测数据同步成功
 
-        - 没有监测数据可供同步
+  - onSyncDailyDataComplete: (bytes) => {}
 
-    - onSyncNoDataOfDaily: () => {}
+    - 日常数据同步成功
 
-        - 没有日常数据可供同步
+  - onSyncNoDataOfMonitor: () => {}
 
-    - onV2BootupTimeReceived: time => {}
+    - 没有监测数据可供同步
 
-    - onBatteryChangedV2: (value, status, druation) => {}
+  - onSyncNoDataOfDaily: () => {}
 
-    - onHeartBeatReceived: heartBeat => {} 
+    - 没有日常数据可供同步
 
-    - onV2PeriodSettingReceived: v2PeriodSetting => {}
+  - onV2BootupTimeReceived: time => {}
 
-    - onV2PeriodEnsureResponsed: a => {}
+  - onBatteryChangedV2: (value, status, druation) => {}
 
-    - onV2PeriodReadyWarning: a => {}
+  - onHeartBeatReceived: heartBeat => {}
 
-    - onLiveDataReceived: live => {}
+  - onV2PeriodSettingReceived: v2PeriodSetting => {}
 
-    - onV2LiveSleep: v2LiveSleep => {}
+  - onV2PeriodEnsureResponsed: a => {}
 
-        收到血氧监测模式live数据; status参考STATUS_LIVE列表
-        
-    - onV2LiveSport: v2LiveSport => {}
+  - onV2PeriodReadyWarning: a => {}
 
-    - onV2LiveSpoMonitor: v2LiveSpoMonitor => {}
+  - onLiveDataReceived: live => {}
 
-        收到血氧实时模式live数据; status参考STATUS_LIVE列表
-        
-    - onSetUserInfo: () => {}
+  - onV2LiveSleep: v2LiveSleep => {}
 
-        - 设置用户信息 【 必须预设一个用户信息，否者每次连接都会被认为是新用户 ，提示晃动戒指】
-    - onSetUserInfo() {  client.setUserInfo(25, 1, 170, 60, 0 ) }   年龄、性别、身高、体重、步长
-    
-    - onIdle: () => {}
-    
-    连接进入空闲
-        
-    - onDeviceInfoUpdated: deviceInfo => {},
-    
-    onidle 触发前的 onDeviceInfoUpdated，有isRunning，代表处于监测模式
-        
-    - onRawdataReceiving: (count, bleCount, rawdataDuration) => {}
-    
-    - onRawdataComplete: info => {},
+    收到血氧监测模式 live 数据; status 参考 STATUS_LIVE 列表
+
+  - onV2LiveSport: v2LiveSport => {}
+
+  - onV2LiveSpoMonitor: v2LiveSpoMonitor => {}
+
+    收到血氧实时模式 live 数据; status 参考 STATUS_LIVE 列表
+
+  - onSetUserInfo: () => {}
+
+    - 设置用户信息 【 必须预设一个用户信息，否者每次连接都会被认为是新用户 ，提示晃动戒指】
+
+  - onSetUserInfo() { client.setUserInfo(25, 1, 170, 60, 0 ) } 年龄、性别、身高、体重、步长
+
+  - onIdle: () => {}
+
+  连接进入空闲
+
+  - onDeviceInfoUpdated: deviceInfo => {},
+
+  onidle 触发前的 onDeviceInfoUpdated，有 isRunning，代表处于监测模式
+
+  - onRawdataReceiving: (count, bleCount, rawdataDuration) => {}
+
+  - onRawdataComplete: info => {},
     onDfuProgress: progress => {}
-
 
 - export const STATUS
 
@@ -410,20 +416,25 @@ const onSyncMonitorDataComplete = (bytes, dataStopType, dataType, deviceInfo) =>
   MODE_LIVE               : 4, // 实时模式(血氧)
   MODE_BP                 : 5, // bp模式
 ```
+
 ## 插件的编译方法
+
     taro build --plugin weapp
 
-## demo的运行方法
-demo使用了taro框架，具体可参考taro官方文档
+## demo 的运行方法
 
-1. 安装taro
-   
-    yarn global add @tarojs/cli@1.3.12
+demo 使用了 taro 框架，具体可参考 taro 官方文档
+
+1. 安装 taro
+
+   yarn global add @tarojs/cli@1.3.12
+
 2. 运行
 
-    npm run build:weapp -- --watch
+   npm run build:weapp -- --watch
+
 3. build
 
-    taro build --type weapp
+   taro build --type weapp
 
-4. 微信开发工具导入dist文件夹，预览
+4. 微信开发工具导入 dist 文件夹，预览
