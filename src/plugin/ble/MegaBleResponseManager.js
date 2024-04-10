@@ -214,7 +214,6 @@ class MegaBleResponseManager {
 
   handleDisconnect() {
     if (this.loopManager) {
-      this.handleClearInterval()
       this.loopManager.clearLoop()
       this.loopManager = null
     }

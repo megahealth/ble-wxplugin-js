@@ -245,7 +245,6 @@ class MegaBleClient {
 
   disconnect() {
     //关闭循环
-    this.responseManager.handleClearInterval()
     const that=this
     return new Promise((resolve, reject) => {
       if (!this.isConnected) {

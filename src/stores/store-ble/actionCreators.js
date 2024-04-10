@@ -154,7 +154,7 @@ export const startRawdata=(enable)=>{
 
 //设置脉诊模式
 export const setPulseMode=(enable)=>{
-  client.setPulseMode(enable,1000*10)
+  client.setPulseMode(enable,1000*1)
 }
 export const quickReport=()=>{
   client.quickReport()

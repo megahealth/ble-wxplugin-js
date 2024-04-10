@@ -19,6 +19,10 @@ class MegaBleRawdataManager {
     if(Config.debugable)console.log('open')
     //开启rawdata
     this.api.enableRawdata(true)
+    if(this.intervaler) {
+      clearInterval(this.intervaler)
+      this.intervaler=null
+    }
   }
   stop(){
     //关闭rawdata
