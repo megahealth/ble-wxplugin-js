@@ -40,7 +40,7 @@ class Index extends Component {
       .catch(err => console.log(err))
     }else{
       console.log('first login')
-      // Taro.navigateTo({ url: '/pages/login/login' })
+      Taro.navigateTo({ url: '/pages/login/login' })
     }
   }
 
@@ -62,7 +62,7 @@ class Index extends Component {
 
   render() {
     const {
-      device, 
+      device,
       handleGoScanPage,
       handleStart,
       handleStop,

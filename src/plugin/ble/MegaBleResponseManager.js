@@ -104,7 +104,7 @@ class MegaBleResponseManager {
       case CMD.NOTIBATT:
         if (status == 0) {
           if (a.length >= 7 )
-          
+
           this.callback.onBatteryChangedV2(a[3], a[4], (a[5] << 16) | (a[6] << 8) | a[7]);
         }
         break;
@@ -162,12 +162,15 @@ class MegaBleResponseManager {
   }
 
   handleRawDataResponse(a) {
-   
+
     this.rawDataBytes=a
-    if(this.type=='pulse'){
+    //脉诊
+    if(a[0]==94&&a[1]==12){
       this.rawDataManager.setPulseByte(this.rawDataBytes)
     }
+    //睡眠
     if(this.type=='sleep'){
+      console.log(a[0])
       if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1) {
         const recordLen =
           (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
@@ -176,15 +179,15 @@ class MegaBleResponseManager {
         this.rawDataManager.setSleepByte(this.rawDataBytes)
       }
     }
-
-    if(!this.type){
-      if(Config.debugable)console.log('this.rawDataBytes111',this.rawDataBytes)
-    }
+    //血氧
+    // if(a[0]==94&&a[1]==1){
+    //   console.log(111)
+    //   this.handleNotifyResponse(a)
+    // }
   }
 
 
   handleNotifyResponse(a) {
-    // console.log(a[0]);
     switch (a[0]) {
       case CMD.LIVECTRL:
         // 2018-10-10 15:00:40 加入实时的log采集
@@ -203,7 +206,6 @@ class MegaBleResponseManager {
   }
 
   handleReadResponse(a) {
-    // console.log('onRead: ' + u8s2hex(a))
     const deviceInfo = parseRead(a)
     DeviceInfo.sn = deviceInfo.sn;
     DeviceInfo.swVer = deviceInfo.fwVer;
@@ -311,6 +313,7 @@ class MegaBleResponseManager {
 
   _dispatchV2Live(megaBleCallback, a) {
     if (!megaBleCallback) return
+    // console.log(a[2])
     switch (a[2]) {
       case 0:
         megaBleCallback.onLiveDataReceived({ spo: a[3], hr: a[4], status: a[5] }); // spo, hr, flag | a[3]  a[4] a[5]
@@ -324,6 +327,7 @@ class MegaBleResponseManager {
       case 0x03:
         break;
       case 0x04:
+      case 0x06:
         megaBleCallback.onV2LiveSpoMonitor({ status: a[3], spo: a[4], pr: a[5] });
         break;
       default:

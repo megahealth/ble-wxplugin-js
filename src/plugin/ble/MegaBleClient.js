@@ -40,13 +40,16 @@ class MegaBleClient {
       if (!this.responseManager) return
       if (characteristic.deviceId === this.deviceId) {
         const a = new Uint8Array(characteristic.value)
+        // console.log(characteristic.characteristicId==BLE_CFG.RAW_UUID,'rawdata')
+        // console.log(characteristic.characteristicId==BLE_CFG.CH_NOTIFY,'notify')
+        // console.log(characteristic.characteristicId==BLE_CFG.CH_INDICATE,'CH_INDICATE')
         switch (characteristic.characteristicId) {
           case BLE_CFG.RAW_UUID:
+            // console.log(a)
             this.responseManager.handleRawDataResponse(a)
           case BLE_CFG.CH_INDICATE:
             this.responseManager.handleIndicateResponse(a)
             break;
-
           case BLE_CFG.CH_NOTIFY:
             this.responseManager.handleNotifyResponse(a)
             break;
@@ -90,6 +93,7 @@ class MegaBleClient {
               if(res.length>0){
                 for (let i = 0; i < res.length; i++) {
                   const item = res[i];
+                  console.log('item',item)
                   let indicate,notify,read,write,raw_uuid,raw_sid
                   for (let j = 0; j < item.characteristics.length; j++) {
                     const element = item.characteristics[j];
@@ -119,11 +123,15 @@ class MegaBleClient {
                     BLE_CFG.RAW_SID = raw_sid;
                     BLE_CFG.RAW_UUID = raw_uuid;
                   }
+
                 }
                 // console.log(1111)
               }
               // console.log( 'serviceId',BLE_CFG.RAW_SID)
-              // console.log( 'uuid',BLE_CFG.RAW_UUID)
+              // console.log('CH_INDICATE',BLE_CFG.CH_INDICATE)
+              // console.log('CH_NOTIFY', BLE_CFG.CH_NOTIFY)
+              // console.log('RAW_UUID', BLE_CFG.RAW_UUID)
+
               // 各服务初始化完成
               // init sdk
               this.api = new MegaBleCmdApiManager(this.deviceId)
@@ -211,7 +219,7 @@ class MegaBleClient {
       },10)
     }else{
       // 关闭脉诊
-      this.enableLive(false)
+      this.enableLive(true)
       setTimeout(()=>{
         //清除间隔
         this.enableRawdata(false)
@@ -347,7 +355,7 @@ class MegaBleClient {
   //         targetPath: unzippedPath,
   //         success: (res1) => {
   //           console.log(res1)
-  
+
   //           const list =  fileManager.readdirSync(unzippedPath)
   //           console.log(list)
   //           if (list.indexOf('manifest.json') != -1) {
@@ -369,10 +377,10 @@ class MegaBleClient {
 
 const initSdk = (appId, appKey, ctx) => {
   return new Promise((resolve, reject) => {
-    apiLean.get('/classes/SDKClient', 
-      {where: {appKey, appId}, limit: 1, keys: 'valid'}, 
+    apiLean.get('/classes/SDKClient',
+      {where: {appKey, appId}, limit: 1, keys: 'valid'},
       res => {
-        if (res.data.results 
+        if (res.data.results
           && res.data.results.length > 0
           && res.data.results[0]['valid']) {
 
