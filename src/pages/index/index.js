@@ -23,25 +23,9 @@ class Index extends Component {
   }
 
   componentWillMount() {
-    const user = Taro.getStorageSync('user')
-    console.log(user);
     initSdk(APPID, APPKEY, wx).then(client => {
       this.props.handleInitClient(client);
     }).catch(err => console.error(err))
-
-    if (user) {
-      this.props.handleUserExists(user)
-      api.get('/users/' + user.objectId)
-      .then(res => {
-        if (res.data.sptToken && res.data.sptToken.indexOf(',') != -1) {
-          Taro.setStorageSync('token', res.data.sptToken)
-        }
-      })
-      .catch(err => console.log(err))
-    }else{
-      console.log('first login')
-      Taro.navigateTo({ url: '/pages/login/login' })
-    }
   }
 
   componentDidMount() {
@@ -127,25 +111,12 @@ class Index extends Component {
         }
 
         <View>
-          {/* <Button size='mini' onClick={this.uploadMock}>上传</Button>
-          <Button size='mini' onClick={this.updateToken}>更新token</Button>
-          <Button size='mini' onClick={this.fetchUserInfo}>获取token</Button>
-          <Button size='mini' onClick={this.goDetail}>详情</Button> */}
-
-          <Button onClick={this.goSptList}>列表</Button>
+          {/* <Button onClick={this.goSptList}>列表</Button> */}
           <Button onClick={handerdisconnect}>解绑</Button>
 
         </View>
-
-        <View className='account' onClick={this.handleGoLoginPage}>
-          {user ? '已登录' : '未登录'}
-        </View>
       </View>
     )
-  }
-
-  handleGoLoginPage() {
-    Taro.navigateTo({ url: '/pages/login/login' })
   }
 
   uploadMock() {
@@ -154,17 +125,6 @@ class Index extends Component {
     // api.post()
   }
 
-  updateToken() {
-    api.put('/users/' + this.props.user.objectId, {sptToken: 'xxx1'}, {'X-LC-Session': this.props.user.sessionToken})
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
-  }
-
-  fetchUserInfo() {
-    api.get('/users/' + this.props.user.objectId)
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
-  }
 
   goDetail() {
     Taro.navigateTo({ url: '/pages/spt-detail/spt-detail' })
@@ -172,9 +132,7 @@ class Index extends Component {
   goSptList() {
     Taro.navigateTo({ url: '/pages/spt-list/spt-list' })
   }
-  discover(){
-
-  }
+  discover(){}
 }
 
 const mapState = (state) => {
