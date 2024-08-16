@@ -1,6 +1,5 @@
 import MegaBleCmdApiManager from "./MegaBleCmdApiManager";
 import MegaBleResponseManager from "./MegaBleResponseManager";
-import MegaBleRawdataManager from "./MegaBleRawdataManager";
 import { BLE_CFG, Config, DeviceInfo } from "./MegaBleConst";
 import { discoverServicesAndChs } from "./MegaUtils";
 import apiLean from "./service-lean";
@@ -29,6 +28,7 @@ class MegaBleClient {
     wx.onBLEConnectionStateChange(res => {
       if (res.deviceId === this.deviceId) {
         if (!res.connected && this.responseManager) {
+          this.responseManager.clearRawData()
           this.clear()
         }
 
@@ -40,12 +40,8 @@ class MegaBleClient {
       if (!this.responseManager) return
       if (characteristic.deviceId === this.deviceId) {
         const a = new Uint8Array(characteristic.value)
-        // console.log(characteristic.characteristicId==BLE_CFG.RAW_UUID,'rawdata')
-        // console.log(characteristic.characteristicId==BLE_CFG.CH_NOTIFY,'notify')
-        // console.log(characteristic.characteristicId==BLE_CFG.CH_INDICATE,'CH_INDICATE')
         switch (characteristic.characteristicId) {
           case BLE_CFG.RAW_UUID:
-            // console.log(a)
             this.responseManager.handleRawDataResponse(a)
           case BLE_CFG.CH_INDICATE:
             this.responseManager.handleIndicateResponse(a)
@@ -93,7 +89,6 @@ class MegaBleClient {
               if(res.length>0){
                 for (let i = 0; i < res.length; i++) {
                   const item = res[i];
-                  console.log('item',item)
                   let indicate,notify,read,write,raw_uuid,raw_sid
                   for (let j = 0; j < item.characteristics.length; j++) {
                     const element = item.characteristics[j];
@@ -127,10 +122,6 @@ class MegaBleClient {
                 }
                 // console.log(1111)
               }
-              // console.log( 'serviceId',BLE_CFG.RAW_SID)
-              // console.log('CH_INDICATE',BLE_CFG.CH_INDICATE)
-              // console.log('CH_NOTIFY', BLE_CFG.CH_NOTIFY)
-              // console.log('RAW_UUID', BLE_CFG.RAW_UUID)
 
               // 各服务初始化完成
               // init sdk
@@ -244,6 +235,7 @@ class MegaBleClient {
       this.responseManager = null
     }
     if (this.rawdataManager) {
+      console.log('111111')
       this.rawdataManager.clear()
       this.rawdataManager = null
     }
@@ -257,6 +249,7 @@ class MegaBleClient {
     return new Promise((resolve, reject) => {
       if (!this.isConnected) {
         resolve()
+        this.responseManager.clear()
         return
       }
       wx.closeBLEConnection({
@@ -278,100 +271,10 @@ class MegaBleClient {
     Config.debugable = enable
   }
 
-  // start dfu
-  // async startDfu(filePath) {
-  //   const dfuManager = await this.initDfu(filePath)
 
-  //   if (!this.name) return
-  //   if (this.name.toLowerCase().indexOf('targ') != -1) {
-  //     dfuManager.start()
-  //     return
-  //   }
 
-  //   const dfuMac = getDfuMac(this.realMac)
-  //   console.log('realmac dfuMac: ', this.realMac, dfuMac)
 
-  //   this.api.startDfu() // will disconnect
-  //   let timeout;
-  //   const scanCallback = (res) => {
-  //     res.devices = res.devices.filter(i => {
-  //       if (i.name && i.name.toLowerCase().indexOf('dfu') != -1) {
-  //         console.log('dfu scaning... ', i)
 
-  //         const adv = Array.from(new Uint8Array(i.advertisData))
-  //         const scannedMac = adv.slice(2, 8).reverse().map(i => ('00' + i.toString(16)).slice(-2)).join(':').toUpperCase()
-  //         console.log('dfu scanned device: ', scannedMac)
-  //         if (scannedMac === dfuMac) {
-  //           clearTimeout(timeout)
-  //           console.log('dfu find dfu device: ', scannedMac)
-  //           wx.stopBluetoothDevicesDiscovery({
-  //             success: () => {},
-  //             fail: err => console.error(err),
-  //             complete: () => {
-  //               console.log('dfuConnect -> ' + dfuMac)
-  //               this._dfuConnect(i.deviceId, dfuManager)
-  //             }
-  //           })
-  //         }
-  //       }
-  //     })
-  //   }
-  //   wx.onBluetoothDeviceFound(scanCallback)
-
-  //   wx.startBluetoothDevicesDiscovery({
-  //     allowDuplicatesKey: false,
-  //     success: res => {},
-  //     fail: err => {},
-  //   })
-  //   timeout = setTimeout(() => {
-  //     wx.stopBluetoothDevicesDiscovery()
-  //     console.log('dfuConnect(after 10s), no dfu mac matched. execute backup dfu strategy.')
-  //     // executeBackUpDfuStrategy
-  //   }, 10000);
-  // }
-
-  // _dfuConnect(deviceId, dfuManager) {
-  //   wx.createBLEConnection({
-  //     deviceId,
-  //     success: () => {
-  //       discoverServicesAndChs(deviceId)
-  //         .then(res => {
-  //           console.log(res)
-  //           dfuManager.setDeviceId(deviceId)
-  //           dfuManager.start()
-  //         })
-  //         .catch(err => console.error(err))
-  //     },
-  //     fail: err => console.error(err)
-  //   })
-  // }
-
-  // initDfu(filePath) {
-  //   return new Promise((resolve, reject) => {
-  //     const fileManager = wx.getFileSystemManager()
-  //     const unzippedPath = wx.env.USER_DATA_PATH + '/dfu'
-  //     fileManager.unzip({
-  //         zipFilePath: filePath,
-  //         targetPath: unzippedPath,
-  //         success: (res1) => {
-  //           console.log(res1)
-
-  //           const list =  fileManager.readdirSync(unzippedPath)
-  //           console.log(list)
-  //           if (list.indexOf('manifest.json') != -1) {
-  //             const manifestStr = fileManager.readFileSync(unzippedPath + '/manifest.json', 'utf-8')
-  //             console.log(manifestStr)
-  //             const dfuManager = new MegaDfu(unzippedPath, JSON.parse(manifestStr), this.realMac)
-  //             dfuManager.on(progress => this.callback.onDfuProgress(progress))
-  //             resolve(dfuManager)
-  //           } else {
-  //             reject('wrong dfu zip file')
-  //           }
-  //         },
-  //         fail: err => reject(err)
-  //       })
-  //   })
-  // }
 
 }
 
