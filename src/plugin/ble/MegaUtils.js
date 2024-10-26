@@ -324,8 +324,7 @@ export function arrayBufferToBase64(arrayBuffer) {
 }
 
 export function bytesToUint8Array (b,swVer) {
-  
-    if (b[0] == 94 || b[0] == 91) { 
+    if (b[0] == 94 || b[0] == 91) {
       let array=[]
       if (swVer.toLowerCase().startsWith("3.0")) {
         if (b[1] == 12) {
@@ -345,6 +344,16 @@ export function bytesToUint8Array (b,swVer) {
         }
         return array
       } else if(swVer.toLowerCase().startsWith("5.0") && b.length == 100){
+        let j = 0;//array index
+        for (let i = 0; i < 5; i++){
+          let index = i * 20;
+            if (b[index + 1] == 12) {
+                array[j++] =((b[index+2] << 16) | (b[index+3] << 8) | (b[index+4])), ((b[index+5] << 16) | (b[index+6] << 8) | (b[index+7]))
+                array[j++] =((b[index+8] << 16) | (b[index+9] << 8) | (b[index+10])), ((b[index+11] << 16) | (b[index+12] << 8) | (b[index+13]))
+            }
+        }
+        return array
+      } else if(swVer.toLowerCase().startsWith("6.0") && b.length == 100){
         let j = 0;//array index
         for (let i = 0; i < 5; i++){
           let index = i * 20;
