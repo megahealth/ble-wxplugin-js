@@ -179,12 +179,19 @@ const parseSnV1 = (a) => {
         if(typeIndex == 0){
           size = RING_SIZE_MAP_C11E[type][sizeIndex];
         }
-      } else if(a[5] == 0x1d){
+      } else if(a[5] == 0x1d){ //29
         typeName = 'C11E';
         size = 4;
       } else if(type == 1){
         typeName = 'C11E';
         size = (a[5]>>4) + 7;
+        if(size ==10)size = 6;
+      }else if(type==4){
+        typeName ="C11H";
+        size =(a[5]>> 4)+2;
+      }else if(type==3){
+        typeName ="C11G";
+        size=(a[5]>> 4)+2;
       }
       return `${typeName}${size}${zeroPad(yy, 10)}${zeroPad(mm, 10)}${zeroPad(num, 100000)}`;
   } catch (error) {

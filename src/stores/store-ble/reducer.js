@@ -2,7 +2,6 @@ import Taro from '@tarojs/taro'
 
 import { constants } from "../store-ble"
 import { utils } from '../../mega-utils'
-import api from "../../service/api";
 
 const myPluginInterface = Taro.requirePlugin('myPlugin')
 const {
@@ -51,7 +50,7 @@ export default (state = defaultState, action) => {
     case constants.ACTION_UPLOAD_SPT_DATA:
         const b64 = Taro.arrayBufferToBase64(new Uint8Array(action.data))
         console.log('data received', b64);
-        
+
         return state;
 
     case constants.ACTION_UPDATE_TOKEN:
@@ -73,8 +72,8 @@ export default (state = defaultState, action) => {
         return {
           user: null
         }
-        
-      
+
+
     default:
       return state;
   }

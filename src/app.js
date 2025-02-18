@@ -22,9 +22,6 @@ class App extends Component {
     pages: [
       'pages/index/index',
       'pages/scan/scan',
-      'pages/spt-list/spt-list',
-      'pages/spt-detail/spt-detail',
-      'pages/reportDetail/reportDetail'
     ],
     window: {
       backgroundTextStyle: 'light',
