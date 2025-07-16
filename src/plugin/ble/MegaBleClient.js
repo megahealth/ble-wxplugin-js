@@ -235,7 +235,6 @@ class MegaBleClient {
       this.responseManager = null
     }
     if (this.rawdataManager) {
-      console.log('111111')
       this.rawdataManager.clear()
       this.rawdataManager = null
     }

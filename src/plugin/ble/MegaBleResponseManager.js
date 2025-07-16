@@ -170,7 +170,6 @@ class MegaBleResponseManager {
     }
     //睡眠
     if(this.type=='sleep'){
-      console.log(a[0])
       if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1) {
         const recordLen =
           (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);

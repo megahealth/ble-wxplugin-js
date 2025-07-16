@@ -89,7 +89,7 @@ class MegaBleCmdApiManager {
 
   /**
    * 旧版开关监控
-   * @param {*} enable 
+   * @param {*} enable
    */
   enableMonitorV1(enable) {
     const a = makeMonitorCmd(enable)
@@ -99,7 +99,7 @@ class MegaBleCmdApiManager {
 
   /**
    * 开关全局实时通道
-   * @param {*} enable 
+   * @param {*} enable
    */
   toggleLiveData(enable) {
     const a = makeLiveCmd(enable)
@@ -109,8 +109,8 @@ class MegaBleCmdApiManager {
 
   /**
    * 开关实时血氧仪模式
-   * @param {*} ensure 
-   * @param {*} seconds 
+   * @param {*} ensure
+   * @param {*} seconds
    */
   enableV2ModeLiveSpo(ensure, seconds) {
     const a = makeV2EnableModeLiveSpo(ensure, seconds)
@@ -121,8 +121,8 @@ class MegaBleCmdApiManager {
   /**
    * 1. 开关日常模式；开启此模式意味着关闭其他模式
    * 2. 默认模式
-   * @param {*} ensure 
-   * @param {*} seconds 
+   * @param {*} ensure
+   * @param {*} seconds
    */
   enableV2ModeDaily(ensure, seconds) {
     const a = makeV2EnableModeDaily(ensure, seconds)
@@ -132,8 +132,8 @@ class MegaBleCmdApiManager {
 
   /**
    * 开关监控
-   * @param {*} ensure 
-   * @param {*} seconds 
+   * @param {*} ensure
+   * @param {*} seconds
    */
   enableV2ModeSpoMonitor(ensure, seconds) {
     const a = makeV2EnableModeSpoMonitor(ensure, seconds);
@@ -199,8 +199,7 @@ class MegaBleCmdApiManager {
    */
   quickGetReportData() {
     const a = makeQucikGetData();
-    if (Config.debugable)
-      console.log("[cmd] quickGetReportData -> " + u8s2hex(a));
+    if (Config.debugable)console.log("[cmd] quickGetReportData -> " + u8s2hex(a));
     return this._write(a);
   }
   /***

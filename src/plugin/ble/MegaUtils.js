@@ -177,19 +177,19 @@ const parseSnV1 = (a) => {
       }
       sn_str = `C11E${c11e_nSize}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,100000)}`;
     } else if (sizeType === 0x1d) {
-      sn_str = `C11E4${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+      sn_str = `C11E4${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,100000)}`;
     } else if (type_ === 4) {
-      sn_str = `C11H${nSize + 2}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+      sn_str = `C11H${nSize + 2}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,100000)}`;
     } else if (type_ === 3) {
-      sn_str = `C11G${nSize + 2}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+      sn_str = `C11G${nSize + 2}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,100000)}`;
     } else if (t === 4) {
-      sn_str = `P11G${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+      sn_str = `P11G${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,100000)}`;
     } else if (t === 5) {
-      sn_str = `P11H${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+      sn_str = `P11H${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,100000)}`;
     } else if (type_ === 5 || type_ === 6) {
-      sn_str = `${C11X_TYPE[type_]}${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+      sn_str = `${C11X_TYPE[type_]}${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,100000)}`;
     } else {
-      sn_str = `${C11X_TYPE[medicine_consumer]}${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+      sn_str = `${C11X_TYPE[medicine_consumer]}${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,100000)}`;
     }
     return sn_str;
   } catch (error) {
@@ -199,7 +199,7 @@ const parseSnV1 = (a) => {
 }
 
 const zeroPad = (nr,base) => {
-  var len = (String(base).length - String(nr).length)+1;
+  const len = (String(base).length - String(nr).length) + 1;
   return len > 0? new Array(len).join('0')+nr : nr;
 }
 
