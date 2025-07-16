@@ -11,12 +11,6 @@ const RING_SN_TYPE = {
   7: "P11T"
 };
 
-const RING_SN_TYPE_PROTOCOL_5 = 5;
-const RING_TYPE_MAP = { [RING_SN_TYPE_PROTOCOL_5]: ["C11E", "P11E", 'P11F'] };
-const RING_SIZE_MAP = { [RING_SN_TYPE_PROTOCOL_5]: [1, 2] };
-const RING_SIZE_MAP_C11E = { [RING_SN_TYPE_PROTOCOL_5]: [2, 3] };
-
-
 const byteToBits = (octet) => {
   let bits = [];
   for (let i = 7; i >= 0; i--) {
@@ -121,7 +115,6 @@ export const parseRead = (a) => {
   const fwVer = `${fw1}.${fw2}.${fw3}`
   const blVer = `${bl1}.${bl2}`
   const otherInfo = `HW: v${hwVer} BL: v${blVer} hwCheck: ${deviceCheck} run: ${runFlag}`
-
   return { otherInfo, hwVer, fwVer, blVer, sn, isRunning }
 }
 
@@ -131,8 +124,8 @@ export const parseAdv = (a) => {
   if (a instanceof ArrayBuffer) a = Array.from(new Uint8Array(a));
   // console.log(a.map(i => i.toString(16)))
   if (a.length < 37) return null;
-  var sn = parseSnEnter(a.slice(18, 24));
-  var mac = a.slice(2, 8).reverse().map(i => ('00' + i.toString(16)).slice(-2)).join(':').toUpperCase();
+  const sn = parseSnEnter(a.slice(18, 24));
+  const mac = a.slice(2, 8).reverse().map(i => ('00' + i.toString(16)).slice(-2)).join(':').toUpperCase();
   return { sn: sn, mac: mac };
 }
 
@@ -140,9 +133,9 @@ const parseSnEnter = (a) => {
   const verYYmm = (a[0] << 8) | a[1];
   const snVersion = (verYYmm >> 13) & 0x07;
   if (snVersion === 1) {
-      return parseSnV1(a);
+    return parseSnV1(a);
   } else if (snVersion === 0) {
-      return parseSnV0(a);
+    return parseSnV0(a);
   }
   return "";
 }
@@ -150,11 +143,11 @@ const parseSnEnter = (a) => {
 const parseSnV0 = (a) => {
   let sn;
   if (RING_SN_TYPE[a[5] & 0x07] === "P11T") {
-      // 没有size
-      sn = RING_SN_TYPE[a[5] & 0x07];
+    // 没有size
+    sn = RING_SN_TYPE[a[5] & 0x07];
   } else {
-      // 有size
-      sn = RING_SN_TYPE[a[5] & 0x07] + ((a[5] >> 3) & 0x0f);
+    // 有size
+    sn = RING_SN_TYPE[a[5] & 0x07] + ((a[5] >> 3) & 0x0f);
   }
   return `${sn}${zeroPad(a[0], 10)}${zeroPad(a[1], 10)}${zeroPad((a[2] << 16) | (a[3] << 8) | a[4], 100000)}`;
 }
@@ -162,40 +155,45 @@ const parseSnV0 = (a) => {
 // 29 d0 00 00 40 15
 // C11E31910000064
 const parseSnV1 = (a) => {
-  const verYYmm = (a[0] << 8) | a[1];
-  const yy = (verYYmm >> 7) & 0x03F;
-  const mm = (verYYmm >> 3) & 0x0F;
-  const num = (a[2] << 16) | (a[3] << 8) | a[4];
-  const typeIndex = (a[5] >> 5) & 0b111; // 0b111, 共3bits
-  const sizeIndex = (a[5] >> 4) & 0x01;
-  const type = (a[5] & 0x0F);
+  const C11X_TYPE = ["C11E", "P11E", "P11F", "C11G", "C11H", "P11G", "P11H"];
+  const ver_yy_mm = a[0] * 2**8 + a[1];
+  const sn_version = (ver_yy_mm >> 13) & 0x07;
+  const year = (ver_yy_mm >> 7) & 0x3F;
+  const month = (ver_yy_mm >> 3) & 0x0F;
+  const num = a[2] * 2**16 + a[3] * 2**8 + a[4];
 
+  const medicine_consumer = (a[5] >> 5) & 0x07;
+  const sizeType = a[5];
+  const size = (a[5] >> 4) & 0x01;
+  const type_ = a[5] & 0x0F;
+  const nSize = (a[5] & 0xF0) >> 4;
+  const t = sizeType >> 5;
   try {
-      var typeName,size;
-      if(type == 5){
-        typeName = RING_TYPE_MAP[type][typeIndex];
-        size = RING_SIZE_MAP[type][sizeIndex];
-        if (typeIndex == 5) typeName = 'P11H'
-        if(typeIndex == 0){
-          size = RING_SIZE_MAP_C11E[type][sizeIndex];
-        }
-      } else if(a[5] == 0x1d){ //29
-        typeName = 'C11E';
-        size = 4;
-      } else if(type == 1){
-        typeName = 'C11E';
-        size = (a[5]>>4) + 7;
-        if(size ==10)size = 6;
-      }else if(type==4){
-        typeName ="C11H";
-        size =(a[5]>> 4)+2;
-      }else if(type==3){
-        typeName ="C11G";
-        size=(a[5]>> 4)+2;
+    let sn_str;
+    if (type_ === 1) {
+      let c11e_nSize = nSize + 7;
+      if (c11e_nSize === 10) {
+        c11e_nSize = 6;
       }
-      return `${typeName}${size}${zeroPad(yy, 10)}${zeroPad(mm, 10)}${zeroPad(num, 100000)}`;
+      sn_str = `C11E${c11e_nSize}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,100000)}`;
+    } else if (sizeType === 0x1d) {
+      sn_str = `C11E4${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+    } else if (type_ === 4) {
+      sn_str = `C11H${nSize + 2}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+    } else if (type_ === 3) {
+      sn_str = `C11G${nSize + 2}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+    } else if (t === 4) {
+      sn_str = `P11G${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+    } else if (t === 5) {
+      sn_str = `P11H${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+    } else if (type_ === 5 || type_ === 6) {
+      sn_str = `${C11X_TYPE[type_]}${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+    } else {
+      sn_str = `${C11X_TYPE[medicine_consumer]}${size + 1}${zeroPad(year,10)}${zeroPad(month,10)}${zeroPad(num,1000000)}`;
+    }
+    return sn_str;
   } catch (error) {
-      console.error('parseSnV1', error);
+    console.error('parseSnV1', error);
   }
   return "";
 }
@@ -266,11 +264,11 @@ const discoverChs = (deviceId, serviceId) => {
 export const yyyymmddhhmmss = d => {
   const pad2 = n => (n < 10 ? '0' : '') + n;
   return d.getFullYear() +
-  pad2(d.getMonth() + 1) +
-  pad2(d.getDate()) +
-  pad2(d.getHours()) +
-  pad2(d.getMinutes()) +
-  pad2(d.getSeconds());
+    pad2(d.getMonth() + 1) +
+    pad2(d.getDate()) +
+    pad2(d.getHours()) +
+    pad2(d.getMinutes()) +
+    pad2(d.getSeconds());
 }
 
 export const createFormData = (params = {}, boundary = '') => {
@@ -331,47 +329,47 @@ export function arrayBufferToBase64(arrayBuffer) {
 }
 
 export function bytesToUint8Array (b,swVer) {
-    if (b[0] == 94 || b[0] == 91) {
-      let array=[]
-      if (swVer.toLowerCase().startsWith("3.0")) {
-        if (b[1] == 12) {
-          array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4])), ((b[5] << 16) | (b[6] << 8) | (b[7]))
-          array[1] = ((b[8] << 16) | (b[9] << 8) | (b[10])), ((b[11] << 16) | (b[12] << 8) | (b[13]))
-        } else if (b[1] == 6) {
-            array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4])), ((b[5] << 16) | (b[6] << 8) | (b[7]))
-        }
-        return array
-      } else if (swVer.toLowerCase().startsWith("5.0") && b.length == 182) {
-        let  groupLen = b[6];
-        if(groupLen > 19){
-            groupLen = 19;
-        }
-        for (let i = 7; i < groupLen * 9; i += 9) {
-            array[(i - 7) / 9] = ((b[i] << 16) | b[i + 1] << 8 | b[i + 2]), ((b[i + 3] << 16) | b[i + 4] << 8 | b[i + 5]), ((b[i + 6] << 16) | b[i + 7] << 8 | b[i + 8])
-        }
-        return array
-      } else if(swVer.toLowerCase().startsWith("5.0") && b.length == 100){
-        let j = 0;//array index
-        for (let i = 0; i < 5; i++){
-          let index = i * 20;
-            if (b[index + 1] == 12) {
-                array[j++] =((b[index+2] << 16) | (b[index+3] << 8) | (b[index+4])), ((b[index+5] << 16) | (b[index+6] << 8) | (b[index+7]))
-                array[j++] =((b[index+8] << 16) | (b[index+9] << 8) | (b[index+10])), ((b[index+11] << 16) | (b[index+12] << 8) | (b[index+13]))
-            }
-        }
-        return array
-      } else if(swVer.toLowerCase().startsWith("6.0") && b.length == 100){
-        let j = 0;//array index
-        for (let i = 0; i < 5; i++){
-          let index = i * 20;
-            if (b[index + 1] == 12) {
-                array[j++] =((b[index+2] << 16) | (b[index+3] << 8) | (b[index+4])), ((b[index+5] << 16) | (b[index+6] << 8) | (b[index+7]))
-                array[j++] =((b[index+8] << 16) | (b[index+9] << 8) | (b[index+10])), ((b[index+11] << 16) | (b[index+12] << 8) | (b[index+13]))
-            }
-        }
-        return array
-      }else{
-        return []
+  if (b[0] === 94 || b[0] === 91) {
+    let array=[]
+    if (swVer.toLowerCase().startsWith("3.0")) {
+      if (b[1] === 12) {
+        array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4])), ((b[5] << 16) | (b[6] << 8) | (b[7]))
+        array[1] = ((b[8] << 16) | (b[9] << 8) | (b[10])), ((b[11] << 16) | (b[12] << 8) | (b[13]))
+      } else if (b[1] === 6) {
+        array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4])), ((b[5] << 16) | (b[6] << 8) | (b[7]))
       }
+      return array
+    } else if (swVer.toLowerCase().startsWith("5.0") && b.length === 182) {
+      let  groupLen = b[6];
+      if(groupLen > 19){
+        groupLen = 19;
+      }
+      for (let i = 7; i < groupLen * 9; i += 9) {
+        array[(i - 7) / 9] = ((b[i] << 16) | b[i + 1] << 8 | b[i + 2]), ((b[i + 3] << 16) | b[i + 4] << 8 | b[i + 5]), ((b[i + 6] << 16) | b[i + 7] << 8 | b[i + 8])
+      }
+      return array
+    } else if(swVer.toLowerCase().startsWith("5.0") && b.length === 100){
+      let j = 0;//array index
+      for (let i = 0; i < 5; i++){
+        let index = i * 20;
+        if (b[index + 1] === 12) {
+          array[j++] =((b[index+2] << 16) | (b[index+3] << 8) | (b[index+4])), ((b[index+5] << 16) | (b[index+6] << 8) | (b[index+7]))
+          array[j++] =((b[index+8] << 16) | (b[index+9] << 8) | (b[index+10])), ((b[index+11] << 16) | (b[index+12] << 8) | (b[index+13]))
+        }
+      }
+      return array
+    } else if(swVer.toLowerCase().startsWith("6.0") && b.length === 100){
+      let j = 0;//array index
+      for (let i = 0; i < 5; i++){
+        let index = i * 20;
+        if (b[index + 1] === 12) {
+          array[j++] =((b[index+2] << 16) | (b[index+3] << 8) | (b[index+4])), ((b[index+5] << 16) | (b[index+6] << 8) | (b[index+7]))
+          array[j++] =((b[index+8] << 16) | (b[index+9] << 8) | (b[index+10])), ((b[index+11] << 16) | (b[index+12] << 8) | (b[index+13]))
+        }
+      }
+      return array
+    }else{
+      return []
     }
+  }
 }

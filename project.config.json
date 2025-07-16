@@ -34,7 +34,16 @@
     "packNpmRelationList": [],
     "minifyWXSS": true,
     "ignoreUploadUnusedFiles": true,
-    "useApiHostProcess": false
+    "useApiHostProcess": false,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
   },
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
@@ -48,6 +57,5 @@
   "packOptions": {
     "ignore": [],
     "include": []
-  },
-  "pluginAppid": "wxf4fa9b179dfd7bca"
+  }
 }

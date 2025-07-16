@@ -3,9 +3,8 @@ import { View, Button, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { actionCreators as bleActionCreators } from "../../stores/store-ble";
 
-import api from '../../service/api'
 
-import './index.scss'
+import './index.css'
 
 const APPID = 'ZURNaXgbXw'
 const APPKEY = '&e)CPKK?z;|p0V3'
@@ -137,7 +136,7 @@ class Index extends Component {
 
 const mapState = (state) => {
   return {
-    num: state.index.num,
+    num: 0,
     device: state.ble.device,
     user: state.ble.user,
     byte:state.ble.byte,

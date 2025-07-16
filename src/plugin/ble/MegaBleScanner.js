@@ -24,20 +24,19 @@ class MegaBleScanner {
   _registCallback() {
     wx.onBluetoothDeviceFound(res => {
       res.devices = res.devices.filter(i => {
-        if (i.name && (
-          i.name.toLowerCase().indexOf('ring') != -1 ||
-          i.name.toLowerCase().indexOf('mr') != -1 ||
-          i.name.toLowerCase().indexOf('sle') != -1
-        )) {
-          return true
-        }
-        return false
+        return !!(i.name && (
+          i.name.toLowerCase().indexOf('ring') !== -1 ||
+          i.name.toLowerCase().indexOf('mr') !== -1 ||
+          i.name.toLowerCase().indexOf('sle') !== -1
+        ));
       })
       if (res.devices[0]){
           const parse = parseAdv(res.devices[0].advertisData);
-          res.devices[0].sn=parse.sn
-          res.devices[0].mac=parse.mac
-          this.onDeviceFound(res)
+          if(parse){
+            res.devices[0].sn=parse.sn
+            res.devices[0].mac=parse.mac
+            this.onDeviceFound(res)
+          }
         }
     })
   }

@@ -7,7 +7,7 @@ import LineChart from '../../components/LineChart'
 // import realData from "./data";
 
 
-import './reportDetail.scss'
+import './reportDetail.css'
 import { sptParse } from '../../mega-utils';
 var url = null;
 class reportDetail extends Component {

@@ -1,8 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Button } from '@tarojs/components'
+import {View, Button, ScrollView} from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { actionCreators as bleActionCreators } from '../../stores/store-ble'
-import './scan.scss'
+import './scan.css'
 
 class Scan extends Component {
 
@@ -41,6 +41,7 @@ class Scan extends Component {
                   <View>信号强度: {item.RSSI}dBm ({Math.max(0, item.RSSI + 100)}%)</View>
                   <View>UUID: {item.deviceId}</View>
                   <View>Service数量: {item.advertisServiceUUIDs.length}</View>
+                  <View>data: {item.advertisData}</View>
                 </View>
               )
             })
@@ -74,7 +75,6 @@ const mapDispatch = (dispatch) => {
     },
     handleConnect(device) {
       Taro.showLoading({title: 'Loading...', mask: true})
-
       dispatch(bleActionCreators.connect(device))
     },
     handleDestroy() {

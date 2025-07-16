@@ -7,7 +7,7 @@ import LineChart from '../../components/LineChart'
 // import realData from "./data";
 
 
-import './spt-detail.scss'
+import './spt-detail.css'
 import { sptParse } from '../../mega-utils';
 
 class SptDetail extends Component {

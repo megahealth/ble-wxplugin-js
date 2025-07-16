@@ -8,5 +8,5 @@ node_modules/
 miniprogram/
 
 plugin/
-
+./.idea/
 doc/
