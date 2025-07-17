@@ -1,10 +1,7 @@
-import api from './MegaRequest'
-import pako from './MegaPako'
 import { Config } from './MegaBleConst';
 import { yyyymmddhhmmss,arrayBufferToBase64 } from './MegaUtils';
 import  {bytesToUint8Array} from './MegaUtils';
 const UPLOAD_INTERVAL = 10 // s
-
 class MegaBleRawdataManager {
   constructor(api,callback) {
     this.api = api;
