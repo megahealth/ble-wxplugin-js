@@ -1,8 +1,13 @@
 import Taro from '@tarojs/taro'
 
 import { constants } from "../store-ble"
-import { utils } from '../../mega-utils'
 
+const inArray = (arr, key, val) => {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i][key] === val) return i
+  }
+  return -1
+}
 const myPluginInterface = Taro.requirePlugin('myPlugin')
 const {
   MegaUtils,
@@ -19,17 +24,16 @@ export default (state = defaultState, action) => {
     case constants.ACTION_DEVICES_FOUND:
       const foundDevices = [...state.devices]
       action.data.devices.forEach(device => {
-        const idx = utils.inArray(foundDevices, 'deviceId', device.deviceId)
+        const idx = inArray(foundDevices, 'deviceId', device.deviceId)
         if (idx === -1) {
           foundDevices.push(device)
-          const adv = MegaUtils.parseAdv(device.advertisData)
         } else {
           foundDevices[idx] = device
         }
       })
       return {
         ...state,
-        devices: foundDevices
+        devices: foundDevices.sort((a, b) => b.RSSI - a.RSSI),
       }
 
     case constants.ACTION_CLEAR:

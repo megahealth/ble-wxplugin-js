@@ -19,11 +19,9 @@
 
      说明：实时输出，同时戒指自身存储。方便手机与戒指断开，待监测结束后，异步收取监测数据
 
-- 推荐的 App 端工作流程
+  3. 脉诊模式
 
-  - [工作流程图](https://file-mhn.megahealth.cn/62630b5d10f14ecce727/App%E4%B8%8E%E6%88%92%E6%8C%87%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B%E5%9B%BE.pdf)
-
-    这是完整功能的流程，请结合实际业务需求调整。例如：只用到血氧实时模式，就实时接收数据即可，不用考虑异步收取监测数据的问题。
+     说明：特定版本支持输出脉诊数据
 
 ## 快速开始
 
@@ -41,7 +39,7 @@
    - 注意：如果 token 不匹配，戒指之前的监测就会停止（数据还在，收取报告会上传）。
 6. 【必须】在 callback 的 onSetUserInfo 回调中，设置用户身体信息 client.setUserInfo。这一步在之前设置 callback 时预先写好即可
 
-   ​ 注意：如果没有设置用户信息，会当成新用户对待，每次连接戒指都会提示晃动，并且结束之前设置的监测。
+    注意：如果没有设置用户信息，会当成新用户对待，每次连接戒指都会提示晃动，并且结束之前设置的监测。
 
 7. 连接进入 idle（空闲）状态，用户可以开始操作，如：收缓存在戒指中的记录、开关监测
 
@@ -417,24 +415,7 @@ const onSyncMonitorDataComplete = (bytes, dataStopType, dataType, deviceInfo) =>
   MODE_BP                 : 5, // bp模式
 ```
 
-## 插件的编译方法
+## 小程序demo
 
-    taro build --plugin weapp
+[微信小程序示例](https://github.com/megahealth/WX_XCX_plugin_demo)
 
-## demo 的运行方法
-
-demo 使用了 taro 框架，具体可参考 taro 官方文档
-
-1. 安装 taro
-
-   yarn global add @tarojs/cli@1.3.12
-
-2. 运行
-
-   npm run build:weapp -- --watch
-
-3. build
-
-   taro build --type weapp
-
-4. 微信开发工具导入 dist 文件夹，预览
