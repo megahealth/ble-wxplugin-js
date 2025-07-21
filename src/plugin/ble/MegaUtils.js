@@ -331,7 +331,8 @@ export function arrayBufferToBase64(arrayBuffer) {
 export function bytesToUint8Array (b,swVer) {
   if (b[0] === 94 || b[0] === 91) {
     let array=[]
-    if (swVer.toLowerCase().startsWith("3.0")) {
+    const swVerStart=swVer.toLowerCase().split('.')[0]
+    if (Number(swVerStart)===3) {
       if (b[1] === 12) {
         array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4])), ((b[5] << 16) | (b[6] << 8) | (b[7]))
         array[1] = ((b[8] << 16) | (b[9] << 8) | (b[10])), ((b[11] << 16) | (b[12] << 8) | (b[13]))
@@ -339,7 +340,7 @@ export function bytesToUint8Array (b,swVer) {
         array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4])), ((b[5] << 16) | (b[6] << 8) | (b[7]))
       }
       return array
-    } else if (swVer.toLowerCase().startsWith("5.0") && b.length === 182) {
+    } else if (Number(swVerStart)===5 && b.length === 182) {
       let  groupLen = b[6];
       if(groupLen > 19){
         groupLen = 19;
@@ -348,7 +349,7 @@ export function bytesToUint8Array (b,swVer) {
         array[(i - 7) / 9] = ((b[i] << 16) | b[i + 1] << 8 | b[i + 2]), ((b[i + 3] << 16) | b[i + 4] << 8 | b[i + 5]), ((b[i + 6] << 16) | b[i + 7] << 8 | b[i + 8])
       }
       return array
-    } else if(swVer.toLowerCase().startsWith("5.0") && b.length === 100){
+    } else if(Number(swVerStart)===5 && b.length === 100){
       let j = 0;//array index
       for (let i = 0; i < 5; i++){
         let index = i * 20;
@@ -358,7 +359,7 @@ export function bytesToUint8Array (b,swVer) {
         }
       }
       return array
-    } else if(swVer.toLowerCase().startsWith("6.0") && b.length === 100){
+    } else if(Number(swVerStart)===6 && b.length === 100){
       let j = 0;//array index
       for (let i = 0; i < 5; i++){
         let index = i * 20;

@@ -10,7 +10,6 @@ class MegaBleRawdataManager {
   RawdataSwitch=false
   rawDataLen=0;
   rawDataBytes=null
-  rdb=null
   interval=1000; //ms
   intervaler=[]
   open() {
@@ -134,7 +133,7 @@ class MegaBleRawdataManager {
     }else{
       this.rawDataBytes =this.rawDataBytes.concat(bytesToUint8Array(a,this.deviceInfo.swVer))
     }
-    if(this.intervaler.length==0){
+    if(this.intervaler.length===0){
       const id=setInterval(()=>{
         if(!this.RawdataSwitch){
           this.clearAllInterval(this.intervaler)

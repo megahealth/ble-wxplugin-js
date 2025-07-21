@@ -40,7 +40,6 @@ class MegaBleResponseManager {
   handleIndicateResponse(a) {
     const cmd = a[0], status = a[2]
     this.callback.onOperationStatus(cmd, status)
-
     switch (cmd) {
       case CMD.FAKEBIND:
         if (status === 0) {
@@ -49,10 +48,6 @@ class MegaBleResponseManager {
         break;
 
       case CMD.SETTIME:
-        // if (status === 0) {
-        //   let t = (a[3] << 24) | (a[4] << 16) | (a[5] << 8) | a[6]
-        //   console.log('setTime respond time: ' + t)
-        // }
         this._next()
         break;
 
@@ -81,7 +76,6 @@ class MegaBleResponseManager {
         this._handleSyncData(cmd, status, a)
         break
 
-      case CMD.CTRL_MONITOR_DATA:
       case CMD.CTRL_MONITOR_DATA:
         if (this.bigDataManager) this.bigDataManager.handleCtrlIndicate(a)
         break;
@@ -165,11 +159,11 @@ class MegaBleResponseManager {
 
     this.rawDataBytes=a
     //脉诊
-    if(a[0]==94&&a[1]==12){
+    if(a[0]===94&&a[1]===12){
       this.rawDataManager.setPulseByte(this.rawDataBytes)
     }
     //睡眠
-    if(this.type=='sleep'){
+    if(this.type==='sleep'){
       if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1) {
         const recordLen =
           (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
