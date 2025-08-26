@@ -59,6 +59,8 @@ export const CMD = {
   CTRL_SCREEN_ON       : 0,
   CTRL_MONITOR_DATA    : 0xef,
   CTRL_DAILY_DATA      : 0xf1,
+  CTRL_DAILY_BP_DATA   : 0xfa,
+  CTRL_DAILY_HRV_DATA  : 0xfb,
   CTRL_AFE_SPO2        : 1,
   CTRL_AFE_EHR         : 2,
   CTRL_NORMAL_ON       : 1,

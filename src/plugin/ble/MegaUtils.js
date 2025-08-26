@@ -334,10 +334,10 @@ export function bytesToUint8Array (b,swVer) {
     const swVerStart=swVer.toLowerCase().split('.')[0]
     if (Number(swVerStart)===3) {
       if (b[1] === 12) {
-        array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4])), ((b[5] << 16) | (b[6] << 8) | (b[7]))
-        array[1] = ((b[8] << 16) | (b[9] << 8) | (b[10])), ((b[11] << 16) | (b[12] << 8) | (b[13]))
+        array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4]))
+        array[1] = ((b[8] << 16) | (b[9] << 8) | (b[10]))
       } else if (b[1] === 6) {
-        array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4])), ((b[5] << 16) | (b[6] << 8) | (b[7]))
+        array[0] = ((b[2] << 16) | (b[3] << 8) | (b[4]))
       }
       return array
     } else if (Number(swVerStart)===5 && b.length === 182) {
@@ -346,7 +346,7 @@ export function bytesToUint8Array (b,swVer) {
         groupLen = 19;
       }
       for (let i = 7; i < groupLen * 9; i += 9) {
-        array[(i - 7) / 9] = ((b[i] << 16) | b[i + 1] << 8 | b[i + 2]), ((b[i + 3] << 16) | b[i + 4] << 8 | b[i + 5]), ((b[i + 6] << 16) | b[i + 7] << 8 | b[i + 8])
+        array[(i - 7) / 9] = ((b[i] << 16) | b[i + 1] << 8 | b[i + 2])
       }
       return array
     } else if(Number(swVerStart)===5 && b.length === 100){
@@ -354,8 +354,8 @@ export function bytesToUint8Array (b,swVer) {
       for (let i = 0; i < 5; i++){
         let index = i * 20;
         if (b[index + 1] === 12) {
-          array[j++] =((b[index+2] << 16) | (b[index+3] << 8) | (b[index+4])), ((b[index+5] << 16) | (b[index+6] << 8) | (b[index+7]))
-          array[j++] =((b[index+8] << 16) | (b[index+9] << 8) | (b[index+10])), ((b[index+11] << 16) | (b[index+12] << 8) | (b[index+13]))
+          array[j++] =((b[index+2] << 16) | (b[index+3] << 8) | (b[index+4]))
+          array[j++] =((b[index+8] << 16) | (b[index+9] << 8) | (b[index+10]))
         }
       }
       return array
@@ -364,8 +364,8 @@ export function bytesToUint8Array (b,swVer) {
       for (let i = 0; i < 5; i++){
         let index = i * 20;
         if (b[index + 1] === 12) {
-          array[j++] =((b[index+2] << 16) | (b[index+3] << 8) | (b[index+4])), ((b[index+5] << 16) | (b[index+6] << 8) | (b[index+7]))
-          array[j++] =((b[index+8] << 16) | (b[index+9] << 8) | (b[index+10])), ((b[index+11] << 16) | (b[index+12] << 8) | (b[index+13]))
+          array[j++] =((b[index+2] << 16) | (b[index+3] << 8) | (b[index+4]))
+          array[j++] =((b[index+8] << 16) | (b[index+9] << 8) | (b[index+10]))
         }
       }
       return array

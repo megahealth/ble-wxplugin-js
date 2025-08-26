@@ -133,6 +133,23 @@ export const makeQucikGetData = () => {
   a[3] = 0xef;
   return a;
 };
+export const makeQucikGetBPAndHRVData=(type)=>{
+  const a = _initPack(CMD.SYNCDATA);
+  if(type===1){
+  //   bp
+    a[1] = 0x01;
+    a[2] = 0x00; //CMD.V2_QUICK_DATA
+    a[3] = 0xFA;
+    return a;
+  }
+  if(type===2){
+    //hrv
+    a[1] = 0x01;
+    a[2] = 0x00; //CMD.V2_QUICK_DATA
+    a[3] = 0xFB;
+    return a;
+  }
+}
 
 
 export const makeDelRawDataReport = () => {

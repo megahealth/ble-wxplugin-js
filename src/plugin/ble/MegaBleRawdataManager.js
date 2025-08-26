@@ -1,5 +1,5 @@
 import { Config } from './MegaBleConst';
-import { yyyymmddhhmmss,arrayBufferToBase64 } from './MegaUtils';
+import {yyyymmddhhmmss, arrayBufferToBase64, u8s2hex} from './MegaUtils';
 import  {bytesToUint8Array} from './MegaUtils';
 const UPLOAD_INTERVAL = 10 // s
 class MegaBleRawdataManager {
@@ -78,7 +78,6 @@ class MegaBleRawdataManager {
       ...this.id,
       ...this.step,
     ];
-
     //放 版本[0],结束类型[1] , 协议1 [2],保留0 [3],头部1c [4],结束原因this.stopType [5],固件版本[6]-[10],sn:[11]-[16],id:[17]-[28],step,
 
     //取a id:a[7-18] , sn: , 固件版本：fw ,step:a[10-13] ,结束原因a[4] ,结束类型a[6]
@@ -91,9 +90,10 @@ class MegaBleRawdataManager {
     return mergedArray;
   }
 
-  setSleepLength(length){
+  setSleepLength(length,type){
     this.rawDataLen=length
-    if(Config.debugable)console.log('sleep-length',length)
+    if(Config.debugable)console.log('length',length,type)
+    this.dataType=type
     this.rawDataBytes = new Uint8Array();
   }
 
@@ -117,7 +117,14 @@ class MegaBleRawdataManager {
         this.deviceInfo
       );
       this.clear()
-      this.api.clearReport()
+      // 判断类型
+      if(this.dataType===1){
+        this.api.clearReport(1)
+      }else if(this.dataType===5){
+        this.api.clearReport(5)
+      }else if(this.dataType===10){
+        this.api.clearReport(10)
+      }
     }
   }
 

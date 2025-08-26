@@ -51,6 +51,8 @@ class Index extends Component {
       handleStop,
       handleGetData,
       handleStartRaw,
+      handleAsyncBP,
+      handleAsyncHRV,
       handlePulseMode,
       handleStopRaw,
       user,
@@ -98,8 +100,8 @@ class Index extends Component {
               <Button size='mini' onClick={handleMonitorOff}>监测off</Button>
               <Button size='mini' onClick={handleGetData}>收数据</Button>
               <Button size='mini' onClick={handleQuickReport}>快速收取报告</Button>
-              {/* <Button size='mini' onClick={handleEnableRaw}>开raw</Button>
-              <Button size='mini' onClick={handleDisableRaw}>关raw</Button> */}
+              <Button size='mini' onClick={handleAsyncBP}>快收BP</Button>
+              <Button size='mini' onClick={handleAsyncHRV}>快收HRV</Button>
                <Button size='mini' onClick={handleStartRaw}>开启Raw</Button>
                <Button size='mini' onClick={handleStopRaw}>关闭Raw</Button>
                <Button size='mini' onClick={()=>handlePulseMode(true)}>开启脉诊</Button>
@@ -182,6 +184,14 @@ const mapDispatch = (dispatch) => {
     // ring normal
     handleOpenRealTime(){
       bleActionCreators.enableRealTime(true)
+    },
+    handleAsyncBP(){
+      console.log('bp')
+      bleActionCreators.quickBPAndHRVReport(1)
+    },
+    handleAsyncHRV(){
+      console.log('hrv')
+      bleActionCreators.quickBPAndHRVReport(2)
     },
     handleCloseRealTime(){
       bleActionCreators.enableRealTime(false)

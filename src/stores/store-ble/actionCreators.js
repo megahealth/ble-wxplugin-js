@@ -91,7 +91,6 @@ export const connect = (device) => {
     if (!client.callback) client.setCallback(genMegaCallback(dispatch));
 
     const token = Taro.getStorageSync('token');
-
     client.connect(device.name, device.deviceId, device.advertisData)
       .then(res => {
         // 1. 开始start
@@ -159,6 +158,10 @@ export const setPulseMode=(enable)=>{
 export const quickReport=()=>{
   client.quickReport()
 }
+
+export const quickBPAndHRVReport=(type)=>{
+  client.syncBpAndHrvData(type)
+}
 // ring func
 // 开启或关闭实时模式通道
 export const enableRealTime = (enable) => {
@@ -211,7 +214,7 @@ export const logout = () => {
 
 /**
  * big callback
- * @param {*} dispatch 
+ * @param {*} dispatch
  */
 const genMegaCallback = (dispatch) => {
   return {
@@ -259,32 +262,32 @@ const genMegaCallback = (dispatch) => {
     },
     onSyncMonitorDataComplete: (bytes, dataStopType, dataType, deviceInfo) => {
       console.log('onSyncMonitorDataComplete: ',deviceInfo, bytes, dataStopType, dataType);
-      const boundary = `----MegaRing${new Date().getTime()}`;
-      const DeviceInfo ={
-        "mac": deviceInfo.mac,
-        "sn": deviceInfo.sn,
-        "swVer": deviceInfo.swVer
-      }
-      const reportType = {
-        "dataType":dataType.toString(),
-        "dataStopType":dataStopType.toString()
-      }
-      const formData = createFormData({ binData: bytes, institutionId:'5d5ce86aba39c800671c5a89', remoteDevice:JSON.stringify(DeviceInfo), reportType:JSON.stringify(reportType)}, boundary)
-      var options = {
-        method: 'POST',
-        url: 'https://server-mhn.megahealth.cn/upload//uploadBinData',
-        header: {
-          'Accept': 'application/json',
-          'Content-Type': `multipart/form-data; boundary=${boundary}`,
-        },
-        data:formData
-      };
-      Taro.request(options).then(res=>{
-        console.log('report',res.data);
+      // const boundary = `----MegaRing${new Date().getTime()}`;
+      // const DeviceInfo ={
+      //   "mac": deviceInfo.mac,
+      //   "sn": deviceInfo.sn,
+      //   "swVer": deviceInfo.swVer
+      // }
+      // const reportType = {
+      //   "dataType":dataType.toString(),
+      //   "dataStopType":dataStopType.toString()
+      // }
+      // const formData = createFormData({ binData: bytes, institutionId:'5d5ce86aba39c800671c5a89', remoteDevice:JSON.stringify(DeviceInfo), reportType:JSON.stringify(reportType)}, boundary)
+      // var options = {
+      //   method: 'POST',
+      //   url: 'https://server-mhn.megahealth.cn/upload/uploadBinData',
+      //   header: {
+      //     'Accept': 'application/json',
+      //     'Content-Type': `multipart/form-data; boundary=${boundary}`,
+      //   },
+      //   data:formData
+      // };
+      // Taro.request(options).then(res=>{
+      //   console.log('report',res.data);
         Taro.hideLoading()
-      }).catch(err=>{
-        console.log(err);
-      })
+      // }).catch(err=>{
+      //   console.log(err);
+      // })
 
       dispatch(uploadSptData(bytes))
     },

@@ -1,7 +1,7 @@
 import MegaBleCmdApiManager from "./MegaBleCmdApiManager";
 import MegaBleResponseManager from "./MegaBleResponseManager";
 import { BLE_CFG, Config, DeviceInfo } from "./MegaBleConst";
-import { discoverServicesAndChs } from "./MegaUtils";
+import {discoverServicesAndChs, u8s2hex} from "./MegaUtils";
 import apiLean from "./service-lean";
 
 class MegaBleClient {
@@ -43,6 +43,7 @@ class MegaBleClient {
         switch (characteristic.characteristicId) {
           case BLE_CFG.RAW_UUID:
             this.responseManager.handleRawDataResponse(a)
+            break;
           case BLE_CFG.CH_INDICATE:
             this.responseManager.handleIndicateResponse(a)
             break;
@@ -76,6 +77,7 @@ class MegaBleClient {
     } else {
       this.realMac = this.deviceId
     }
+
     DeviceInfo.mac = deviceId;
     this._initCallbacks()
 
@@ -193,6 +195,16 @@ class MegaBleClient {
     setTimeout(()=>{
       //开启快收
       this.api.quickGetReportData()
+    },10)
+  }
+
+  syncBpAndHrvData(type){
+    // this.api.syncMonitorData()
+    this.enableRawdata(true)
+    this.responseManager.type=type===1?'BP':"HRV"
+    setTimeout(()=>{
+      //开启快收
+      this.api.quickGetHRVAndBPData(type)
     },10)
   }
 

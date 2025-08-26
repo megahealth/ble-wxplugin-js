@@ -167,16 +167,31 @@ class MegaBleResponseManager {
       if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1) {
         const recordLen =
           (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
-          this.rawDataManager.setSleepLength(recordLen)
+          this.rawDataManager.setSleepLength(recordLen,1)
       }else{
         this.rawDataManager.setSleepByte(this.rawDataBytes)
       }
     }
-    //血氧
-    // if(a[0]==94&&a[1]==1){
-    //   console.log(111)
-    //   this.handleNotifyResponse(a)
-    // }
+
+    if(this.type==='BP'){
+      if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1&&this.rawDataBytes[5]===250) {
+        const recordLen =
+          (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
+        this.rawDataManager.setSleepLength(recordLen,5)
+      }else{
+        this.rawDataManager.setSleepByte(this.rawDataBytes)
+      }
+    }
+
+    if(this.type==='HRV'){
+      if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1&&this.rawDataBytes[5]===251) {
+        const recordLen =
+          (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
+        this.rawDataManager.setSleepLength(recordLen,10)
+      }else{
+        this.rawDataManager.setSleepByte(this.rawDataBytes)
+      }
+    }
   }
 
 

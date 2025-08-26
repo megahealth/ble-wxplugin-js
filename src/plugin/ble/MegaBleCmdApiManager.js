@@ -16,7 +16,7 @@ import {
   makeMonitorCmd,
   makePulseMode,
   makeQucikGetData,
-  makeDelRawDataReport,
+  makeDelRawDataReport, makeQucikGetBPAndHRVData,
 } from "./MegaBleCmdMaker";
 
 class MegaBleCmdApiManager {
@@ -181,7 +181,9 @@ class MegaBleCmdApiManager {
         serviceId: BLE_CFG.RAW_SID,
         characteristicId:BLE_CFG.RAW_UUID,
         state:enable,
-        success: res => {},
+        success: res => {
+          if(Config.debugable)console.log('serviceId',BLE_CFG.RAW_SID,'characteristicId',BLE_CFG.RAW_UUID,enable)
+        },
         fail: err => {},
       })
     })
@@ -202,12 +204,27 @@ class MegaBleCmdApiManager {
     if (Config.debugable)console.log("[cmd] quickGetReportData -> " + u8s2hex(a));
     return this._write(a);
   }
+
+  quickGetHRVAndBPData(type) {
+    const a = makeQucikGetBPAndHRVData(type);
+    if (Config.debugable)console.log("[cmd] makeQucikGetBPAndHRVData -> " + u8s2hex(a));
+    return this._write(a);
+  }
   /***
    * 快收 需要主动删除报告
    */
-  clearReport() {
+  clearReport(type) {
     const a = makeDelRawDataReport();
     a[0] = 0xb8;
+    if(type===1){
+      a[3]=1
+    }
+    if(type===5){
+      a[3]=2
+    }
+    if(type===10){
+      a[3]=10
+    }
     if (Config.debugable) console.log("[cmd] clear -> " + u8s2hex(a));
     return this._write(a);
   }
