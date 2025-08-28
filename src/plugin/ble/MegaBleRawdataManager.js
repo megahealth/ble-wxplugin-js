@@ -13,7 +13,6 @@ class MegaBleRawdataManager {
   interval=1000; //ms
   intervaler=[]
   open() {
-    if(Config.debugable)console.log('open')
     //开启rawdata
     this.api.enableRawdata(true)
     this.RawdataSwitch=true
@@ -98,11 +97,11 @@ class MegaBleRawdataManager {
   }
 
   setSleepByte(a){
+    if (this.rawDataLen <= 0) {
+       return this.api.enableRawdata(false)
+    }
     this.rawDataBytes = this.mergeUint8Arrays(this.rawDataBytes, a);
     const progress = ((this.rawDataBytes.length * 100) / this.rawDataLen).toFixed(3);
-    if (this.rawDataLen <= 0) {
-      return this.api.enableRawdata(false)
-    }
     if (this.rawDataBytes.length < this.rawDataLen) {
       if (progress !== 100) this.callback.onSyncingDataProgress(progress);
     } else if (this.rawDataBytes.length >= this.rawDataLen || progress == 100) {

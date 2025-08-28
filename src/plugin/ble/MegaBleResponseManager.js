@@ -158,8 +158,9 @@ class MegaBleResponseManager {
   handleRawDataResponse(a) {
 
     this.rawDataBytes=a
+
     //脉诊
-    if(a[0]===94&&a[1]===12){
+    if(this.type==='pulse'){
       this.rawDataManager.setPulseByte(this.rawDataBytes)
     }
     //睡眠
@@ -172,7 +173,6 @@ class MegaBleResponseManager {
         this.rawDataManager.setSleepByte(this.rawDataBytes)
       }
     }
-
     if(this.type==='BP'){
       if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1&&this.rawDataBytes[5]===250) {
         const recordLen =
