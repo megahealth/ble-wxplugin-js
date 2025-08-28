@@ -117,13 +117,16 @@ class MegaBleRawdataManager {
         this.deviceInfo
       );
       this.clear()
-      // 判断类型
-      if(this.dataType===1){
-        this.api.clearReport(1)
-      }else if(this.dataType===5){
-        this.api.clearReport(5)
-      }else if(this.dataType===10){
-        this.api.clearReport(10)
+
+      //删除报告
+      if(Config.delReport){
+        if(this.dataType===1){
+          this.api.clearReport(1)
+        }else if(this.dataType===5){
+          this.api.clearReport(5)
+        }else if(this.dataType===10){
+          this.api.clearReport(10)
+        }
       }
     }
   }

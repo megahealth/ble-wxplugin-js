@@ -278,13 +278,11 @@ class MegaBleResponseManager {
     } else {
       this.bigDataManager = null
       if (status === 2) {
-        // console.log("Trans permission [no], no data.");
-        if (a[5] === 0 || a[5] === CMD.CTRL_DAILY_DATA) {
-          this.callback.onSyncNoDataOfDaily()
-        } else if (a[5] == CMD.CTRL_MONITOR_DATA) {
-          this.callback.onSyncNoDataOfMonitor()
-          this.rawDataManager.clear()
-          this.type=''
+        // 快收取0xeb
+        if(a[0]===CMD.SYNCDATA){
+            this.callback.onSyncNoDataOfMonitor()
+            this.rawDataManager.clear()
+            this.type=''
         }
       }
     }

@@ -119,6 +119,7 @@ export const Config = {
   AppId: '',
   AppKey: '',
   debugable: false,
+  delReport:true
 }
 
 export const DeviceInfo = {

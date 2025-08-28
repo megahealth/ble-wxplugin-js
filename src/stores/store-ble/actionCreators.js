@@ -295,7 +295,7 @@ const genMegaCallback = (dispatch) => {
       console.log('onSyncDailyDataComplete: ', bytes)
     },
     onSyncNoDataOfMonitor: () => {
-      console.log('onSyncNoDataOfMonitor')
+      console.log('====> onSyncNoDataOfMonitor')
       Taro.hideLoading()
     },
     onSyncNoDataOfDaily: () => {

@@ -186,11 +186,9 @@ const mapDispatch = (dispatch) => {
       bleActionCreators.enableRealTime(true)
     },
     handleAsyncBP(){
-      console.log('bp')
       bleActionCreators.quickBPAndHRVReport(1)
     },
     handleAsyncHRV(){
-      console.log('hrv')
       bleActionCreators.quickBPAndHRVReport(2)
     },
     handleCloseRealTime(){
