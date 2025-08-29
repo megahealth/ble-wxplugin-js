@@ -19,7 +19,7 @@ Page({
    */
   onLoad(options) {
     const blePlugin = requirePlugin("megable")
-    const {MegaBleScanner,MegaUtils} = blePlugin
+    const {MegaBleScanner,MegaUtils} = blePlugin.ble
     this.scanner=new MegaBleScanner(res => {
       const info = MegaUtils.parseAdv(res.devices[0].advertisData)
       if(info&&info.sn&&!info.sn.includes("NaN")&&!info.sn.includes("undefined")){

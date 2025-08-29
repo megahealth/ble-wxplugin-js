@@ -3,7 +3,7 @@ const  MegaBleScanner =require("./ble/MegaBleScanner") ;
 const  { STATUS } =require("./ble/MegaBleConst") ;
 const  { parseAdv } =require('./ble/MegaUtils') ;
 
-module.exports = {
+const ble={
   initSdk,
   MegaBleScanner,
   MegaBleStatus: STATUS,
@@ -12,3 +12,5 @@ module.exports = {
   },
   current:new Date()
 }
+
+module.exports ={ble}

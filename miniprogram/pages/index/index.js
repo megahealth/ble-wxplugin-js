@@ -19,7 +19,7 @@ Page({
     const blePlugin = requirePlugin("megable")
     const {
       initSdk
-    } = blePlugin
+    } = blePlugin.ble
     wx.showLoading({
       title: 'loading',
     })
