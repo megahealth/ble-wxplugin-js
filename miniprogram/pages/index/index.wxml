@@ -1,0 +1,73 @@
+<view wx:if="{{device}}" class="container">
+  <!-- 设备基本信息 -->
+  <view class="info-box">
+    <view>name: {{device.name}}</view>
+    <view>sn: {{device.sn}}</view>
+    <view>mac: {{device.mac}}</view>
+    <view wx:if="{{otherInfo}}">fw: {{otherInfo.fwVer}}</view>
+  </view>
+
+  <!-- 运行状态 -->
+  <view  class="status-box">
+    <view class="title">运行状态</view>
+    <view class="status-row">
+      <text>
+        模式:
+        <block wx:if="{{mode===0}}">默认模式</block>
+        <block wx:if="{{mode===1}}">监测模式</block>
+        <block wx:if="{{mode===2}}">运动模式</block>
+        <block wx:if="{{mode===3}}">空闲模式</block>
+        <block wx:if="{{mode===4}}">实时血氧</block>
+        <block wx:if="{{mode===5}}">BP模式</block>
+        <block wx:if="{{mode===6}}">脉诊模式</block>
+      </text>
+      <text>电量: {{heartBeat.battPercent }}%</text>
+      <text>
+        电池状态:
+        <block wx:if="{{heartBeat.deviceStatus===0}}">正常</block>
+        <block wx:if="{{heartBeat.deviceStatus===1}}">充电中</block>
+        <block wx:if="{{heartBeat.deviceStatus===2}}">已充满</block>
+        <block wx:if="{{heartBeat.deviceStatus===3}}">低电</block>
+        <block wx:if="{{heartBeat.deviceStatus===4}}">异常</block>
+        <block wx:if="{{heartBeat.deviceStatus===5}}">休眠</block>
+      </text>
+    </view>
+  </view>
+
+  <!-- 实时数据 -->
+  <view class="status-box">
+    <view class="title">实时数据</view>
+    <view wx:if="{{LiveSpoMonitor}}" class="status-row">
+      <text>PR: {{LiveSpoMonitor.pr || '--'}}</text>
+      <text>SPO: {{LiveSpoMonitor.spo || '--'}}</text>
+    </view>
+    <view wx:if="{{LiveSleep}}" class="status-row">
+      <text>PR: {{LiveSleep.pr || '--'}}</text>
+      <text>SPO: {{LiveSleep.spo || '--'}}</text>
+      <text>时长: {{LiveSleep.duration || 0}}s</text>
+    </view>
+  </view>
+
+  <!-- 功能按钮 -->
+  <view wx:if="{{heartBeat}}" class="btn-group">
+    <button class="btn" bindtap="realTime" data-enable="true">开启实时通道</button>
+    <button class="btn" bindtap="realTime" data-enable="false">关闭实时通道</button>
+
+    <button class="btn" bindtap="onLiveSpoMonitor" data-enable="true">开启实时血氧</button>
+    <button class="btn" bindtap="onLiveSpoMonitor" data-enable="false">关闭实时血氧</button>
+
+    <button class="btn" bindtap="onLiveSleep" data-enable="true">开启睡眠监测</button>
+    <button class="btn" bindtap="onLiveSleep" data-enable="false">关闭睡眠监测</button>
+
+    <button class="btn" bindtap="openPulse" data-enable="true">开启脉诊</button>
+    <button class="btn" bindtap="openPulse" data-enable="false">关闭脉诊</button>
+
+    <button class="btn" bindtap="getData">收取数据</button>
+    <button class="btn" bindtap="quickReport">快速收取</button>
+
+    <button class="btn" bindtap="getBP">收取BP</button>
+    <button class="btn" bindtap="getHRV">收取HRV</button>
+
+    <button class="btn danger" bindtap="discover">解绑</button>
+  </view>
+</view>

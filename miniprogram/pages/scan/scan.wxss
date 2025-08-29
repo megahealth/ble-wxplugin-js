@@ -1,0 +1,15 @@
+/* pages/scan/scan.wxss */
+
+.device{
+  width: 100vh;
+  height: 70px;
+  margin: 10px 5px;
+  padding: 10px;
+  border: 1px;
+  border-radius: 10px;
+  background-color: #eef0f4;
+}
+
+.container{
+  background-color: #fff;
+}

@@ -1,0 +1,15 @@
+<view class="container">
+  <view>
+  <button type="primary" bindtap="scan">scan</button>
+</view>
+
+<view wx:if="{{scanList.length!==0}}">
+  <scroll-view scroll-y="true" bindscroll="scroll" >
+    <view wx:for="{{scanList}}" wx:key="index" class="device" data-device="{{item}}" bindtap="connect" >
+      <view>name: {{item.name}}</view>
+      <view>sn: {{item.sn}}</view>
+      <view>mac: {{item.mac}}</view>
+    </view>
+  </scroll-view>
+</view>
+</view>

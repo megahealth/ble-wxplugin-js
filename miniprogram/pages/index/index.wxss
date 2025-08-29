@@ -1,0 +1,55 @@
+.container {
+  padding: 20rpx;
+  font-size: 28rpx;
+}
+
+.info-box,
+.status-box {
+  margin-bottom: 20rpx;
+  padding: 20rpx;
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.05);
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  color: #333;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-size: 26rpx;
+  color: #444;
+}
+
+.status-row text {
+  margin-right: 20rpx;
+}
+
+.btn-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.btn {
+  width: 100%;
+  padding: 18rpx 0;
+  font-size: 25rpx;
+  border-radius: 12rpx;
+  background-color: #007aff;
+  color: white;
+}
+
+.btn:active {
+  opacity: 0.8;
+}
+
+.danger {
+  background-color: #e54d42;
+}

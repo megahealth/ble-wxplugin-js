@@ -1,9 +1,0 @@
-{
-  "publicComponents": {
-    "avatar": "components/avatar/avatar"
-  },
-  "pages": {
-    "list": "pages/list/list"
-  },
-    "main": "index.js"
-  }
