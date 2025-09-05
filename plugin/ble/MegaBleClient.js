@@ -15,6 +15,7 @@ class MegaBleClient {
     this.rawdataManager = null
     this.ctx = ctx;
   }
+  
 
   setCallback(cb) {
     this.callback = cb;
@@ -181,6 +182,9 @@ class MegaBleClient {
     // console.log('日常')
     enable ? this.api.enableV2ModeSpoMonitor(true, 0) : this.api.enableV2ModeDaily(true, 0)
   }
+  enableSport(enable){
+    enable ? this.api.enableV2Sport(true, 0) : this.api.enableV2ModeDaily(true, 0)
+  }
 
   syncData() {
     this.api.syncMonitorData()
@@ -189,9 +193,7 @@ class MegaBleClient {
    * 快速收取报告
    */
   quickReport() {
-    // this.api.syncMonitorData()
     this.enableRawdata(true)
-    this.responseManager.type='sleep'
     setTimeout(()=>{
       //开启快收
       this.api.quickGetReportData()
@@ -199,9 +201,7 @@ class MegaBleClient {
   }
 
   syncBpAndHrvData(type){
-    // this.api.syncMonitorData()
     this.enableRawdata(true)
-    this.responseManager.type=type===1?'BP':"HRV"
     setTimeout(()=>{
       //开启快收
       this.api.quickGetHRVAndBPData(type)

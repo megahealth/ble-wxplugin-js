@@ -10,7 +10,8 @@ Page({
     heartBeat: null,
     mode:0,
     LiveSpoMonitor:null,
-    LiveSleep:null
+    LiveSleep:null,
+    LiveSport:null,
   },
   /**
    * 生命周期函数--监听页面加载
@@ -87,7 +88,7 @@ Page({
       },
       //收取睡眠
       onSyncMonitorDataComplete: (bytes, dataStopType, dataType, deviceInfo) => {
-        console.log('onSyncMonitorDataComplete',bytes);
+        console.log('onSyncMonitorDataComplete',bytes,dataStopType, dataType);
         wx.hideLoading()
         // const DeviceInfo = {
         //   mac: deviceInfo.mac,
@@ -101,7 +102,7 @@ Page({
         // const institutionId = "5d5ce86aba39c800671c5a89";
         // // 组织formdata需要
         // const boundary = `----MegaRing${new Date().getTime()}`;
-        //构建formdata
+        // 构建formdata
         // function createFormData(params = {}, boundary = "") {
         //   let result = "";
         //   for (let i in params) {
@@ -125,7 +126,6 @@ Page({
         //   boundary
         // );
         // console.log('formData',formData);
-        // request的options
         // const options = {
         //   method: "POST",
         //   url: "https://server-mhn.megahealth.cn/upload//uploadBinData",
@@ -203,6 +203,10 @@ Page({
       //实时运动
       onV2LiveSport: (v2LiveSport) => {
         console.log("onV2LiveSport: ", v2LiveSport);
+        if(this.data.mode!==2){
+          this.setData({mode:2})
+        }
+        this.setData({LiveSport:v2LiveSport})
       },
       //实时血氧
       onV2LiveSpoMonitor: (v2LiveSpoMonitor) => {
@@ -268,6 +272,14 @@ Page({
     }
     if(event.currentTarget.dataset.enable==='false'){
       this.data.client.enableRealTimeNotify(false)
+    }
+  },
+  enableSport(event){
+    if(event.currentTarget.dataset.enable==='true'){
+      this.data.client.enableSport(true)
+    }
+    if(event.currentTarget.dataset.enable==='false'){
+      this.data.client.enableSport(false)
     }
   },
   onLiveSpoMonitor(event){

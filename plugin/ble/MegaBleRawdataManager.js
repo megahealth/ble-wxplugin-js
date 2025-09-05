@@ -30,7 +30,7 @@ class MegaBleRawdataManager {
     this.deviceInfo=deviceInfo
   }
   handleTransmitPermited(a) {
-    if(Config.debugable)console.log('a',a)
+    if(Config.debugable)console.log('handleTransmitPermited',a)
     this.stopType = a[4];
     this.dataType = a[6];
     // 版本(0) 结束类型(1) 协议(2) 保留(3) 头部1c(4) 结束原因(5) 固件版本(6-10) sn(11-16) ID(17-28) step(29-32)
@@ -89,14 +89,13 @@ class MegaBleRawdataManager {
     return mergedArray;
   }
 
-  setSleepLength(length,type){
+  setLength(length){
     this.rawDataLen=length
-    if(Config.debugable)console.log('length',length,type)
-    this.dataType=type
+    if(Config.debugable)console.log('setLength',length)
     this.rawDataBytes = new Uint8Array();
   }
 
-  setSleepByte(a){
+  setByte(a){
     if (this.rawDataLen <= 0) {
        return this.api.enableRawdata(false)
     }
@@ -118,9 +117,12 @@ class MegaBleRawdataManager {
       this.clear()
 
       //删除报告
+      if(Config.debugable)console.log("del dataType",this.dataType)
       if(Config.delReport){
         if(this.dataType===1){
           this.api.clearReport(1)
+        }else if(this.dataType===2){
+          this.api.clearReport(2)
         }else if(this.dataType===5){
           this.api.clearReport(5)
         }else if(this.dataType===10){

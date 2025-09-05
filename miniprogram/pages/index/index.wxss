@@ -39,7 +39,7 @@
 
 .btn {
   width: 100%;
-  padding: 18rpx 0;
+  padding: 15rpx 0;
   font-size: 25rpx;
   border-radius: 12rpx;
   background-color: #007aff;

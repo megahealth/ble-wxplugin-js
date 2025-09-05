@@ -46,15 +46,22 @@
       <text>SPO: {{LiveSleep.spo || '--'}}</text>
       <text>时长: {{LiveSleep.duration || 0}}s</text>
     </view>
+    <view wx:if="{{LiveSport}}" class="status-row">
+      <text>PR: {{LiveSport.pr || '--'}}</text>
+      <text>时长: {{LiveSport.duration || 0}}s</text>
+    </view>
   </view>
 
   <!-- 功能按钮 -->
-  <view wx:if="{{heartBeat}}" class="btn-group">
+  <view class="btn-group">
     <button class="btn" bindtap="realTime" data-enable="true">开启实时通道</button>
     <button class="btn" bindtap="realTime" data-enable="false">关闭实时通道</button>
 
     <button class="btn" bindtap="onLiveSpoMonitor" data-enable="true">开启实时血氧</button>
     <button class="btn" bindtap="onLiveSpoMonitor" data-enable="false">关闭实时血氧</button>
+    
+    <button class="btn" bindtap="enableSport" data-enable="true">开启运动</button>
+    <button class="btn" bindtap="enableSport" data-enable="false">关闭运动</button>
 
     <button class="btn" bindtap="onLiveSleep" data-enable="true">开启睡眠监测</button>
     <button class="btn" bindtap="onLiveSleep" data-enable="false">关闭睡眠监测</button>

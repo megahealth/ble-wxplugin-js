@@ -1,4 +1,4 @@
-const  { getRandomString, getMD5Bytes, userIdToBytes, encryptMac, encryptToken } =require("./MegaUtils") ;
+const  { getRandomString, getMD5Bytes, u8s2hex,userIdToBytes, encryptMac, encryptToken } =require("./MegaUtils") ;
 const  { CMD,Config } =require("./MegaBleConst") ;
 
 
@@ -31,7 +31,7 @@ const makeBindMasterCmd = () => {
 
 const makeSetTimeCmd = () => {
   const t = Math.floor(Date.now() / 1000)
-  const a = _initPack(CMD.SETTIME)
+  const a = _initPack(CMD.SETTIME) //0xe0
   a[3] = ((t & 0xff000000) >> 24)
   a[4] = ((t & 0x00ff0000) >> 16)
   a[5] = ((t & 0x0000ff00) >> 8)
@@ -80,7 +80,7 @@ const makeV2EnableModeDaily = (ensure, t) => {
   a[5] = (t & 0x00ff0000) >> 16
   a[6] = (t & 0x0000ff00) >> 8
   a[7] = t & 0x000000ff
-  if(Config.debugable)console.log('====>日常模式',a)
+  if(Config.debugable)console.log('[cmd]makeV2EnableModeDaily',u8s2hex(a))
   return a
 }
 
@@ -92,6 +92,16 @@ const makeV2EnableModeSpoMonitor = (ensure, t) => {
   a[5] = (t & 0x00ff0000) >> 16
   a[6] = (t & 0x0000ff00) >> 8
   a[7] = t & 0x000000ff
+  return a
+}
+const makeV2EnabnebleModeSport=(ensure, t)=>{
+  const a = _initPack(CMD.V2_MODE_SPORT);
+  a[3] = (ensure ? 'S'.charCodeAt() : 0);
+  a[4] = (t & 0xff000000) >> 24
+  a[5] = (t & 0x00ff0000) >> 16
+  a[6] = (t & 0x0000ff00) >> 8
+  a[7] = t & 0x000000ff
+  if(Config.debugable)console.log('[cmd]makeV2EnabnebleModeSport',u8s2hex(a));
   return a
 }
 
@@ -121,7 +131,7 @@ const makePulseMode=(t)=>{
   a[5] = (t & 0x00ff0000) >> 16
   a[6] = (t & 0x0000ff00) >> 8
   a[7] = t & 0x000000ff
-  // if(Config.debugable)console.log('====>脉诊模式',a)
+  if(Config.debugable)console.log('[cmd]makePulseMode',u8s2hex(a))
   return a
 }
 
@@ -194,4 +204,5 @@ module.exports={
   makeQucikGetData,
   makeQucikGetBPAndHRVData,
   makeDelRawDataReport,
+  makeV2EnabnebleModeSport
 }

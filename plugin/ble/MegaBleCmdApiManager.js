@@ -11,6 +11,7 @@ const {
   makeV2EnableModeLiveSpo,
   makeV2EnableModeDaily,
   makeV2EnableModeSpoMonitor,
+  makeV2EnabnebleModeSport,
   makeBindMacCmd,
   makeBindTokenCmd,
   makeMonitorCmd,
@@ -141,6 +142,12 @@ class MegaBleCmdApiManager {
     return this._write(a)
   }
 
+  enableV2Sport(ensure, seconds){
+    const a = makeV2EnabnebleModeSport(ensure, seconds);
+    if (Config.debugable) console.log('[cmd] makeV2EnabnebleModeSPORT -> ' + u8s2hex(a))
+    return this._write(a)
+  }
+
 
   /**
    * 收监控数据
@@ -218,6 +225,9 @@ class MegaBleCmdApiManager {
     a[0] = 0xb8;
     if(type===1){
       a[3]=1
+    }
+    if(type===2){
+      a[3]=2
     }
     if(type===5){
       a[3]=2

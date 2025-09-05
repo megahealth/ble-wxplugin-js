@@ -159,38 +159,18 @@ class MegaBleResponseManager {
   handleRawDataResponse(a) {
 
     this.rawDataBytes=a
-
+    // console.log('this.typ',this.type)
+    if(Config.debugable)console.log(`type:${this.type},${a[0]},${a[1]},${a[5]},${a[6]}`);
     //脉诊
     if(this.type==='pulse'){
       this.rawDataManager.setPulseByte(this.rawDataBytes)
-    }
-    //睡眠
-    if(this.type==='sleep'){
+    }else{
       if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1) {
         const recordLen =
           (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
-          this.rawDataManager.setSleepLength(recordLen,1)
+        this.rawDataManager.setLength(recordLen)
       }else{
-        this.rawDataManager.setSleepByte(this.rawDataBytes)
-      }
-    }
-    if(this.type==='BP'){
-      if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1&&this.rawDataBytes[5]===250) {
-        const recordLen =
-          (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
-        this.rawDataManager.setSleepLength(recordLen,5)
-      }else{
-        this.rawDataManager.setSleepByte(this.rawDataBytes)
-      }
-    }
-
-    if(this.type==='HRV'){
-      if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1&&this.rawDataBytes[5]===251) {
-        const recordLen =
-          (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
-        this.rawDataManager.setSleepLength(recordLen,10)
-      }else{
-        this.rawDataManager.setSleepByte(this.rawDataBytes)
+        this.rawDataManager.setByte(this.rawDataBytes)
       }
     }
   }
