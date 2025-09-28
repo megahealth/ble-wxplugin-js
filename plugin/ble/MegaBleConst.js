@@ -65,6 +65,7 @@ const CMD = {
   CTRL_AFE_EHR         : 2,
   CTRL_NORMAL_ON       : 1,
   CTRL_NORMAL_OFF      : 0,
+  SET_BP_CALIBRATION   : 0xB4
 }
 
 

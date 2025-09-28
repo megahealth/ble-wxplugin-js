@@ -41,6 +41,7 @@ class MegaBleClient {
       if (!this.responseManager) return
       if (characteristic.deviceId === this.deviceId) {
         const a = new Uint8Array(characteristic.value)
+        if(Config.debugable&&a[0]==0xb4)console.log('set BP Calibration ===>',a[0],a[1])
         switch (characteristic.characteristicId) {
           case BLE_CFG.RAW_UUID:
             this.responseManager.handleRawDataResponse(a)
@@ -206,6 +207,10 @@ class MegaBleClient {
       //开启快收
       this.api.quickGetHRVAndBPData(type)
     },10)
+  }
+  setBPCalibration(data){
+    // 判断格式
+    this.api.setBPCalibration(data)
   }
 
   //开启脉诊模式

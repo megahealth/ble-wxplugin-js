@@ -160,6 +160,11 @@ const makeQucikGetData = () => {
     return a;
   }
 }
+//设置bp校准
+const makeSetBPCalibration=()=>{
+  const a = _initPack(CMD.SET_BP_CALIBRATION);
+  return a
+}
 
 
 const makeDelRawDataReport = () => {
@@ -203,6 +208,7 @@ module.exports={
   makePulseMode,
   makeQucikGetData,
   makeQucikGetBPAndHRVData,
+  makeSetBPCalibration,
   makeDelRawDataReport,
   makeV2EnabnebleModeSport
 }

@@ -351,6 +351,16 @@ Page({
   getBP(){
       this.data.client.syncBpAndHrvData(1)
   },
+  setBP(){
+    // 每2h一次 共四次 
+    const data=[
+      [115,78,8],
+      [115,78,10],
+      [115,78,12],
+      [115,78,16]
+    ]
+    this.data.client.setBPCalibration(data)
+  },
   getHRV(){
       this.data.client.syncBpAndHrvData(2)
   },

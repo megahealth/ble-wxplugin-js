@@ -17,7 +17,9 @@ const {
   makeMonitorCmd,
   makePulseMode,
   makeQucikGetData,
-  makeDelRawDataReport, makeQucikGetBPAndHRVData,
+  makeDelRawDataReport, 
+  makeQucikGetBPAndHRVData,
+  makeSetBPCalibration,
 } =require("./MegaBleCmdMaker") ;
 
 class MegaBleCmdApiManager {
@@ -215,6 +217,22 @@ class MegaBleCmdApiManager {
   quickGetHRVAndBPData(type) {
     const a = makeQucikGetBPAndHRVData(type);
     if (Config.debugable)console.log("[cmd] makeQucikGetBPAndHRVData -> " + u8s2hex(a));
+    return this._write(a);
+  }
+
+  setBPCalibration(BPArr){
+    const a= makeSetBPCalibration()
+    // a[1]=0x01
+    const arr = new Uint8Array(12); // 4 组 * 3 字节 = 12 字节
+    BPArr.forEach((item, i) => {
+      const [sbp, dbp, hour] = item;
+      const offset = i * 3;
+      arr[offset] = sbp;   // 收缩压
+      arr[offset + 1] = dbp; // 舒张压
+      arr[offset + 2] = hour; // 小时
+    });
+    a.set(arr, 8);
+    if (Config.debugable)console.log('Set BP Calibration',u8s2hex(a))
     return this._write(a);
   }
   /***

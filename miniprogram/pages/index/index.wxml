@@ -73,6 +73,7 @@
     <button class="btn" bindtap="quickReport">快速收取</button>
 
     <button class="btn" bindtap="getBP">收取BP</button>
+    <button class="btn" bindtap="setBP">设置BP校准</button>
     <button class="btn" bindtap="getHRV">收取HRV</button>
 
     <button class="btn danger" bindtap="discover">解绑</button>
