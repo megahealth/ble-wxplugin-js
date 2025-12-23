@@ -159,10 +159,9 @@ class MegaBleResponseManager {
   handleRawDataResponse(a) {
 
     this.rawDataBytes=a
-    // console.log('this.typ',this.type)
-    if(Config.debugable)console.log(`type:${this.type},${a[0]},${a[1]},${a[5]},${a[6]}`);
     //脉诊
     if(this.type==='pulse'){
+      if(Config.debugable)console.log('pulse data',u8s2hex(this.rawDataBytes))
       this.rawDataManager.setPulseByte(this.rawDataBytes)
     }else{
       if (this.rawDataBytes[0] === 235 && this.rawDataBytes[1] === 1) {
@@ -170,6 +169,7 @@ class MegaBleResponseManager {
           (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
         this.rawDataManager.setLength(recordLen)
       }else{
+        if(Config.debugable)console.log('data',u8s2hex(this.rawDataBytes))
         this.rawDataManager.setByte(this.rawDataBytes)
       }
     }
@@ -232,6 +232,7 @@ class MegaBleResponseManager {
         break;
       case STEP_IDLE:
         this.callback.onIdle()
+        this.api.getCrashLog()
         break;
       default:
         break;

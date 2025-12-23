@@ -41,7 +41,6 @@ class MegaBleClient {
       if (!this.responseManager) return
       if (characteristic.deviceId === this.deviceId) {
         const a = new Uint8Array(characteristic.value)
-        if(Config.debugable&&a[0]==0xb4)console.log('set BP Calibration ===>',a[0],a[1])
         switch (characteristic.characteristicId) {
           case BLE_CFG.RAW_UUID:
             this.responseManager.handleRawDataResponse(a)
@@ -52,7 +51,6 @@ class MegaBleClient {
           case BLE_CFG.CH_NOTIFY:
             this.responseManager.handleNotifyResponse(a)
             break;
-
           case BLE_CFG.CH_READ:
             this.responseManager.handleReadResponse(a)
             break;
@@ -234,7 +232,11 @@ class MegaBleClient {
       })
     }
   }
-
+  //开启crashlog
+  setGetCrashLog(){
+    // 判断格式
+    this.api.getCrashLog()
+  }
 
   //打开Rawdata
   enableRawdata(enable){

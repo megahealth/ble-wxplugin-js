@@ -216,6 +216,20 @@ Page({
         );
         this.setData({LiveSpoMonitor:v2LiveSpoMonitor})
       },
+      // crashLog
+      onCrashLogReceived:(byte)=>{
+        
+        const u8s2hex = (u8s) => {
+          var hexArr = Array.prototype.map.call(
+            u8s,
+            function (bit) {
+              return ('00' + bit.toString(16)).slice(-2)
+            }
+          )
+          return hexArr.join(' ');
+        }
+        console.log('onCrashLogReceived',u8s2hex(byte));
+      },
       //设置个人信息（）
       onSetUserInfo: () => {
         // age, gender, height, weight, step size
@@ -350,6 +364,9 @@ Page({
   },
   getBP(){
       this.data.client.syncBpAndHrvData(1)
+  },
+  getCrashLog(){
+    this.data.client.setGetCrashLog(1)
   },
   setBP(){
     // 每2h一次 共四次 

@@ -143,6 +143,12 @@ const makeQucikGetData = () => {
   a[3] = 0xef;
   return a;
 };
+
+const makeCrashLogData = () => {
+  const a = _initPack(CMD.CRASHLOG);
+  return a;
+};
+
  const makeQucikGetBPAndHRVData=(type)=>{
   const a = _initPack(CMD.SYNCDATA);
   if(type===1){
@@ -210,5 +216,6 @@ module.exports={
   makeQucikGetBPAndHRVData,
   makeSetBPCalibration,
   makeDelRawDataReport,
-  makeV2EnabnebleModeSport
+  makeV2EnabnebleModeSport,
+  makeCrashLogData
 }

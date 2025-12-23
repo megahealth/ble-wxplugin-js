@@ -8,6 +8,7 @@ const {
   makeSetTimeCmd,
   makeUserInfoCmd,
   makeLiveCmd,
+  makeCrashLogData,
   makeV2EnableModeLiveSpo,
   makeV2EnableModeDaily,
   makeV2EnableModeSpoMonitor,
@@ -235,6 +236,13 @@ class MegaBleCmdApiManager {
     if (Config.debugable)console.log('Set BP Calibration',u8s2hex(a))
     return this._write(a);
   }
+  // 构建crashlog
+  getCrashLog(type) {
+    const a = makeCrashLogData(type);
+    if (Config.debugable)console.log("[cmd] getCrashLog -> " + u8s2hex(a));
+    return this._write(a);
+  }
+
   /***
    * 快收 需要主动删除报告
    */
