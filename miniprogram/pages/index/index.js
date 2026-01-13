@@ -43,6 +43,9 @@ Page({
           })
         }
       },
+      onV2ModeReceived:(value)=>{
+        console.log('value',value);
+      },
       //电量变化
       onBatteryChanged: (value, status) => {
         const beat = {
@@ -218,7 +221,7 @@ Page({
       },
       // crashLog
       onCrashLogReceived:(byte)=>{
-        
+
         const u8s2hex = (u8s) => {
           var hexArr = Array.prototype.map.call(
             u8s,
@@ -278,7 +281,7 @@ Page({
     //   wx.showToast({
     //     title: '电量处于非正常状态，请充电后和佩戴好之后，再次进行操作',
     //   })
-    //   return 
+    //   return
     // }
 
     if(event.currentTarget.dataset.enable==='true'){
@@ -302,7 +305,7 @@ Page({
     //   wx.showToast({
     //     title: '电量处于非正常状态，请充电后和佩戴好之后，再次进行操作',
     //   })
-    //   return 
+    //   return
     // }
     if(event.currentTarget.dataset.enable==='true'){
       this.setData({LiveSleep:null})
@@ -321,13 +324,13 @@ Page({
     //   wx.showToast({
     //     title: '电量处于非正常状态，请充电后和佩戴好之后，再次进行操作',
     //   })
-    //   return 
+    //   return
     // }
 
     if(event.currentTarget.dataset.enable==='true'){
       this.setData({LiveSpoMonitor:null})
       this.data.client.enableMonitor(true)
-      return 
+      return
     }
     if(event.currentTarget.dataset.enable==='false'){
       this.data.client.enableMonitor(false)
@@ -349,7 +352,7 @@ Page({
     //   wx.showToast({
     //     title: '电量处于非正常状态，请充电后和佩戴好之后，再次进行操作',
     //   })
-    //   return 
+    //   return
     // }
     if(this.data.LiveSleep){
       wx.showToast({
@@ -369,7 +372,7 @@ Page({
     this.data.client.setGetCrashLog(1)
   },
   setBP(){
-    // 每2h一次 共四次 
+    // 每2h一次 共四次
     const data=[
       [115,78,8],
       [115,78,10],
@@ -380,6 +383,9 @@ Page({
   },
   getHRV(){
       this.data.client.syncBpAndHrvData(2)
+  },
+  getModel(){
+    this.data.client.getV2Model()
   },
   discover(){
     this.data.client.disconnect()

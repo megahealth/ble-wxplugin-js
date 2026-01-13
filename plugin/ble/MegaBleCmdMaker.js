@@ -177,7 +177,9 @@ const makeDelRawDataReport = () => {
   return _initPack(CMD.DELRAWDATA);
 };
 
-
+const makeGetV2ModeCmd = () => {
+  return _initPack(CMD.V2_GET_MODE);
+};
 
 const _initPack = (cmd) => {
   const a = new Uint8Array(20)
@@ -217,5 +219,6 @@ module.exports={
   makeSetBPCalibration,
   makeDelRawDataReport,
   makeV2EnabnebleModeSport,
-  makeCrashLogData
+  makeCrashLogData,
+  makeGetV2ModeCmd
 }

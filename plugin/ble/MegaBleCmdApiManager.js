@@ -18,9 +18,9 @@ const {
   makeMonitorCmd,
   makePulseMode,
   makeQucikGetData,
-  makeDelRawDataReport, 
+  makeDelRawDataReport,
   makeQucikGetBPAndHRVData,
-  makeSetBPCalibration,
+  makeSetBPCalibration, makeGetV2ModeCmd,
 } =require("./MegaBleCmdMaker") ;
 
 class MegaBleCmdApiManager {
@@ -132,6 +132,16 @@ class MegaBleCmdApiManager {
     const a = makeV2EnableModeDaily(ensure, seconds)
     if (Config.debugable) console.log('[cmd] enableV2ModeDaily -> ' + u8s2hex(a))
     return this._write(a)
+  }
+
+  /**
+   * get current v2 mode
+   * 获取mode
+   * */
+  getV2Model() {
+    const a = makeGetV2ModeCmd();
+    if (Config.debugable) console.log("[cmd] getV2Model -> " + u8s2hex(a));
+    return this._write(a);
   }
 
   /**

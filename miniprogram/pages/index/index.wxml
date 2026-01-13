@@ -59,7 +59,7 @@
 
     <button class="btn" bindtap="onLiveSpoMonitor" data-enable="true">开启实时血氧</button>
     <button class="btn" bindtap="onLiveSpoMonitor" data-enable="false">关闭实时血氧</button>
-    
+
     <button class="btn" bindtap="enableSport" data-enable="true">开启运动</button>
     <button class="btn" bindtap="enableSport" data-enable="false">关闭运动</button>
 
@@ -75,6 +75,7 @@
     <button class="btn" bindtap="getBP">收取BP</button>
     <button class="btn" bindtap="setBP">设置BP校准</button>
     <button class="btn" bindtap="getHRV">收取HRV</button>
+    <button class="btn" bindtap="getModel">模式查询</button>
     <button class="btn" bindtap="getCrashLog">收取crashLog</button>
 
     <button class="btn danger" bindtap="discover">解绑</button>

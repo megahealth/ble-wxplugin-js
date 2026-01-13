@@ -171,6 +171,9 @@ class MegaBleClient {
   enableRealTimeNotify(enable) {
     this.api.toggleLiveData(enable)
   }
+  getV2Model() {
+    this.api.getV2Model();
+  }
 
   enableLive(enable) {
     // console.log('实时')
