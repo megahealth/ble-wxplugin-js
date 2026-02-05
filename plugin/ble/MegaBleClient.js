@@ -15,7 +15,7 @@ class MegaBleClient {
     this.rawdataManager = null
     this.ctx = ctx;
   }
-  
+
 
   setCallback(cb) {
     this.callback = cb;
@@ -250,6 +250,21 @@ class MegaBleClient {
       this.responseManager.clearRawData()
     }
   }
+
+  /*
+  * 1 睡眠
+  * 2 BP/运动
+  * 5
+  * 10 hrv
+  * **/
+  clearReport(type){
+    if(type){
+      this.api.clearReport(Number(type))
+    }else{
+      throw new Error('type类型错误')
+    }
+  }
+
 
   clear() {
     if (this.responseManager) {

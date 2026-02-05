@@ -117,18 +117,18 @@ class MegaBleRawdataManager {
       this.clear()
 
       //删除报告
-      if(Config.debugable)console.log("del dataType",this.dataType)
-      if(Config.delReport){
-        if(this.dataType===1){
-          this.api.clearReport(1)
-        }else if(this.dataType===2){
-          this.api.clearReport(2)
-        }else if(this.dataType===5){
-          this.api.clearReport(5)
-        }else if(this.dataType===10){
-          this.api.clearReport(10)
-        }
-      }
+      // if(Config.debugable)console.log("del dataType",this.dataType)
+      // if(Config.delReport){
+      //   if(this.dataType===1){
+      //     this.api.clearReport(1)
+      //   }else if(this.dataType===2){
+      //     this.api.clearReport(2)
+      //   }else if(this.dataType===5){
+      //     this.api.clearReport(5)
+      //   }else if(this.dataType===10){
+      //     this.api.clearReport(10)
+      //   }
+      // }
     }
   }
 

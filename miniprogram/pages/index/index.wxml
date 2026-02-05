@@ -78,6 +78,16 @@
     <button class="btn" bindtap="getModel">模式查询</button>
     <button class="btn" bindtap="getCrashLog">收取crashLog</button>
 
+
+
+    <button class="btn" bindtap="clearSleepReport">删除睡眠报告</button>
+    <button class="btn" bindtap="clearBPReport">删除BP/运动</button>
+    <button class="btn" bindtap="clearHrvReport">删除HRV</button>
+    <button class="btn" bindtap="enableDebug">开启debug</button>
+    <button class="btn" bindtap="disableDebug">关闭debug</button>
+
+
+
     <button class="btn danger" bindtap="discover">解绑</button>
   </view>
 </view>

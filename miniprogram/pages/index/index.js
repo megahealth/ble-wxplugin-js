@@ -387,6 +387,26 @@ Page({
   getModel(){
     this.data.client.getV2Model()
   },
+  //1 睡眠
+  //2 BP/运动
+  //10 HRV
+  clearSleepReport(){
+    this.data.client.clearReport(1)
+  },
+  clearBPReport(){
+    this.data.client.clearReport(2)
+  },
+  clearHrvReport(){
+    this.data.client.clearReport(10)
+  },
+  //开启debug
+  enableDebug(){
+    this.data.client.enableDebug(true)
+  },
+  //关闭debug
+  disableDebug(){
+    this.data.client.enableDebug(false)
+  },
   discover(){
     this.data.client.disconnect()
     wx.clearStorage()
