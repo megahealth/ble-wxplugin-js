@@ -13,6 +13,15 @@ Page({
     LiveSleep:null,
     LiveSport:null,
   },
+  scrollModal(longText) {
+    wx.showModal({
+      title: '通知',
+      content: longText,
+      confirmText:  '确认',
+      cancelText: '取消',
+      success: (res) => {}
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -43,8 +52,14 @@ Page({
           })
         }
       },
-      onV2ModeReceived:(value)=>{
-        console.log('value',value);
+      onV2ModeReceived:({mode})=>{
+        console.log('mode',mode);
+        if(mode===0)this.scrollModal("mode: 默认模式") 
+        if(mode===1)this.scrollModal("mode: 睡眠监测模式") 
+        if(mode===2)this.scrollModal("mode: 运动模式") 
+        if(mode===3)this.scrollModal("mode: 空闲模式") 
+        if(mode===4)this.scrollModal("mode: 实时血氧") 
+        if(mode===5)this.scrollModal("mode: bp模式") 
       },
       //电量变化
       onBatteryChanged: (value, status) => {
@@ -93,6 +108,7 @@ Page({
       onSyncMonitorDataComplete: (bytes, dataStopType, dataType, deviceInfo) => {
         console.log('onSyncMonitorDataComplete',bytes,dataStopType, dataType);
         wx.hideLoading()
+        this.scrollModal("报告收取完成")
         // const DeviceInfo = {
         //   mac: deviceInfo.mac,
         //   sn: deviceInfo.sn,
@@ -157,18 +173,21 @@ Page({
       //日常
       onSyncDailyDataComplete: (bytes) => {
         console.log("onSyncDailyDataComplete: ", bytes);
+        this.scrollModal("报告收取完成")
       },
       //无数据
       onSyncNoDataOfMonitor: () => {
         // wx.hideLoading()
-        wx.showToast({
-          title: 'no Data',
-        })
+        // wx.showToast({
+        //   title: 'no Data',
+        // })
+        this.scrollModal("no Data")
         console.log("onSyncNoDataOfMonitor");
       },
       //无日常
       onSyncNoDataOfDaily: () => {
         wx.hideLoading()
+        this.scrollModal("no Data")
         console.log("onSyncNoDataOfDaily");
       },
       onV2BootupTimeReceived: () => {},
@@ -231,6 +250,7 @@ Page({
           )
           return hexArr.join(' ');
         }
+        this.scrollModal(u8s2hex(byte))
         console.log('onCrashLogReceived',u8s2hex(byte));
       },
       //设置个人信息（）
