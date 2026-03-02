@@ -153,9 +153,11 @@ class MegaBleClient {
   startWithoutToken(userId, mac) {
     return this.api.bindWithoutToken(userId, mac)
   }
+
   startWithToken(userId, token) {
     return this.api.bindWithToken(userId, token)
   }
+
   startWithMasterToken() {
     return this.api.bindWithMasterToken()
   }
@@ -209,6 +211,7 @@ class MegaBleClient {
       this.api.quickGetHRVAndBPData(type)
     },10)
   }
+
   setBPCalibration(data){
     // 判断格式
     this.api.setBPCalibration(data)
@@ -320,11 +323,9 @@ const initSdk = (appId, appKey, ctx) => {
             Config.AppKey = appKey;
             resolve(new MegaBleClient(ctx));
         } else {
-          console.log(1)
           reject('init sdk auth failed');
         }
       }, () => {
-        console.log(2)
         reject('init sdk error');
       });
   })

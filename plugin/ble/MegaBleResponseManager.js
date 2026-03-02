@@ -169,7 +169,7 @@ class MegaBleResponseManager {
           (this.rawDataBytes[10] << 24) | (this.rawDataBytes[9] << 16) | (this.rawDataBytes[8] << 8) | (this.rawDataBytes[7] << 0);
         this.rawDataManager.setLength(recordLen)
       }else{
-        if(Config.debugable)console.log('data',u8s2hex(this.rawDataBytes))
+        if(Config.debugable)console.log('byte',new Date(),u8s2hex(this.rawDataBytes))
         this.rawDataManager.setByte(this.rawDataBytes)
       }
     }

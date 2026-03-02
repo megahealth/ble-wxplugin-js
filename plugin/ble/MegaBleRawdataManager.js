@@ -7,6 +7,7 @@ class MegaBleRawdataManager {
     this.RawdataSwitch=false
     this.rawDataLen=0;
     this.rawDataBytes=null
+    this.offset=0
     this.interval=1000; //ms
     this.intervaler=[]
     this.api = api;
@@ -90,22 +91,28 @@ class MegaBleRawdataManager {
   }
 
   setLength(length){
-    this.rawDataLen=length
-    if(Config.debugable)console.log('setLength',length)
-    this.rawDataBytes = new Uint8Array();
+    this.rawDataLen=this.ver.length+length
+    if(Config.debugable)console.log('setLength',this.ver.length+length)
+    this.offset=this.ver.length
+    this.rawDataBytes = new Uint8Array(this.rawDataLen);
+    //写入头
+    this.rawDataBytes.set(this.ver,0);
   }
 
   setByte(a){
     if (this.rawDataLen <= 0) {
        return this.api.enableRawdata(false)
     }
-    this.rawDataBytes = this.mergeUint8Arrays(this.rawDataBytes, a);
-    const progress = ((this.rawDataBytes.length * 100) / this.rawDataLen).toFixed(3);
-    if (this.rawDataBytes.length < this.rawDataLen) {
+
+    this.rawDataBytes.set(a,this.offset);
+    this.offset+=a.length
+
+    const progress = (this.offset*100  / this.rawDataLen).toFixed(3);
+    if (this.offset < this.rawDataLen) {
       if (progress !== 100) this.callback.onSyncingDataProgress(progress);
     } else if (this.rawDataBytes.length >= this.rawDataLen || progress == 100) {
       //关掉rawData
-      const file = this.mergeUint8Arrays(this.ver, this.rawDataBytes);
+      const file = this.rawDataBytes
       const b64 = arrayBufferToBase64(file);
       this.callback.onSyncingDataProgress(100);
       this.callback.onSyncMonitorDataComplete(

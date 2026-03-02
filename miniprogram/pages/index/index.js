@@ -106,7 +106,7 @@ Page({
       },
       //收取睡眠
       onSyncMonitorDataComplete: (bytes, dataStopType, dataType, deviceInfo) => {
-        console.log('onSyncMonitorDataComplete',bytes,dataStopType, dataType);
+        console.log('onSyncMonitorDataComplete',new Date(),bytes,dataStopType, dataType);
         wx.hideLoading()
         this.scrollModal("报告收取完成")
         // const DeviceInfo = {
