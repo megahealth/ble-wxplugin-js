@@ -5,23 +5,22 @@ const  {discoverServicesAndChs, u8s2hex} =require("./MegaUtils") ;
 const  apiLean =require("./service-lean") ;
 
 class MegaBleClient {
-  // api = null
-  // responseManager = null
-  // rawdataManager = null
-  // ctx = null
   constructor(ctx) {
     this.api = null
     this.responseManager = null
     this.rawdataManager = null
     this.ctx = ctx;
+    this._callbackInited = false
   }
-
 
   setCallback(cb) {
     this.callback = cb;
   }
 
   _initCallbacks() {
+    if (this._callbackInited) return
+    this._callbackInited = true
+
     wx.onBluetoothAdapterStateChange(res => {
       this.callback.onAdapterStateChange(res)
     })
@@ -80,6 +79,15 @@ class MegaBleClient {
 
     DeviceInfo.mac = deviceId;
     this._initCallbacks()
+    wx.closeBLEConnection({
+      deviceId:this.deviceId,
+      success (res) {
+        if(Config.debugable)console.log('closeBLEConnection success',res)
+      },
+      fail(fail){
+        if(Config.debugable)console.log('closeBLEConnection fail',fail)
+      }
+    })
 
     return new Promise((resolve, reject) => {
       wx.createBLEConnection({
