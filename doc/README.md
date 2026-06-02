@@ -52,7 +52,7 @@
 4. client 连接 device，等待连接成功
 
 5. 绑定戒指(首次连或 token 不匹配，需要晃动戒指才能连上。收到 token 后，用 token 连即可跳过晃动)
-   - 非绑定设备状态下: client.startWithToken('5837288dc59e0d00577c5f9a', '0,0,0,0,0,0')
+   - 非绑定设备状态下: client.startWithoutToken('5837288dc59e0d00577c5f9a', mac)
    - 已绑定设备状态下: client.startWithToken('5837288dc59e0d00577c5f9a', token)
    - 注意：如果 token 不匹配，戒指之前的监测就会停止（数据还在，收取报告会上传）。
 6. 【必须】在 callback 的 onSetUserInfo 回调中，设置用户身体信息 client.setUserInfo。这一步在之前设置 callback 时预先写好即可
