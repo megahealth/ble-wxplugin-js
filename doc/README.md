@@ -165,7 +165,7 @@ client.connect(device.name, device.deviceId, device.advertisData).then(res => {
     // no cached token, just use '0,0,0,0,0,0';
     // 没有token或不匹配时，蓝牙插件会自动调用设置好的genMegaCallback中的onKnockDevice回调方法，
     // 客户端可以在onKnockDevice中写用以提示用户晃动戒指的部分。
-    client.startWithToken('5837288dc59e0d00577c5f9a', '0,0,0,0,0,0').then(
+    client.startWithoutToken('5837288dc59e0d00577c5f9a', device.mac).then(
         res => console.log(res)
     ).catch(err => console.error(err));
 }).catch(err => console.error(err))
