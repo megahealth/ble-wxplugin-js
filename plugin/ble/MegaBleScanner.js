@@ -1,4 +1,4 @@
-const  {parseAdv} =require("./MegaUtils") ;
+const  {parseAdv, openBluetoothAdapter} =require("./MegaUtils") ;
 
 class MegaBleScanner {
 
@@ -8,16 +8,9 @@ class MegaBleScanner {
   }
 
   initBleAdapter() {
-    return new Promise((resolve, reject) => {
-      wx.openBluetoothAdapter({
-        // 蓝牙正常，再初始化回调
-        success: res => {
-          this._registCallback()
-          resolve(res)
-        },
-        // 蓝牙有可能被关闭了，可以监听蓝牙开关情况，以便重新开始扫描
-        fail: err => reject(err),
-      })
+    return openBluetoothAdapter().then(res => {
+      this._registCallback()
+      return res
     })
   }
 

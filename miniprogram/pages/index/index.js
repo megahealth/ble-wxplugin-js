@@ -286,11 +286,11 @@ Page({
       device: device
     })
     this.data.client.connect(device.name, device.deviceId, device.advertisData).then(async () => {
-      const token = wx.getStorageSync('token')
+      const token =wx.getStorageSync('token')
       if (token && token.indexOf(',') != -1) {
         await this.data.client.startWithToken('5837288dc59e0d00577c5f9a', token)
       } else {
-        await this.data.client.startWithToken('5837288dc59e0d00577c5f9a', '0,0,0,0,0,0')
+        await this.data.client.startWithoutToken('5837288dc59e0d00577c5f9a', device.mac)
       }
     })
   },

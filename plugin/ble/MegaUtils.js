@@ -375,6 +375,15 @@ function bytesToUint8Array (b,swVer) {
   }
 }
 
+const openBluetoothAdapter = () => {
+  return new Promise((resolve, reject) => {
+    wx.openBluetoothAdapter({
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
 module.exports={
   getRandomString,
   getMD5Bytes,
@@ -389,6 +398,7 @@ module.exports={
   encryptToken,
   getDfuMac,
   discoverServicesAndChs,
+  openBluetoothAdapter,
   yyyymmddhhmmss,
   createFormData,
   arrayBufferToBase64,

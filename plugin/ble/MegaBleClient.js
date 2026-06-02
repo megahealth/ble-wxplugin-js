@@ -1,7 +1,7 @@
 const MegaBleCmdApiManager =require("./MegaBleCmdApiManager") ;
 const  MegaBleResponseManager =require("./MegaBleResponseManager") ;
 const  { BLE_CFG, Config, DeviceInfo } =require("./MegaBleConst") ;
-const  {discoverServicesAndChs, u8s2hex} =require("./MegaUtils") ;
+const  {discoverServicesAndChs, openBluetoothAdapter, u8s2hex} =require("./MegaUtils") ;
 const  apiLean =require("./service-lean") ;
 
 class MegaBleClient {
@@ -79,80 +79,72 @@ class MegaBleClient {
 
     DeviceInfo.mac = deviceId;
     this._initCallbacks()
-    wx.closeBLEConnection({
-      deviceId:this.deviceId,
-      success (res) {
-        if(Config.debugable)console.log('closeBLEConnection success',res)
-      },
-      fail(fail){
-        if(Config.debugable)console.log('closeBLEConnection fail',fail)
-      }
-    })
 
-    return new Promise((resolve, reject) => {
-      wx.createBLEConnection({
+    return openBluetoothAdapter().then(() => new Promise((resolve, reject) => {
+      wx.closeBLEConnection({
         deviceId: this.deviceId,
-        success: () => {
-          // connected ok; init services and characters
-          discoverServicesAndChs(this.deviceId)
-            .then((res) => {
-              if(res.length>0){
-                for (let i = 0; i < res.length; i++) {
-                  const item = res[i];
-                  let indicate,notify,read,write,raw_uuid,raw_sid
-                  for (let j = 0; j < item.characteristics.length; j++) {
-                    const element = item.characteristics[j];
-                    if(element.properties.indicate) indicate = element.uuid;
-                    if(element.properties.notify) notify = element.uuid;
-                    if(element.properties.read) read = element.uuid;
-                    if(element.properties.write&&element.properties.writeDefault) write = element.uuid;
-                    if (
-                      !element.properties.indicate&&
-                      element.properties.notify
-                    ) {
-                      raw_uuid = element.uuid;
-                      raw_sid = item.serviceId;
-                    }
-                    // if(notify)console.log( item.serviceId,element)
-                  }
-                  if(indicate&&notify&&read&&write) {
-                    BLE_CFG.SVC_ROOT = item.serviceId
-                    BLE_CFG.CH_INDICATE = indicate
-                    BLE_CFG.CH_READ = read
-                    BLE_CFG.CH_WRITE = write
-                    BLE_CFG.CH_NOTIFY = notify
-                    BLE_CFG.SCV_LOG = item.serviceId
-                    BLE_CFG.CH_LOG_NOTIFY = notify
-                  }
-                  if (raw_uuid && raw_sid) {
-                    BLE_CFG.RAW_SID = raw_sid;
-                    BLE_CFG.RAW_UUID = raw_uuid;
-                  }
-
-                }
-                // console.log(1111)
-              }
-
-              // 各服务初始化完成
-              // init sdk
-              this.api = new MegaBleCmdApiManager(this.deviceId)
-              this.responseManager = new MegaBleResponseManager(this.api, this.callback)
-              this.isConnected = true
-              this.callback.onDeviceInfoUpdated({name: this.name, mac: this.realMac})
-
-              this.api.enablePipes()
-                .then(res => {
-                  resolve(res)
-                })
-                .catch(err => {
-                  reject(err)
-                })
-            })
-            .catch(err => reject(err))
+        success(res) {
+          if (Config.debugable) console.log('closeBLEConnection success', res)
         },
-        fail: err => reject(err)
+        fail(fail) {
+          if (Config.debugable) console.log('closeBLEConnection fail', fail)
+        },
+        complete: () => {
+          wx.createBLEConnection({
+            deviceId: this.deviceId,
+            success: () => {
+              discoverServicesAndChs(this.deviceId)
+                .then((res) => {
+                  if (res.length > 0) {
+                    for (let i = 0; i < res.length; i++) {
+                      const item = res[i];
+                      let indicate, notify, read, write, raw_uuid, raw_sid
+                      for (let j = 0; j < item.characteristics.length; j++) {
+                        const element = item.characteristics[j];
+                        if (element.properties.indicate) indicate = element.uuid;
+                        if (element.properties.notify) notify = element.uuid;
+                        if (element.properties.read) read = element.uuid;
+                        if (element.properties.write && element.properties.writeDefault) write = element.uuid;
+                        if (
+                          !element.properties.indicate &&
+                          element.properties.notify
+                        ) {
+                          raw_uuid = element.uuid;
+                          raw_sid = item.serviceId;
+                        }
+                      }
+                      if (indicate && notify && read && write) {
+                        BLE_CFG.SVC_ROOT = item.serviceId
+                        BLE_CFG.CH_INDICATE = indicate
+                        BLE_CFG.CH_READ = read
+                        BLE_CFG.CH_WRITE = write
+                        BLE_CFG.CH_NOTIFY = notify
+                        BLE_CFG.SCV_LOG = item.serviceId
+                        BLE_CFG.CH_LOG_NOTIFY = notify
+                      }
+                      if (raw_uuid && raw_sid) {
+                        BLE_CFG.RAW_SID = raw_sid;
+                        BLE_CFG.RAW_UUID = raw_uuid;
+                      }
+                    }
+                  }
+
+                  this.api = new MegaBleCmdApiManager(this.deviceId)
+                  this.responseManager = new MegaBleResponseManager(this.api, this.callback)
+                  this.isConnected = true
+                  this.callback.onDeviceInfoUpdated({ name: this.name, mac: this.realMac })
+
+                  this.api.enablePipes()
+                    .then(res => resolve(res))
+                    .catch(err => reject(err))
+                })
+                .catch(err => reject(err))
+            },
+            fail: err => reject(err),
+          })
+        },
       })
-    })
+    }))
   }
 
   /**
