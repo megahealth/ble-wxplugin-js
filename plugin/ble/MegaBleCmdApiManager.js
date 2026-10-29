@@ -20,7 +20,11 @@ const {
   makeQucikGetData,
   makeDelRawDataReport,
   makeQucikGetBPAndHRVData,
-  makeSetBPCalibration, makeGetV2ModeCmd,
+  makeSetBPCalibration,
+  makeGetV2ModeCmd,
+  makeSetPeriod,
+  makeGetStartTime,
+  makePeriodSettingReceived
 } =require("./MegaBleCmdMaker") ;
 
 class MegaBleCmdApiManager {
@@ -250,6 +254,24 @@ class MegaBleCmdApiManager {
   getCrashLog(type) {
     const a = makeCrashLogData(type);
     if (Config.debugable)console.log("[cmd] getCrashLog -> " + u8s2hex(a));
+    return this._write(a);
+  }
+
+  makeSetPeriod(enable,single,maxTime,startTime){
+    const a = makeSetPeriod(enable,single,maxTime,startTime)
+    if (Config.debugable)console.log("[cmd] makeSetPeriod -> " + u8s2hex(a));
+    return this._write(a);
+  }
+
+  onPeriodSettingReceived(){
+    const a = makePeriodSettingReceived()
+    if (Config.debugable)console.log("[cmd] onPeriodSettingReceived -> " + u8s2hex(a));
+    return this._write(a);
+  }
+
+  getStartTime(){
+    const a = makeGetStartTime()
+    if (Config.debugable)console.log("[cmd] getStartTime -> " + u8s2hex(a));
     return this._write(a);
   }
 

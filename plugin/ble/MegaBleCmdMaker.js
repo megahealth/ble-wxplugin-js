@@ -145,8 +145,7 @@ const makeQucikGetData = () => {
 };
 
 const makeCrashLogData = () => {
-  const a = _initPack(CMD.CRASHLOG);
-  return a;
+  return _initPack(CMD.CRASHLOG);
 };
 
  const makeQucikGetBPAndHRVData=(type)=>{
@@ -168,8 +167,7 @@ const makeCrashLogData = () => {
 }
 //设置bp校准
 const makeSetBPCalibration=()=>{
-  const a = _initPack(CMD.SET_BP_CALIBRATION);
-  return a
+  return _initPack(CMD.SET_BP_CALIBRATION);
 }
 
 
@@ -180,6 +178,29 @@ const makeDelRawDataReport = () => {
 const makeGetV2ModeCmd = () => {
   return _initPack(CMD.V2_GET_MODE);
 };
+
+const makeSetPeriod = (enable,single,maxTime,startTime) => {
+  const a = _initPack(CMD.V2_PERIOD_MONITOR_SET)
+  a[3]=enable;
+  a[4]=single;
+  a[5] = ((maxTime & 0xff000000) >> 24)
+  a[6] = ((maxTime & 0x00ff0000) >> 16)
+  a[7] = ((maxTime & 0x0000ff00) >> 8)
+  a[8] = (maxTime & 0x000000ff)
+  a[9] = ((startTime & 0xff000000) >> 24)
+  a[10] = ((startTime & 0x00ff0000) >> 16)
+  a[11] = ((startTime & 0x0000ff00) >> 8)
+  a[12] = (startTime & 0x000000ff)
+  return a
+}
+
+const makePeriodSettingReceived=()=>{
+  return _initPack(CMD.V2_GET_PERIOD_SETTING)
+}
+
+const makeGetStartTime=()=>{
+  return _initPack(CMD.V2_GET_BOOTUP_TIME)
+}
 
 const _initPack = (cmd) => {
   const a = new Uint8Array(20)
@@ -220,5 +241,8 @@ module.exports={
   makeDelRawDataReport,
   makeV2EnabnebleModeSport,
   makeCrashLogData,
-  makeGetV2ModeCmd
+  makeGetV2ModeCmd,
+  makeSetPeriod,
+  makeGetStartTime,
+  makePeriodSettingReceived
 }

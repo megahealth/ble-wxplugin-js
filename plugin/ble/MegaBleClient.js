@@ -253,6 +253,27 @@ class MegaBleClient {
       this.responseManager.clearRawData()
     }
   }
+  /**
+   * 设置定时
+   * @param {number} [enable=0] 定时开关：0 关闭, 1 开启
+   * @param {number} [single=0] 定时类型：0 单次定时, 1 周期定时
+   * @param {number} [maxTime=0] 睡眠持续时长, 单位秒, 例如 8 小时传 28800 (8 * 60 * 60)
+   * @param {number} [startTime=0] 距离启动时间剩余时间, 单位秒, 即延迟多少秒后启动
+   */
+  makeSetPeriod(enable=0,single=0,maxTime=0,startTime=0){
+    this.api.makeSetPeriod(Number(enable),Number(single),Number(maxTime),Number(startTime))
+  }
+  /**
+   * 查询定时睡眠
+   * **/
+  onPeriodSettingReceived(){
+    this.api.onPeriodSettingReceived()
+  }
+
+
+  getStartTime(){
+    this.api.getStartTime()
+  }
 
   /*
   * 1 睡眠

@@ -78,7 +78,8 @@
     <button class="btn" bindtap="getModel">模式查询</button>
     <button class="btn" bindtap="getCrashLog">收取crashLog</button>
 
-
+    <button class="btn" bindtap="makeSetPeriod">设置定时睡眠</button>
+    <button class="btn" bindtap="onPeriodSettingReceived">查询定时睡眠</button>
 
     <button class="btn" bindtap="clearSleepReport">删除睡眠报告</button>
     <button class="btn" bindtap="clearBPReport">删除BP/运动</button>

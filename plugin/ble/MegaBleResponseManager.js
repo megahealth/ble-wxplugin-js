@@ -78,6 +78,7 @@ class MegaBleResponseManager {
         break
 
       case CMD.CTRL_MONITOR_DATA:
+        this.callback.onOperationStatus(cmd, status);
         if (this.bigDataManager) this.bigDataManager.handleCtrlIndicate(a)
         break;
 
@@ -89,17 +90,17 @@ class MegaBleResponseManager {
         break;
 
       case CMD.V2_GET_BOOTUP_TIME:
+        this.callback.onOperationStatus(cmd, status);
         if (status == 0) {
           const t = (a[3] << 24) | (a[4] << 16) | (a[5] << 8) | a[6];
-          // console.log("device bootup time: " + t)
           this.callback.onV2BootupTimeReceived(t);
         }
         break;
 
       case CMD.NOTIBATT:
+        this.callback.onOperationStatus(cmd, status);
         if (status == 0) {
           if (a.length >= 7 )
-
           this.callback.onBatteryChangedV2(a[3], a[4], (a[5] << 16) | (a[6] << 8) | a[7]);
         }
         break;
@@ -109,15 +110,11 @@ class MegaBleResponseManager {
         this.callback.onHeartBeatReceived({ version: a[3], battPercent: a[4], deviceStatus: a[5], mode: a[6], recordStatus: a[7], periodMonitorStatus: a[8] });
         break;
 
-      case CMD.V2_PERIOD_MONITOR_SET:
-        this.callback.onOperationStatus(cmd, status);
-        break;
-
       case CMD.V2_GET_PERIOD_SETTING:
         this.callback.onOperationStatus(cmd, status);
         if (status == 0) {
-          const maxTime = byte4ToInt([bytes[9], bytes[10], bytes[11], bytes[12]])
-          this.callback.onV2PeriodSettingReceived({ status: a[3], periodType: a[4], h: a[5], m: a[6], s: a[7], maxTime: maxTime });
+          const maxTime = byte4ToInt([a[9], a[10], a[11], a[12]])
+          this.callback.onPeriodSettingReceived({ status: a[3], periodType: a[4], hour: a[5], min: a[6], sec: a[7], maxTime: maxTime });
         }
         break;
 
@@ -130,6 +127,19 @@ class MegaBleResponseManager {
         this.callback.onV2PeriodReadyWarning(a);
         break;
 
+      case CMD.V2_PERIOD_MONITOR_SET:
+        this.callback.onOperationStatus(cmd, status);
+        if (status == 0) {
+          const status=a[3]
+          const period=a[4]
+          const hour=a[5]
+          const min=a[6]
+          const sec=a[7]
+          const maxTime=  (a[8] << 24) | (a[9] << 16) |(a[10] << 8)  |(a[11]);
+          const nextTime=  (a[12] << 24) | (a[13] << 16) |(a[14] << 8)  |(a[15]);
+          this.callback.onSetPeriodReceived({status,period,nextTime,hour,min,sec,maxTime});
+        }
+        break;
       default:
         break;
     }

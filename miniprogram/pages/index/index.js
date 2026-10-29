@@ -46,7 +46,7 @@ Page({
       onConnectionStateChange: (res) => {
         console.log("connection change: ", res);
         if(res.connected===false){
-          wx.clearStorage()
+          // wx.clearStorage()
           wx.redirectTo({
             url: '/pages/scan/scan'
           })
@@ -54,12 +54,12 @@ Page({
       },
       onV2ModeReceived:({mode})=>{
         console.log('mode',mode);
-        if(mode===0)this.scrollModal("mode: 默认模式") 
-        if(mode===1)this.scrollModal("mode: 睡眠监测模式") 
-        if(mode===2)this.scrollModal("mode: 运动模式") 
-        if(mode===3)this.scrollModal("mode: 空闲模式") 
-        if(mode===4)this.scrollModal("mode: 实时血氧") 
-        if(mode===5)this.scrollModal("mode: bp模式") 
+        if(mode===0)this.scrollModal("mode: 默认模式")
+        if(mode===1)this.scrollModal("mode: 睡眠监测模式")
+        if(mode===2)this.scrollModal("mode: 运动模式")
+        if(mode===3)this.scrollModal("mode: 空闲模式")
+        if(mode===4)this.scrollModal("mode: 实时血氧")
+        if(mode===5)this.scrollModal("mode: bp模式")
       },
       //电量变化
       onBatteryChanged: (value, status) => {
@@ -96,7 +96,9 @@ Page({
       onError: (status) => {
         console.log("onError: ", status);
       },
-      onCrashLogReceived: () => {},
+      onSetPeriodReceived:(a)=>{
+        console.log("onSetPeriodReceived: ", a);
+      },
       //进度
       onSyncingDataProgress: (progress) => {
         console.log("onSyncingDataProgress... " + progress);
@@ -190,7 +192,9 @@ Page({
         this.scrollModal("no Data")
         console.log("onSyncNoDataOfDaily");
       },
-      onV2BootupTimeReceived: () => {},
+      onV2BootupTimeReceived: (t) => {
+        console.log("onV2BootupTimeReceived",t);
+      },
       onBatteryChangedV2: (value, status, druation) => {
         console.log("onBatteryChangedV2: ", value, status, druation);
       },
@@ -208,7 +212,10 @@ Page({
         })
         console.log("onHeartBeatReceived: ", heartBeat);
       },
-      onV2PeriodSettingReceived: () => {},
+      onPeriodSettingReceived: (a) => {
+        // status 0 无效 1空闲 2运行 4挂起
+        console.log("onPeriodSettingReceived",a);
+      },
       onV2PeriodEnsureResponsed: () => {},
       onV2PeriodReadyWarning: () => {},
       onLiveDataReceived: (live) => {
@@ -288,8 +295,10 @@ Page({
     this.data.client.connect(device.name, device.deviceId, device.advertisData).then(async () => {
       const token =wx.getStorageSync('token')
       if (token && token.indexOf(',') != -1) {
+        console.log('token')
         await this.data.client.startWithToken('5837288dc59e0d00577c5f9a', token)
       } else {
+        console.log('mac')
         await this.data.client.startWithoutToken('5837288dc59e0d00577c5f9a', device.mac)
       }
     })
@@ -419,6 +428,13 @@ Page({
   clearHrvReport(){
     this.data.client.clearReport(10)
   },
+  makeSetPeriod(){
+    this.data.client.makeSetPeriod(0,1,5*60*60,2*60*60)
+  },
+  onPeriodSettingReceived(){
+    this.data.client.onPeriodSettingReceived()
+  },
+
   //开启debug
   enableDebug(){
     this.data.client.enableDebug(true)

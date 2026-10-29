@@ -1,5 +1,5 @@
 {
-  "libVersion": "3.9.2",
+  "libVersion": "3.17.5",
   "projectname": "ble-wxplugin",
   "setting": {
     "urlCheck": false,
@@ -17,6 +17,7 @@
     "bigPackageSizeSupport": false,
     "checkInvalidKey": true,
     "ignoreDevUnusedFiles": true,
-    "useApiHostProcess": true
+    "useApiHostProcess": true,
+    "useGlassEaselForWxml": false
   }
 }
