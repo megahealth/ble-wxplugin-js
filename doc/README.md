@@ -224,6 +224,18 @@ const onSyncMonitorDataComplete = (bytes, dataStopType, dataType) => {
   - setBPCalibration(BPCalibrationArr)
     - [[sbp1,dbp1, hour1], [sbp2,dbp2, hour2], [sbp3,dbp3, hour3], [sbp4,dbp4, hour4] ]
     - hour-x 范围0-23
+  - makeSetPeriod(enable, single, maxTime, startTime)
+    - 设置定时睡眠，参数默认均为0
+    - enable：定时开关，0 关闭，1 开启
+    - single：定时类型，0 单次定时，1 周期定时
+    - maxTime：睡眠持续时长，单位秒，例如8小时传 28800 (8 * 60 * 60)
+    - startTime：距离启动的剩余时间，单位秒，即延迟多少秒后启动
+    - 例：client.makeSetPeriod(1, 0, 8 * 60 * 60, 2 * 60 * 60)，2小时后启动一次8小时的定时睡眠
+    - 设置结果通过 onSetPeriodReceived 回调返回
+  - onPeriodSettingReceived()
+    - 查询定时睡眠，无参数，例：client.onPeriodSettingReceived()
+    - 查询结果通过 callback 中的同名 onPeriodSettingReceived 回调返回，需要在 client.setCallback 中预先设置
+    - 以上两个方法当前不返回 Promise，通过回调接收设备操作结果；操作状态见 onOperationStatus
   - enableRawdata()
     - 调试接口，一般用不到
   - disableRawdata()
@@ -301,7 +313,25 @@ const onSyncMonitorDataComplete = (bytes, dataStopType, dataType) => {
 
   - onHeartBeatReceived: heartBeat => {}
 
-  - onV2PeriodSettingReceived: v2PeriodSetting => {}
+  - onSetPeriodReceived: (res) => {}
+
+    - 设置定时睡眠成功后的回调，对应 client.makeSetPeriod
+    - res={ status, period, nextTime, hour, min, sec, maxTime }
+    - status：定时状态，0 无效，1 空闲，2 运行，4 挂起
+    - period：定时类型，0 单次定时，1 周期定时
+    - hour、min、sec：设备返回的定时时间，分别为时、分、秒
+    - maxTime：睡眠持续时长，单位秒
+    - nextTime：设备返回的下次定时值，具体含义和单位以固件协议为准
+
+  - onPeriodSettingReceived: (res) => {}
+
+    - 查询定时睡眠成功后的回调，对应 client.onPeriodSettingReceived()
+    - res={ status, periodType, hour, min, sec, maxTime }
+    - status：定时状态，0 无效，1 空闲，2 运行，4 挂起
+    - periodType：定时类型，0 单次定时，1 周期定时；设置结果中的对应字段名为 period
+    - hour、min、sec：设备返回的定时时间，分别为时、分、秒
+    - maxTime：睡眠持续时长，单位秒
+    - 请使用此回调名称，当前实现不会调用 onV2PeriodSettingReceived
 
   - onV2PeriodEnsureResponsed: a => {}
 
