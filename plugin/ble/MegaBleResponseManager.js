@@ -113,8 +113,9 @@ class MegaBleResponseManager {
       case CMD.V2_GET_PERIOD_SETTING:
         this.callback.onOperationStatus(cmd, status);
         if (status == 0) {
-          const maxTime = byte4ToInt([a[9], a[10], a[11], a[12]])
-          this.callback.onPeriodSettingReceived({ status: a[3], periodType: a[4], hour: a[5], min: a[6], sec: a[7], maxTime: maxTime });
+          const maxTime=byte4ToInt([a[11],a[10],a[9],a[8]]);
+          const nextTime=  byte4ToInt([a[15],a[14],a[13],a[12]])
+          this.callback.onPeriodSettingReceived({ status: a[3], periodType: a[4], hour: a[5], min: a[6], sec: a[7], maxTime: maxTime,nextTime });
         }
         break;
 
@@ -135,8 +136,8 @@ class MegaBleResponseManager {
           const hour=a[5]
           const min=a[6]
           const sec=a[7]
-          const maxTime=  (a[8] << 24) | (a[9] << 16) |(a[10] << 8)  |(a[11]);
-          const nextTime=  (a[12] << 24) | (a[13] << 16) |(a[14] << 8)  |(a[15]);
+          const maxTime=byte4ToInt([a[11],a[10],a[9],a[8]]);
+          const nextTime=  byte4ToInt([a[15],a[14],a[13],a[12]])
           this.callback.onSetPeriodReceived({status,period,nextTime,hour,min,sec,maxTime});
         }
         break;
